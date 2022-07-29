@@ -5,7 +5,7 @@ clear
 fname =  'data/gpp250-1.dat-s';
 fname =  'data/control3.dat-s';
 %fname =  'data/hinf11.dat-s';
-fname =  'data/truss8.dat-s';
+fname =  'truss2.dat-s';
 %   truss8 
 %   136.3546
 
