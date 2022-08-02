@@ -2,7 +2,7 @@ clc;
 clear; 
 close all; 
 %% Generate random binary quadratic program
-d       = 30; % BQP with d variables
+d       = 6; % BQP with d variables
 x       = msspoly('x',d); % symbolic decision variables using SPOTLESS
 Q       = rand(d); Q = (Q + Q')/2; % a random symmetric matrix
 c       = rand(d,1);
@@ -42,7 +42,7 @@ p = 2;
 A = At';
 C = reshape(c, Nx, Nx);
 %% ALM方法参数设置
-sigma =0.001;
+sigma = 0.001;
 gama = 13;
 Y = [];
 yk = zeros(m,1);
