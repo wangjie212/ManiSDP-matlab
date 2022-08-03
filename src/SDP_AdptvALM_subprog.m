@@ -2,7 +2,7 @@
 function  [xfinal, fval, info] = SDP_AdptvALM_subprog(A, At, b, C, c, n, m, p, options)
     %Outer Loop Setting
     localdefaults.rho = 1;
-    localdefaults.gammas = ones(m, 1);
+    localdefaults.gammas = zeros(m, 1);
     localdefaults.bound = 20;
     localdefaults.tau = 0.8;
     localdefaults.thetarho = 0.3;
