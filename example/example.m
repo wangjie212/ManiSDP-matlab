@@ -34,43 +34,52 @@ tic
 prob       = convert_sedumi2mosek(At, b,c,K);
 [~,res]    = mosekopt('minimize info',prob);
 [Xopt,yopt,Sopt,obj] = recover_mosek_sol_blk(res,SDP.blk);
-tmosek = toc
+tmosek = toc;
+% figure; bar(eig(Xopt{1}));
 
 %% Solve using Manopt
 m = length(b);
 p = 2;
 A = At';
 C = reshape(c, Nx, Nx);
-%% ALM方法参数设置
-sigma = 0.001;
-gama = 13;
-Y = [];
-yk = zeros(m,1);
 
-%% 迭代循环
+options.maxtime = inf;
 tic
-MaxIter = 1000;
-for iter = 1:MaxIter
-    [Y, fval, info] = SDP_ALM_subprog(A, At, b, C, c, Nx, p, sigma, yk, Y);
-    X = Y*Y';
-    x = X(:);
-    cx = x'*c;
-    Axb = (x'*At)' - b ;
-    if norm(Axb) < 1e-4
-        break;
-    else
-        disp(['Iter:' num2str(iter) ' ,fval=' num2str(cx,10)])
-        yk = yk + 2*Axb*sigma;
-        sigma = sigma * gama;
-        sigma = min(sigma,10000);
-    end
-end
-fvalend = cx
+[Y, fval, info] = SDP_AdptvALM_subprog(A, At, b, C, c, Nx, m, p, options);
+X = Y*Y';
 tmanipop = toc;
 
+%% ALM方法参数设置
+% sigma = 0.001;
+% gama = 13;
+% Y = [];
+% yk = zeros(m,1);
+
+%% 迭代循环
+% tic
+% MaxIter = 1000;
+% for iter = 1:MaxIter
+%     [Y, fval, info] = SDP_ALM_subprog(A, At, b, C, c, Nx, p, sigma, yk, Y);
+%     X = Y*Y';
+%     z = X(:);
+%     cx = z'*c;
+%     Axb = (z'*At)' - b ;
+%     if norm(Axb) < 1e-4
+%         break;
+%     else
+%         disp(['Iter:' num2str(iter) ' ,fval=' num2str(cx,10)])
+%         yk = yk + 2*Axb*sigma;
+%         sigma = sigma * gama;
+%         sigma = min(sigma,10000);
+%     end
+% end
+% fvalend = cx
+% tmanipop = toc;
+rank(X, 1e-4)
+msubs(f, x, X(2:d+1,1))
 
 disp(['Mosek:' num2str(tmosek) 's'])
 %disp(['Sedumi:' num2str(tsedumi) 's'])
 disp(['ManiPOP:' num2str(tmanipop) 's'])
 disp(['Mosek:' num2str(obj(1))])
-disp(['ManiPOP:' num2str(cx)])
+disp(['ManiPOP:' num2str(fval)])

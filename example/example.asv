@@ -35,10 +35,11 @@ prob       = convert_sedumi2mosek(At, b,c,K);
 [~,res]    = mosekopt('minimize info',prob);
 [Xopt,yopt,Sopt,obj] = recover_mosek_sol_blk(res,SDP.blk);
 tmosek = toc
+% figure; bar(eig(Xopt{1}));
 
 %% Solve using Manopt
 m = length(b);
-p = 2;
+p = 3;
 A = At';
 C = reshape(c, Nx, Nx);
 %% ALM方法参数设置
@@ -53,9 +54,9 @@ MaxIter = 1000;
 for iter = 1:MaxIter
     [Y, fval, info] = SDP_ALM_subprog(A, At, b, C, c, Nx, p, sigma, yk, Y);
     X = Y*Y';
-    x = X(:);
-    cx = x'*c;
-    Axb = (x'*At)' - b ;
+    z = X(:);
+    cx = z'*c;
+    Axb = (z'*At)' - b ;
     if norm(Axb) < 1e-4
         break;
     else
@@ -67,7 +68,8 @@ for iter = 1:MaxIter
 end
 fvalend = cx
 tmanipop = toc;
-
+rank(X, 1e-4)
+msubs(f, x, X(2:d+1,1))
 
 disp(['Mosek:' num2str(tmosek) 's'])
 %disp(['Sedumi:' num2str(tsedumi) 's'])

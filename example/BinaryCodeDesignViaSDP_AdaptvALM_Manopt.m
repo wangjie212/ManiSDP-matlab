@@ -54,6 +54,7 @@ tic
 X = Y*Y';
 tmanipop = toc
 fvalend = fval
+msubs(f, x, X(2:d+1,1))
 
 %disp(['Mosek:' num2str(tmosek) 's'])
 %disp(['Sedumi:' num2str(tsedumi) 's'])

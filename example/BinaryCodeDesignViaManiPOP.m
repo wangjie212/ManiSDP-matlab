@@ -17,7 +17,7 @@ problem.vars            = x;
 problem.objective       = f;
 problem.equality        = h; 
 problem.inequality      = g;
-kappa                   = 5; % relaxation order
+kappa                   = 4; % relaxation order
 
 [SDP,info]              = dense_sdp_relax(problem,kappa);
 At = SDP.sedumi.At;
