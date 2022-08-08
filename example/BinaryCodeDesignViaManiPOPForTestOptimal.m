@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 %% Example: Dense SDP relaxation for binary quadratic programming (BQP)
 clc; 
 clear; 

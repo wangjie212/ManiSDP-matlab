@@ -107,5 +107,4 @@ function  [xfinal, fval, info, gammas] = SDP_AdptvALM_subprogForTestOptimal(A, A
         yAdot = reshape(AxbdotA, n, n);
         H = H + 8 * rho*(yAdot*Y);
     end
-
 end
