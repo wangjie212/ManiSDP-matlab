@@ -1,7 +1,7 @@
 function  [Y, fval, info] = SDP_ALM_subprog(A, At, b, C, c, n, p, sigma, yk, Y0)
     % Pick the manifold of n-by-p matrices with unit norm rows.
-    % manifold = obliquefactory(p, n, true);
-    manifold = elliptopefactory(n, p);
+    manifold = obliquefactory(p, n, true);
+    % manifold = elliptopefactory(n, p);
     %manifold = symfixedrankYYfactory(n, p);
     problem.M = manifold;
     

@@ -31,8 +31,9 @@ function  [xfinal, fval, info] = SDP_AdptvALM_obliqueNT_subprog(A, At, b, C, c, 
 
     totaltime = tic();    
     for OuterIter = 1 : options.maxOuterIter
-        %M = elliptopefactory(n, p);
-        M = obliquefactoryNTrans(p,n);
+        % M = elliptopefactory(p, n);
+        %M = obliquefactoryNTrans(p, n);
+        M = obliquefactory(p, n);
         problem.M = M;
         problem.cost = @cost;        
         % Define the Riemannian gradient.

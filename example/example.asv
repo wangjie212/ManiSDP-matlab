@@ -131,12 +131,9 @@ sf       = sx*Q*sx.' - fval;
 sh = sx.^2 - 1;
 [sA, sB, sb] = SOStoSDP(sf, sh, sx, kappa);
 [V,D] = eig(X);
-temp = zeros(length(sA), 2);
+temp = zeros()
 for i = 1:length(sA)
-    temp(i, :) = [trace(sA{i}*V(:,1)*V(1,:)) trace(sA{i}*V(:,2)*V(2,:))];
-end
-sB = [sB temp];
-sol = sB\sb;
+    [trace(sA{i}*V(:,1)*V(1,:)) trace(sA{i}*V(:,2)*V(2,:))]
 
 %% helper functions
 function s = msspoly2degcoeff(f)
