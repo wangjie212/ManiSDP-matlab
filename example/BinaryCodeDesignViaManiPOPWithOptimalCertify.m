@@ -1,3 +1,4 @@
+%% Example: Dense SDP relaxation for Binary Code Design
 clc; 
 clear; 
 close all; 
@@ -39,10 +40,10 @@ tic
 X = Y*Y';
 tmanipop = toc;
 
-%% 最优性证明，如gap为0， S1为半正定, norm(X*S1,'fro')为0
+%% 最优性证明，如gap为0， S1为半正定, trace(X*S1)为0
 disp('start inv AAT ...')
 tic
-[U,SA,V] = svds([A b], m);
+[U,SA] = svds([A b], m); % FIXED ME to Speed up
 SAD = diag(SA);
 idx = find(SAD<1e-7,1)-1;
 if isempty(idx)
