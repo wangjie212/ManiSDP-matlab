@@ -1,4 +1,3 @@
-%% Example: Dense SDP relaxation for binary quadratic programming (BQP)
 clc; 
 clear; 
 close all; 
@@ -17,7 +16,7 @@ h  = x.^2 - 1; % equality constraints of the BQP (binary variables)
 problem.vars       = x;
 problem.objective  = f;
 problem.equality   = h; 
-kappa              = 2; % relaxation order
+kappa              = 3; % relaxation order
 
 [SDP, info] = dense_sdp_relax(problem,kappa);
 At = SDP.sedumi.At;
@@ -41,15 +40,19 @@ X = Y*Y';
 tmanipop = toc;
 
 %% 最优性证明，如gap为0， S1为半正定, norm(X*S1,'fro')为0
-R = chol((A*At+b*b'),'lower'); %% FIX ME, maybe wrong when A*At+b*b' not PSD.
-[U,SA,V] = svds(R,m);
+disp('start inv AAT ...')
+tic
+[U,SA,V] = svds([A b], m);
 SAD = diag(SA);
 idx = find(SAD<1e-7,1)-1;
 if isempty(idx)
    idx = m;
 end
 AATinv = U(:,1:idx)*diag((1./SAD(1:idx).^2))*U(:,1:idx)';
+toc
+
 s = sparse(Nx*Nx,1);
+disp('start Certify Optimality...')
 while 1
     yk = AATinv*((c-s)'*At+b'*fval)';
     s = c - (yk'*A)';
