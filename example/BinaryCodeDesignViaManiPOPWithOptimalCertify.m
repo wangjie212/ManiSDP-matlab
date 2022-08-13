@@ -8,9 +8,8 @@ close all;
 %% Generate binary quadratic program
 d  = 4; % BQP with d variables
 x  = msspoly('x',d); % symbolic decision variables using SPOTLESS
-f  = (x(1)*x(2) + x(2)*x(3) + x(3)*x(4))^2 + (x(1)*x(3) + x(2)*x(4))^2 +0.0001*x(1)+0.0005*x(2)-0.0002*x(3);
+f  = (x(1)*x(2) + x(2)*x(3) + x(3)*x(4))^2 + (x(1)*x(3) + x(2)*x(4))^2 +0.0001*x(1)+0.0005*x(2)-0.0002*x(3); % objective function of the BQP
 %f = (x(1)*x(2) + x(2)*x(3) + x(3)*x(4))^2 + (x(1)*x(3) + x(2)*x(4))^2 ;
-% objective function of the BQP
 h  = x.^2 - 1; % equality constraints of the BQP (binary variables)
 
 %% Relax BQP into an SDP
@@ -29,10 +28,8 @@ K = SDP.sedumi.K;
 Nx = K.s;
 p = 2;
 C = reshape(c, Nx, Nx);
-
 A = At';
 m = length(b);
-
 options.maxtime = inf;
 
 tic
