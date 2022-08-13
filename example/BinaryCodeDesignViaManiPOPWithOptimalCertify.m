@@ -40,7 +40,7 @@ tic
 X = Y*Y';
 tmanipop = toc;
 
-%% 最优性证明，如gap为0， S1为半正定, trace(X*S1)为0
+%% 最优性证明，如gap为0， S为半正定, trace(X*S)为0
 disp('start inv AAT ...')
 tic
 [U,SA] = svds([A b], m); % FIXED ME to Speed up
