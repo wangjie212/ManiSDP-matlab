@@ -4,7 +4,7 @@ close all;
 pgdpath   = '../../STRIDE';
 addpath(genpath(pgdpath));
 %% Generate random binary quadratic program
-d       = 10; % BQP with d variables
+d       = 20; % BQP with d variables
 x       = msspoly('x',d); % symbolic decision variables using SPOTLESS
 Q       = rand(d); Q = (Q + Q')/2; % a random symmetric matrix
 % e       = rand(d,1);
@@ -22,9 +22,9 @@ kappa                   = 2; % relaxation order
 [SDP,info]              = dense_sdp_relax(problem,kappa);
 SDP.M       = length(info.v); % upper bound on the trace of the moment matrix
 % need the following for fast computation in the local search method
-% info.v      = msspoly2degcoeff(info.v);
-% info.f      = msspoly2degcoeff(info.f);
-% info.J      = msspoly2degcoeff(info.J);
+info.v      = msspoly2degcoeff(info.v);
+info.f      = msspoly2degcoeff(info.f);
+info.J      = msspoly2degcoeff(info.J);
 At = SDP.sedumi.At;
 b = SDP.sedumi.b;
 c = SDP.sedumi.c;
@@ -53,21 +53,21 @@ M1 = sparse(1:size(sB1,2),1:size(sB1,2),ones(size(sB1,2),1)) - sB1'*iA*sB1;
 M2 = sB1'*iA;
 
 %% Solve using STRIDE
-% sdpnalpath  = '../../SDPNAL+v1.0';
-% pgdopts.pgdStepSize     = 10;
-% pgdopts.SDPNALpath      = sdpnalpath;
-% pgdopts.tolADMM         = 10e-5;
-% pgdopts.phase1          = 1;
-% pgdopts.rrOpt           = 1:3;
-% pgdopts.rrFunName       = 'local_search_bqp'; % see solvers/local_search_bqp.m for implementation of local search
-% pgdopts.rrPar           = info; % need the original POP formulation for local search
-% pgdopts.maxiterLBFGS    = 1000;
-% pgdopts.maxiterSGS      = 300;
-% pgdopts.tolLBFGS        = 1e-12;
-% pgdopts.tolPGD          = 1e-8;
-% 
-% [outPGD,sXopt,syopt,sSopt]     = PGDSDP(SDP.blk, SDP.At, SDP.b, SDP.C, [], pgdopts);
-% time_pgd                    = outPGD.totaltime;
+sdpnalpath  = '../../SDPNAL+v1.0';
+pgdopts.pgdStepSize     = 10;
+pgdopts.SDPNALpath      = sdpnalpath;
+pgdopts.tolADMM         = 10e-5;
+pgdopts.phase1          = 1;
+pgdopts.rrOpt           = 1:3;
+pgdopts.rrFunName       = 'local_search_bqp'; % see solvers/local_search_bqp.m for implementation of local search
+pgdopts.rrPar           = info; % need the original POP formulation for local search
+pgdopts.maxiterLBFGS    = 1000;
+pgdopts.maxiterSGS      = 300;
+pgdopts.tolLBFGS        = 1e-12;
+pgdopts.tolPGD          = 1e-8;
+
+[outPGD,sXopt,syopt,sSopt]     = PGDSDP(SDP.blk, SDP.At, SDP.b, SDP.C, [], pgdopts);
+time_pgd                    = outPGD.totaltime;
 % round solutions and check optimality certificate
 % res = get_performance_bqp(Xopt,yopt,Sopt,SDP,info,pgdpath);
 
@@ -86,11 +86,6 @@ A = At';
 C = reshape(c, Nx, Nx);
 options.maxtime = inf;
 flag = 0;
-
-% tic
-% [Y, fval, info, gammas] = SDP_AdptvALM_subprogForTestOptimal(A, At, b, C, c, Nx, m, p, options);
-% X = Y*Y';
-% tmanipop = toc;
 
 while flag == 0
 tic
@@ -132,10 +127,10 @@ tmanipop = toc;
 
 % disp(['Mosek: ' num2str(tmosek) 's'])
 disp(['ManiPOP: ' num2str(tmanipop) 's'])
-%disp(['Stride: ' num2str(time_pgd) 's'])
+disp(['Stride: ' num2str(time_pgd) 's'])
 % disp(['Mosek: ' num2str(obj(1))])
 disp(['ManiPOP: ' num2str(fval)])
-%disp(['Stride: ' num2str(outPGD.pobj)])
+disp(['Stride: ' num2str(outPGD.pobj)])
 
 % [V,D] = eig(X);
 % temp = zeros(length(sA), mb-1);
@@ -166,11 +161,12 @@ sol = zeros(vmb+size(sB,2), 1);
 % psd = rand(mb); 
 % psd = (psd + psd')/2;
 % sol = [Mat2Vec(psd); rand(size(sB,2),1)];
-sb(1) = sb(1)- fval;
-ssb = M2*sb;
+ssb = sb;
+ssb(1) = ssb(1) - fval;
+ssb = M2*ssb;
 gap = 1;
 i = 1;
-while gap > 1e-4 && i <= 300
+while gap > 1e-4 && i <= 1000
     [V,D] = eig(psd);
     psd = V*diag(max(0,diag(D)))*V';
     psol = sol;
@@ -179,7 +175,7 @@ while gap > 1e-4 && i <= 300
     lsol = M1*lsol + ssb;
     sol = sol + 1*(lsol - psol);
     psd = Vec2Mat(sol(1:vmb), mb);
-    minEig = eigs(Vec2Mat(lsol(1:vmb), mb), 1, 'SR');
+    minEig = min(eig(Vec2Mat(lsol(1:vmb), mb)));
     gap = - minEig*mb/abs(fval);
     % error = norm(psol - lsol);
     % disp(['step ' num2str(i) '  error:' num2str(error) ', minEig:' num2str(minEig) ', gap:' num2str(gap)]);
@@ -192,7 +188,8 @@ if gap <= 1e-4
     flag = 1;
     disp(['Global optimality certified!']);
 else
-    p = p + 1;
+    disp(['Global optimality not certified, use another initial point.']);
+%     p = p + 1;
 end
 end
 
@@ -215,8 +212,8 @@ end
 % clean(v{1}'*sQ{1}*v{1} + vx'*value(c1)*yh(1) + vx'*value(c2)*yh(2) + value(lower) - p,1e-6)
 
 %% helper functions
-% function s = msspoly2degcoeff(f)
-% [~,degmat,coeff,~] = decomp(f);
-% s.degmat = degmat';
-% s.coefficient = coeff;
-% end
+function s = msspoly2degcoeff(f)
+[~,degmat,coeff,~] = decomp(f);
+s.degmat = degmat';
+s.coefficient = coeff;
+end
