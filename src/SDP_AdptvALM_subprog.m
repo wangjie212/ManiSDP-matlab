@@ -6,13 +6,13 @@ function  [xfinal, fval, info] = SDP_AdptvALM_subprog(A, At, b, C, c, n, m, p, o
     localdefaults.bound = 20;
     localdefaults.tau = 0.8;
     localdefaults.thetarho = 0.3;
-    localdefaults.maxOuterIter = 300;
-    localdefaults.numOuterItertgn = 30;
+    localdefaults.maxOuterIter = 200;
+    localdefaults.numOuterItertgn = 20;
     
     %Inner Loop Setting
     localdefaults.maxInnerIter = 200;
     localdefaults.startingtolgradnorm = 1e-3;
-    localdefaults.endingtolgradnorm = 1e-6;
+    localdefaults.endingtolgradnorm = 1e-4;
     
     if ~exist('options', 'var') || isempty(options)
         options = struct();
@@ -31,10 +31,10 @@ function  [xfinal, fval, info] = SDP_AdptvALM_subprog(A, At, b, C, c, n, m, p, o
     xPrev = xCur; 
 
     totaltime = tic();    
-    for OuterIter = 1 : options.maxOuterIter
+    for OuterIter = 1:options.maxOuterIter
         % M = elliptopefactory(n, p);
-        M = obliquefactoryNTrans(p, n, true);
-        % M = obliquefactory(n, p, true);
+        % M = obliquefactoryNTrans(n, p);
+        M = obliquefactory(p, n, true);
         problem.M = M;
         problem.cost = @cost;        
         % Define the Riemannian gradient.
@@ -63,7 +63,7 @@ function  [xfinal, fval, info] = SDP_AdptvALM_subprog(A, At, b, C, c, n, m, p, o
         oldacc = newacc;
         tolgradnorm = max(options.endingtolgradnorm, tolgradnorm * thetatolgradnorm); 
        
-        fprintf('Iteration: %d ,fval: %.16e, tolgradnorm: %.16e\n', OuterIter, fval, tolgradnorm);
+        fprintf('Iter %d: fval = %.16e, tolgradnorm = %.16e\n', OuterIter, fval, tolgradnorm);
         %if norm(xPrev-xCur, 'fro') < options.minstepsize && tolgradnorm <= options.endingtolgradnorm
         if tolgradnorm <= options.endingtolgradnorm
             break;

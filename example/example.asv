@@ -89,7 +89,7 @@ flag = 0;
 
 while flag == 0
 tic
-[Y, fval, info] = SDP_AdptvALM_subprog(A, At, b, C, c, Nx, m, p, options);
+[Y, fval, info] = SDP_AdptvALM_obliqueNT_subprog(A, At, b, C, c, Nx, m, p, options);
 % X = Y'*Y;
 tmanipop = toc;
 

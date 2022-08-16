@@ -40,10 +40,10 @@ function  [Y, fval, info] = SDP_ALM_subprog(A, At, b, C, c, n, p, sigma, yk, Y0)
 
     % Call your favorite solver.
     opts = struct();
-    opts.verbosity = 2;      % Set to 0 for no output, 2 for normal output
+    opts.verbosity = 0;      % Set to 0 for no output, 2 for normal output
     opts.maxinner = 30;     % maximum Hessian calls per iteration
-    opts.tolgradnorm = 5e-3; % tolerance on gradient norm
-    opts.maxiter = 100;
+    opts.tolgradnorm = 1e-3; % tolerance on gradient norm
+    opts.maxiter = 50;
     [Y, fval, info] = trustregions(problem, Y0, opts);
 
 end
