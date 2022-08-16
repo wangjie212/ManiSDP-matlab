@@ -87,50 +87,51 @@ C = reshape(c, Nx, Nx);
 options.maxtime = inf;
 flag = 0;
 
+tic 
 while flag == 0
-tic
-[Y, fval, info] = SDP_AdptvALM_subprog(A, At, b, C, c, Nx, m, p, options);
-% X = Y'*Y;
-tmanipop = toc;
-
+% tic
+% [Y, fval, info] = SDP_AdptvALM_subprog(A, At, b, C, c, Nx, m, p, options);
+% % X = Y'*Y;
+% tmanipop = toc;
+% 
 %% Solve using fmincon
 % fobj = @(y) y'*Q*y + e'*y;
 % [px,cv] = fmincon(fobj,zeros(d,1),[],[],[],[],[],[],@binary)
 
 %% ALM方法参数设置
-% sigma = 1e-3;
-% gama = 13;
-% % Y = full(msubs(basis, x, px));
-% Y = [];
-% % Y = [Y zeros(size(Y,1),1)];
-% yk = zeros(m,1);
+sigma = 1e-3;
+gama = 13;
+% Y = full(msubs(basis, x, px));
+Y = [];
+% Y = [Y zeros(size(Y,1),1)];
+yk = zeros(m,1);
 
 %% 迭代循环
 % tic
-% MaxIter = 20;
-% for iter = 1:MaxIter
-%     [Y, fval, info] = SDP_ALM_subprog(A, At, b, C, c, Nx, p, sigma, yk, Y);
-%     X = Y*Y';
-%     z = X(:);
-%     cx = z'*c;
-%     Axb = (z'*At)' - b;
-%     if norm(Axb) < 1e-4
-%         break;
-%     else
-%         disp(['Iter ' num2str(iter) ': fval = ' num2str(cx,10)]);
-%         yk = yk + 2*Axb*sigma;
-%         sigma = min(sigma*gama, 1e4);
-%     end
-% end
-% fval = cx;
+MaxIter = 20;
+for iter = 1:MaxIter
+    [Y, fval, info] = SDP_ALM_subprog(A, At, b, C, c, Nx, p, sigma, yk, Y);
+    X = Y*Y';
+    z = X(:);
+    cx = z'*c;
+    Axb = (z'*At)' - b;
+    if norm(Axb) < 1e-4
+        break;
+    else
+        % disp(['Iter ' num2str(iter) ': fval = ' num2str(cx,10)]);
+        yk = yk + 2*Axb*sigma;
+        sigma = min(sigma*gama, 1e4);
+    end
+end
+fval = cx;
 % tmanipop = toc;
 
 % disp(['Mosek: ' num2str(tmosek) 's'])
-disp(['ManiPOP: ' num2str(tmanipop) 's'])
-disp(['Stride: ' num2str(time_pgd) 's'])
+% disp(['ManiPOP: ' num2str(tmanipop) 's'])
+% disp(['Stride: ' num2str(time_pgd) 's'])
 % disp(['Mosek: ' num2str(obj(1))])
-disp(['ManiPOP: ' num2str(fval)])
-disp(['Stride: ' num2str(outPGD.pobj)])
+% disp(['ManiPOP: ' num2str(fval)])
+% disp(['Stride: ' num2str(outPGD.pobj)])
 
 % [V,D] = eig(X);
 % temp = zeros(length(sA), mb-1);
@@ -153,7 +154,7 @@ disp(['Stride: ' num2str(outPGD.pobj)])
 %     disp(['step ' num2str(i) '  error:' num2str(error) ', minEig:' num2str(minEig)]);
 % end
 
-tic
+% tic
 % psd = V*diag([sol(1:mb-1);0])*V';
 % sol = [Mat2Vec(psd); sol(mb:end)];
 psd = zeros(mb, mb);
@@ -182,16 +183,24 @@ while gap > 1e-2 && i <= 200
     % disp(['Step ' num2str(i) ': gap <= ' num2str(gap)]);
     i = i + 1;
 end
-tcert = toc;
-disp(['Certify global optimality: ' num2str(tcert) 's']);
+% tcert = toc;
+% disp(['Certify global optimality: ' num2str(tcert) 's']);
 if gap <= 1e-2
     flag = 1;
-    disp(['Global optimality certified!']);
-else
-    disp(['Global optimality not certified, use another initial point.']);
+%    disp(['Global optimality certified!']);
+% else
+%    disp(['Global optimality not certified, use another initial point.']);
 %     p = p + 1;
 end
 end
+tmanipop = toc;
+% disp(['Mosek: ' num2str(tmosek) 's'])
+disp(['ManiPOP: ' num2str(tmanipop) 's'])
+disp(['Stride: ' num2str(time_pgd) 's'])
+% disp(['Mosek: ' num2str(obj(1))])
+disp(['ManiPOP: ' num2str(fval)])
+disp(['Stride: ' num2str(outPGD.pobj)])
+
 
 %% Yalmip
 % yx = sdpvar(d,1);

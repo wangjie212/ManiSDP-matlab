@@ -88,42 +88,44 @@ options.maxtime = inf;
 flag = 0;
 
 while flag == 0
-tic
-[Y, fval, info] = SDP_AdptvALM_obliqueNT_subprog(A, At, b, C, c, Nx, m, p, options);
-% X = Y'*Y;
-tmanipop = toc;
-
+% tic
+% [Y, fval, info] = SDP_AdptvALM_subprog(A, At, b, C, c, Nx, m, p, options);
+% % X = Y'*Y;
+% tmanipop = toc;
+% 
 %% Solve using fmincon
 % fobj = @(y) y'*Q*y + e'*y;
 % [px,cv] = fmincon(fobj,zeros(d,1),[],[],[],[],[],[],@binary)
 
 %% ALM方法参数设置
-% sigma = 1e-3;
-% gama = 13;
-% % Y = full(msubs(basis, x, px));
-% Y = [];
-% % Y = [Y zeros(size(Y,1),1)];
-% yk = zeros(m,1);
+sigma = 1e-3;
+gama = 13;
+% Y = full(msubs(basis, x, px));
+Y = [];
+% Y = [Y zeros(size(Y,1),1)];
+yk = zeros(m,1);
+Y = 0.1*randn(mb, p);
+yk = 0.randn(m, 1);
 
 %% 迭代循环
-% tic
-% MaxIter = 20;
-% for iter = 1:MaxIter
-%     [Y, fval, info] = SDP_ALM_subprog(A, At, b, C, c, Nx, p, sigma, yk, Y);
-%     X = Y*Y';
-%     z = X(:);
-%     cx = z'*c;
-%     Axb = (z'*At)' - b;
-%     if norm(Axb) < 1e-4
-%         break;
-%     else
-%         disp(['Iter ' num2str(iter) ': fval = ' num2str(cx,10)]);
-%         yk = yk + 2*Axb*sigma;
-%         sigma = min(sigma*gama, 1e4);
-%     end
-% end
-% fval = cx;
-% tmanipop = toc;
+tic
+MaxIter = 20;
+for iter = 1:MaxIter
+    [Y, fval, info] = SDP_ALM_subprog(A, At, b, C, c, Nx, p, sigma, yk, Y);
+    X = Y*Y';
+    z = X(:);
+    cx = z'*c;
+    Axb = (z'*At)' - b;
+    if norm(Axb) < 1e-4
+        break;
+    else
+        disp(['Iter ' num2str(iter) ': fval = ' num2str(cx,10)]);
+        yk = yk + 2*Axb*sigma;
+        sigma = min(sigma*gama, 1e4);
+    end
+end
+fval = cx;
+tmanipop = toc;
 
 % disp(['Mosek: ' num2str(tmosek) 's'])
 disp(['ManiPOP: ' num2str(tmanipop) 's'])
