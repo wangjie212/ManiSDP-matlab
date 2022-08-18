@@ -2,25 +2,20 @@
 % B: correspond to the h equality constraints
 
 function [A, B, b] = SOStoSDP(f, h, x, d)
-pop = [f, h];
+pop = [f; h];
 n = length(x);
 m = length(h);
 coe = cell(1, m+1);
 supp = cell(1, m+1);
 lt = zeros(1, m+1);
 dg = zeros(1, m);
+[~, fsupp, fcoe] = decomp(pop);
 for k = 1:m+1
-    [ck, terms] = coeffs(pop(k), x);
-    lt(k) = length(terms);
-    supp{k} = zeros(n, lt(k));
-    coe{k} = double(ck);
+    [~, loc, coe{k}] = find(fcoe(k,:));
+    lt(k) = length(loc);
+    supp{k} = fsupp(loc,:)';
     if k > 1
-        dg(k-1) = polynomialDegree(pop(k));
-    end
-    for i = 1:lt(k)
-        for j = 1:n
-            supp{k}(j, i) = polynomialDegree(terms(i), x(j));
-        end
+        dg(k-1) = deg(pop(k), x);
     end
 end
 

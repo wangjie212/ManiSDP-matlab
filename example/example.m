@@ -4,7 +4,7 @@ close all;
 pgdpath   = '../../STRIDE';
 addpath(genpath(pgdpath));
 %% Generate random binary quadratic program
-d       = 20; % BQP with d variables
+d       = 40; % BQP with d variables
 x       = msspoly('x',d); % symbolic decision variables using SPOTLESS
 Q       = rand(d); Q = (Q + Q')/2; % a random symmetric matrix
 % e       = rand(d,1);
@@ -18,7 +18,6 @@ problem.objective       = f;
 problem.equality        = h; 
 problem.inequality      = g;
 kappa                   = 2; % relaxation order
-% basis = [1;x;monomials(x,2:kappa)];
 [SDP,info]              = dense_sdp_relax(problem,kappa);
 SDP.M       = length(info.v); % upper bound on the trace of the moment matrix
 % need the following for fast computation in the local search method
@@ -32,10 +31,7 @@ K = SDP.sedumi.K;
 Nx = K.s;
 
 %% Generate SOS data
-sx = sym('x', [1 d]);
-sf       = sx*Q*sx.';
-sh = sx.^2 - 1;
-[sA, sB, sb] = SOStoSDP(sf, sh, sx, kappa);
+[sA, sB, sb] = SOStoSDP(f, h, x, kappa);
 mb = size(sA{1},1);
 vmb = mb*(mb+1)/2;
 ssA = sparse(length(sA),vmb);
@@ -56,7 +52,7 @@ M2 = sB1'*iA;
 sdpnalpath  = '../../SDPNAL+v1.0';
 pgdopts.pgdStepSize     = 10;
 pgdopts.SDPNALpath      = sdpnalpath;
-pgdopts.tolADMM         = 10e-5;
+pgdopts.tolADMM         = 1e-4;
 pgdopts.phase1          = 1;
 pgdopts.rrOpt           = 1:3;
 pgdopts.rrFunName       = 'local_search_bqp'; % see solvers/local_search_bqp.m for implementation of local search
@@ -65,6 +61,13 @@ pgdopts.maxiterLBFGS    = 1000;
 pgdopts.maxiterSGS      = 300;
 pgdopts.tolLBFGS        = 1e-12;
 pgdopts.tolPGD          = 1e-8;
+% pgdopts.rrPar.At = At;
+% pgdopts.rrPar.b = b;
+% pgdopts.rrPar.d = d;
+% pgdopts.rrPar.c = c;
+% pgdopts.rrPar.x = x;
+% pgdopts.rrPar.Nx = Nx;
+% pgdopts.rrPar.v = info.v;
 
 [outPGD,sXopt,syopt,sSopt]     = PGDSDP(SDP.blk, SDP.At, SDP.b, SDP.C, [], pgdopts);
 time_pgd                    = outPGD.totaltime;
@@ -93,7 +96,7 @@ while flag == 0
 % [Y, fval, info] = SDP_AdptvALM_subprog(A, At, b, C, c, Nx, m, p, options);
 % % X = Y'*Y;
 % tmanipop = toc;
-% 
+ 
 %% Solve using fmincon
 % fobj = @(y) y'*Q*y + e'*y;
 % [px,cv] = fmincon(fobj,zeros(d,1),[],[],[],[],[],[],@binary)
@@ -126,10 +129,10 @@ end
 fval = cx;
 % tmanipop = toc;
 
-% disp(['Mosek: ' num2str(tmosek) 's'])
+% % disp(['Mosek: ' num2str(tmosek) 's'])
 % disp(['ManiPOP: ' num2str(tmanipop) 's'])
 % disp(['Stride: ' num2str(time_pgd) 's'])
-% disp(['Mosek: ' num2str(obj(1))])
+% % disp(['Mosek: ' num2str(obj(1))])
 % disp(['ManiPOP: ' num2str(fval)])
 % disp(['Stride: ' num2str(outPGD.pobj)])
 
@@ -167,7 +170,7 @@ ssb(1) = ssb(1) - fval;
 ssb = M2*ssb;
 gap = 1;
 i = 1;
-while gap > 1e-2 && i <= 200
+while gap > 1e-2 && i <= 300
     [V,D] = eig(psd);
     psd = V*diag(max(0,diag(D)))*V';
     psol = sol;
@@ -180,7 +183,7 @@ while gap > 1e-2 && i <= 200
     gap = - minEig*mb/abs(fval);
     % error = norm(psol - lsol);
     % disp(['Step ' num2str(i) ': error = ' num2str(error) ', gap <= ' num2str(gap)]);
-    % disp(['Step ' num2str(i) ': gap <= ' num2str(gap)]);
+    disp(['Step ' num2str(i) ': gap <= ' num2str(gap)]);
     i = i + 1;
 end
 % tcert = toc;
