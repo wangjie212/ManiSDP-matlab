@@ -1,7 +1,6 @@
-% A: correspond to the PSD constraint
-% B: correspond to the h equality constraints
+% sdpt format data
 
-function [A, dA, B, b] = SOStoSDP(f, h, x, d)
+function [blk, At, C, b] = SOStoSDP_C(f, h, x, d)
 pop = [f; h];
 n = length(x);
 m = length(h);
@@ -27,41 +26,44 @@ for k = 1:m
     hbasis{k} = get_basis(n, 2*d-dg(k));
     hlb(k) = size(hbasis{k}, 2);
 end
-
 sp = get_basis(n, 2*d);
 lsp = size(sp, 2);
+
 b = sparse(lsp, 1);
 for i = 1:lt(1)
     locb = bfind(sp, lsp, supp{1}(:,i), n);
     b(locb) = coe{1}(i);
 end
-A = sparse(lsp, flb*(flb+1)/2);
-dA = zeros(lsp, 1);
-loc = 0;
+At{1,1} = sparse(flb*(flb+1)/2, lsp);
 for i = 1:flb
     for j = i:flb
         bi = fbasis(:,i) + fbasis(:,j);
         locb = bfind(sp, lsp, bi, n);
         if i == j
-            A(locb, loc+1) = 1;
-            dA(locb) = dA(locb) + 1;
+            At{1,1}(j*(j+1)/2, locb) = 1;
         else
-            A(locb, loc+j-i+1) = sqrt(2);
-            dA(locb) = dA(locb) + 2;
+            At{1,1}(i+j*(j-1)/2, locb) = sqrt(2);
         end
     end
-    loc = loc + flb - i + 1;
 end
-B = sparse(lsp, sum(hlb));
+At{2,1} = sparse(sum(hlb)+1,lsp);
 loc = 0;
 for k = 1:m
     for i = 1:hlb(k)
         for j = 1:lt(k+1)
             bi = hbasis{k}(:,i) + supp{k+1}(:,j);
             locb = bfind(sp, lsp, bi, n);
-            B(locb,loc+i) = coe{k+1}(j);
+            At{2,1}(loc+i, locb) = coe{k+1}(j);
         end
     end
     loc = loc + hlb(k);
 end
+At{2,1}(end,1) = 1;
+blk{1,1} = 's';
+blk{1,2} = flb;
+blk{2,1} = 'u';
+blk{2,2} = size(At{2,1},1);
+C{1,1} = sparse(flb,flb);
+C{2,1} = sparse(size(At{2,1},1),1);
+C{2,1}(end) = -1;
 end

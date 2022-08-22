@@ -2,9 +2,10 @@ clc;
 clear; 
 close all; 
 pgdpath   = '../../STRIDE';
+sdpnalpath  = '../../SDPNAL+v1.0';
 addpath(genpath(pgdpath));
 %% Generate random binary quadratic program
-d       = 40; % BQP with d variables
+d       = 20; % BQP with d variables
 x       = msspoly('x',d); % symbolic decision variables using SPOTLESS
 Q       = rand(d); Q = (Q + Q')/2; % a random symmetric matrix
 % e       = rand(d,1);
@@ -19,11 +20,11 @@ problem.equality        = h;
 problem.inequality      = g;
 kappa                   = 2; % relaxation order
 [SDP,info]              = dense_sdp_relax(problem,kappa);
-SDP.M       = length(info.v); % upper bound on the trace of the moment matrix
+% SDP.M       = length(info.v); % upper bound on the trace of the moment matrix
 % need the following for fast computation in the local search method
-info.v      = msspoly2degcoeff(info.v);
-info.f      = msspoly2degcoeff(info.f);
-info.J      = msspoly2degcoeff(info.J);
+% info.v      = msspoly2degcoeff(info.v);
+% info.f      = msspoly2degcoeff(info.f);
+% info.J      = msspoly2degcoeff(info.J);
 At = SDP.sedumi.At;
 b = SDP.sedumi.b;
 c = SDP.sedumi.c;
@@ -31,36 +32,28 @@ K = SDP.sedumi.K;
 Nx = K.s;
 
 %% Generate SOS data
-[sA, sB, sb] = SOStoSDP(f, h, x, kappa);
-mb = size(sA{1},1);
-vmb = mb*(mb+1)/2;
-ssA = sparse(length(sA),vmb);
-for i = 1:length(sA)
-    ssA(i, :) = Mat2Vec(sA{i})';
-end
-sB1 = [ssA sB];
-dA = zeros(length(sA),1);
-for i = 1:length(sA)
-    dA(i) = 1/sum(ssA(i,:).^2);
-end
-iD = sparse(1:length(sA),1:length(sA),dA);
-iA = iD - iD*sB*(sparse(1:size(sB,2),1:size(sB,2),ones(size(sB,2),1))+sB'*iD*sB)^(-1)*sB'*iD;
-M1 = sparse(1:size(sB1,2),1:size(sB1,2),ones(size(sB1,2),1)) - sB1'*iA*sB1;
-M2 = sB1'*iA;
+% [sA, dA, sB, sb] = SOStoSDP(f, h, x, kappa);
+% dA = 1./dA;
+% vmb = Nx*(Nx+1)/2;
+% sB1 = [sA sB];
+% iD = sparse(1:length(dA),1:length(dA),dA);
+% iA = iD - iD*sB*(sparse(1:size(sB,2),1:size(sB,2),ones(size(sB,2),1))+sB'*iD*sB)^(-1)*sB'*iD;
+% M1 = sparse(1:size(sB1,2),1:size(sB1,2),ones(size(sB1,2),1)) - sB1'*iA*sB1;
+% M2 = sB1'*iA;
 
 %% Solve using STRIDE
-sdpnalpath  = '../../SDPNAL+v1.0';
-pgdopts.pgdStepSize     = 10;
-pgdopts.SDPNALpath      = sdpnalpath;
-pgdopts.tolADMM         = 1e-4;
-pgdopts.phase1          = 1;
-pgdopts.rrOpt           = 1:3;
-pgdopts.rrFunName       = 'local_search_bqp'; % see solvers/local_search_bqp.m for implementation of local search
-pgdopts.rrPar           = info; % need the original POP formulation for local search
-pgdopts.maxiterLBFGS    = 1000;
-pgdopts.maxiterSGS      = 300;
-pgdopts.tolLBFGS        = 1e-12;
-pgdopts.tolPGD          = 1e-8;
+% pgdopts.pgdStepSize     = 10;
+% pgdopts.SDPNALpath      = sdpnalpath;
+% pgdopts.tolADMM         = 1e-4;
+% pgdopts.phase1          = 1;
+% pgdopts.rrOpt           = 1:3;
+% pgdopts.rrFunName       = 'local_search_bqp'; % see solvers/local_search_bqp.m for implementation of local search
+% pgdopts.rrPar           = info; % need the original POP formulation for local search
+% pgdopts.maxiterLBFGS    = 1000;
+% pgdopts.maxiterSGS      = 300;
+% % pgdopts.tolLBFGS        = 1e-8;
+% pgdopts.tolPGD          = 1e-6;
+% pgdopts.rrFunName       = 'local_mani';
 % pgdopts.rrPar.At = At;
 % pgdopts.rrPar.b = b;
 % pgdopts.rrPar.d = d;
@@ -69,29 +62,27 @@ pgdopts.tolPGD          = 1e-8;
 % pgdopts.rrPar.Nx = Nx;
 % pgdopts.rrPar.v = info.v;
 
-[outPGD,sXopt,syopt,sSopt]     = PGDSDP(SDP.blk, SDP.At, SDP.b, SDP.C, [], pgdopts);
-time_pgd                    = outPGD.totaltime;
+% [outPGD,sXopt,syopt,sSopt]     = PGDSDP(SDP.blk, SDP.At, SDP.b, SDP.C, [], pgdopts);
+% time_pgd                    = outPGD.totaltime;
 % round solutions and check optimality certificate
 % res = get_performance_bqp(Xopt,yopt,Sopt,SDP,info,pgdpath);
 
 %% Solve using MOSEK
 % tic
-% prob       = convert_sedumi2mosek(At, b,c,K);
-% [~,res]    = mosekopt('minimize echo(0)',prob);
-% [Xopt,yopt,Sopt,obj] = recover_mosek_sol_blk(res,SDP.blk);
+% [cAt,cb,cc,cK] = SDPT3data_SEDUMIdata(SDP0.blk,SDP0.At,SDP0.C,SDP0.b); 
+% prob       = convert_sedumi2mosek(cAt, cb, cc, cK);
+% [~,res]    = mosekopt('minimize echo(3)',prob);
+% [Xopt,yopt,Sopt,obj] = recover_mosek_sol_blk(res, SDP.blk);
 % tmosek = toc;
 % figure; bar(eig(Xopt{1}));
 
 %% Solve using Manopt
-m = length(b);
-p = 2;
-A = At';
-C = reshape(c, Nx, Nx);
-options.maxtime = inf;
-flag = 0;
+% m = length(b);
+% p = 2;
+% A = At';
+% C = reshape(c, Nx, Nx);
+% options.maxtime = inf;
 
-tic 
-while flag == 0
 % tic
 % [Y, fval, info] = SDP_AdptvALM_subprog(A, At, b, C, c, Nx, m, p, options);
 % % X = Y'*Y;
@@ -101,33 +92,52 @@ while flag == 0
 % fobj = @(y) y'*Q*y + e'*y;
 % [px,cv] = fmincon(fobj,zeros(d,1),[],[],[],[],[],[],@binary)
 
-%% ALM方法参数设置
-sigma = 1e-3;
-gama = 13;
-% Y = full(msubs(basis, x, px));
-Y = [];
-% Y = [Y zeros(size(Y,1),1)];
-yk = zeros(m,1);
+addpath(genpath(sdpnalpath));
+[X, fval] = mani_admm(SDP, At, b, c, Nx);
+
+% [SDP0.blk, SDP0.At, SDP0.C, SDP0.b] = SOStoSDP_C(f, h, x, kappa);
+% [S, sfval] = manisos(SDP0, At, b, c, Nx);
+
+% flag = 0;
+% tic 
+% while flag == 0
+% %% ALM方法参数设置
+% sigma = 1e-3;
+% gama = 13;
+% % Y = full(msubs(basis, x, px));
+% Y = [];
+% % Y = [Y zeros(size(Y,1),1)];
+% yk = zeros(m,1);
+% 
+% [V,D] = eig(aX{1});
+% Y = [sqrt(D(end,end))*V(:,end) sqrt(D(end-1,end-1))*V(:,end-1)];
+% yk = ay;
 
 %% 迭代循环
+% MaxIter = 20;
+% for iter = 1:MaxIter
+%     [Y, fval, info] = SDP_ALM_subprog(A, At, b, C, c, Nx, p, sigma, yk, Y);
+%     X = Y*Y';
+%     z = X(:);
+%     cx = z'*c;
+%     Axb = (z'*At)' - b;
+%     if norm(Axb) < 1e-4
+%         break;
+%     else
+%         % disp(['Iter ' num2str(iter) ': fval = ' num2str(cx,10)]);
+%         yk = yk + 2*Axb*sigma;
+%         sigma = min(sigma*gama, 1e4);
+%     end
+% end
+% fval = cx;
+% disp(['ManiPOP: ' num2str(fval)])
+
+% Solve using ADMM+
+% options.tol = 1e-6;
 % tic
-MaxIter = 20;
-for iter = 1:MaxIter
-    [Y, fval, info] = SDP_ALM_subprog(A, At, b, C, c, Nx, p, sigma, yk, Y);
-    X = Y*Y';
-    z = X(:);
-    cx = z'*c;
-    Axb = (z'*At)' - b;
-    if norm(Axb) < 1e-4
-        break;
-    else
-        % disp(['Iter ' num2str(iter) ': fval = ' num2str(cx,10)]);
-        yk = yk + 2*Axb*sigma;
-        sigma = min(sigma*gama, 1e4);
-    end
-end
-fval = cx;
-% tmanipop = toc;
+% [obj,aX,~,ay,aS] = admmplus(SDP.blk, SDP.At, SDP.C, SDP.b, [], [], [], [], [], options, {X}, [], yk, aS);
+% % [obj,aX,~,ay,aS] = sdpnalplus(SDP.blk, SDP.At, SDP.C, SDP.b, [], [], [], [], [], options, []);
+% toc
 
 % % disp(['Mosek: ' num2str(tmosek) 's'])
 % disp(['ManiPOP: ' num2str(tmanipop) 's'])
@@ -157,52 +167,53 @@ fval = cx;
 %     disp(['step ' num2str(i) '  error:' num2str(error) ', minEig:' num2str(minEig)]);
 % end
 
-% tic
 % psd = V*diag([sol(1:mb-1);0])*V';
 % sol = [Mat2Vec(psd); sol(mb:end)];
-psd = zeros(mb, mb);
-sol = zeros(vmb+size(sB,2), 1);
+% psd = zeros(Nx, Nx);
+% sol = zeros(vmb+size(sB,2), 1);
+% psd = S{1};
+% sol = [Mat2Vec(psd); rand(size(sB,2),1)];
 % psd = rand(mb); 
 % psd = (psd + psd')/2;
 % sol = [Mat2Vec(psd); rand(size(sB,2),1)];
-ssb = sb;
-ssb(1) = ssb(1) - fval;
-ssb = M2*ssb;
-gap = 1;
-i = 1;
-while gap > 1e-2 && i <= 300
-    [V,D] = eig(psd);
-    psd = V*diag(max(0,diag(D)))*V';
-    psol = sol;
-    psol(1:vmb) = Mat2Vec(psd);
-    lsol = 2*psol - sol;
-    lsol = M1*lsol + ssb;
-    sol = sol + 1*(lsol - psol);
-    psd = Vec2Mat(sol(1:vmb), mb);
-    minEig = min(eig(Vec2Mat(lsol(1:vmb), mb)));
-    gap = - minEig*mb/abs(fval);
-    % error = norm(psol - lsol);
-    % disp(['Step ' num2str(i) ': error = ' num2str(error) ', gap <= ' num2str(gap)]);
-    disp(['Step ' num2str(i) ': gap <= ' num2str(gap)]);
-    i = i + 1;
-end
-% tcert = toc;
-% disp(['Certify global optimality: ' num2str(tcert) 's']);
-if gap <= 1e-2
-    flag = 1;
-%    disp(['Global optimality certified!']);
-% else
-%    disp(['Global optimality not certified, use another initial point.']);
-%     p = p + 1;
-end
-end
-tmanipop = toc;
-% disp(['Mosek: ' num2str(tmosek) 's'])
-disp(['ManiPOP: ' num2str(tmanipop) 's'])
-disp(['Stride: ' num2str(time_pgd) 's'])
-% disp(['Mosek: ' num2str(obj(1))])
-disp(['ManiPOP: ' num2str(fval)])
-disp(['Stride: ' num2str(outPGD.pobj)])
+% ssb = sb;
+% ssb(1) = ssb(1) - fval;
+% ssb = M2*ssb;
+% ogap = 0.2;
+% gap = 1;
+% i = 1;
+% j = 1;
+% while i <= 50 || (gap > 1e-3 && gap <= ogap/2)
+%     [V,D] = eig(psd);
+%     psd = V*diag(max(0,diag(D)))*V';
+%     psol = sol;
+%     psol(1:vmb) = Mat2Vec(psd);
+%     lsol = 2*psol - sol;
+%     lsol = M1*lsol + ssb;
+%     sol = sol + 1*(lsol - psol);
+%     psd = Vec2Mat(sol(1:vmb), Nx);
+%     minEig = min(eig(Vec2Mat(lsol(1:vmb), Nx)));
+%     gap = - minEig*Nx/abs(fval);
+%     % disp(['Step ' num2str(i) ': gap <= ' num2str(gap)]);
+%     i = i + 1;
+%     if i/100 > j
+%         ogap = ogap/2;
+%         j = j + 1;
+%     end
+% end
+% % disp(['Certify global optimality: ' num2str(tcert) 's']);
+% if gap <= 1e-3
+%     flag = 1;
+% %    disp(['Global optimality certified!']);
+% % else
+% %    disp(['Global optimality not certified, use another initial point.']);
+% %     p = p + 1;
+% end
+% end
+% tmanipop = toc;
+% disp(['Mosek: optimum = ' num2str(obj(1)) ', time = ' num2str(tmosek) 's'])
+% disp(['Stride: optimum = ' num2str(outPGD.pobj) ', time = ' num2str(time_pgd) 's'])
+% disp(['ManiPOP: optimum = ' num2str(fval) ', time = ' num2str(tmanipop) 's'])
 
 
 %% Yalmip
@@ -224,8 +235,8 @@ disp(['Stride: ' num2str(outPGD.pobj)])
 % clean(v{1}'*sQ{1}*v{1} + vx'*value(c1)*yh(1) + vx'*value(c2)*yh(2) + value(lower) - p,1e-6)
 
 %% helper functions
-function s = msspoly2degcoeff(f)
-[~,degmat,coeff,~] = decomp(f);
-s.degmat = degmat';
-s.coefficient = coeff;
-end
+% function s = msspoly2degcoeff(f)
+% [~,degmat,coeff,~] = decomp(f);
+% s.degmat = degmat';
+% s.coefficient = coeff;
+% end
