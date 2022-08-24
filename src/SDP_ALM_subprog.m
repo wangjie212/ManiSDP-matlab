@@ -1,4 +1,4 @@
-function  [Y, fval, info] = SDP_ALM_subprog(A, At, b, C, c, n, p, sigma, yk, Y0)
+function  [Y, fval, info] = SDP_ALM_subprog(At, b, C, c, n, p, sigma, y, Y0)
     % Pick the manifold of n-by-p matrices with unit norm rows.
     manifold = obliquefactory(p, n, true);
     % manifold = elliptopefactory(n, p);
@@ -11,9 +11,9 @@ function  [Y, fval, info] = SDP_ALM_subprog(A, At, b, C, c, n, p, sigma, yk, Y0)
         X = Y*Y';
         x = X(:);
         cx = x'*c;
-        Axb = (x'*At)' - b + yk/sigma;
+        Axb = At'*x - b + y/sigma;
         f = cx + sigma*(Axb'*Axb);
-        AxbA = Axb'*A;
+        AxbA = Axb'*At';
         yA = reshape(AxbA, n, n);
         S = C + 2 * sigma*yA;
         store.G = 2*S*Y;
@@ -33,9 +33,9 @@ function  [Y, fval, info] = SDP_ALM_subprog(A, At, b, C, c, n, p, sigma, yk, Y0)
         H = 2*S*Ydot;
         Xdot = Y*Ydot';
         xdot = Xdot(:);
-        AxbdotA = xdot'*At*A;
+        AxbdotA = xdot'*At*At';
         yAdot = reshape(AxbdotA, n, n);
-        H = H + 8 * sigma*(yAdot*Y);
+        H = H + 8*sigma*(yAdot*Y);
     end
 
     % Call your favorite solver.

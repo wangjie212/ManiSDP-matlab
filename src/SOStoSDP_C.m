@@ -1,6 +1,6 @@
 % sdpt format data
 
-function [blk, At, C, b] = SOStoSDP_C(f, h, x, d)
+function [blk, At, C, b, dA] = SOStoSDP_C(f, h, x, d)
 pop = [f; h];
 n = length(x);
 m = length(h);
@@ -35,14 +35,17 @@ for i = 1:lt(1)
     b(locb) = coe{1}(i);
 end
 At{1,1} = sparse(flb*(flb+1)/2, lsp);
+dA = zeros(lsp, 1);
 for i = 1:flb
     for j = i:flb
         bi = fbasis(:,i) + fbasis(:,j);
         locb = bfind(sp, lsp, bi, n);
         if i == j
             At{1,1}(j*(j+1)/2, locb) = 1;
+            dA(locb) = dA(locb) + 1;
         else
             At{1,1}(i+j*(j-1)/2, locb) = sqrt(2);
+            dA(locb) = dA(locb) + 2;
         end
     end
 end

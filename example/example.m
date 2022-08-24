@@ -5,7 +5,7 @@ pgdpath   = '../../STRIDE';
 sdpnalpath  = '../../SDPNAL+v1.0';
 addpath(genpath(pgdpath));
 %% Generate random binary quadratic program
-d       = 20; % BQP with d variables
+d       = 30; % BQP with d variables
 x       = msspoly('x',d); % symbolic decision variables using SPOTLESS
 Q       = rand(d); Q = (Q + Q')/2; % a random symmetric matrix
 % e       = rand(d,1);
@@ -20,21 +20,21 @@ problem.equality        = h;
 problem.inequality      = g;
 kappa                   = 2; % relaxation order
 [SDP,info]              = dense_sdp_relax(problem,kappa);
-% SDP.M       = length(info.v); % upper bound on the trace of the moment matrix
+SDP.M       = length(info.v); % upper bound on the trace of the moment matrix
 % need the following for fast computation in the local search method
-% info.v      = msspoly2degcoeff(info.v);
-% info.f      = msspoly2degcoeff(info.f);
-% info.J      = msspoly2degcoeff(info.J);
+info.v      = msspoly2degcoeff(info.v);
+info.f      = msspoly2degcoeff(info.f);
+info.J      = msspoly2degcoeff(info.J);
 At = SDP.sedumi.At;
 b = SDP.sedumi.b;
 c = SDP.sedumi.c;
 K = SDP.sedumi.K;
-Nx = K.s;
+mb = K.s;
 
 %% Generate SOS data
 % [sA, dA, sB, sb] = SOStoSDP(f, h, x, kappa);
 % dA = 1./dA;
-% vmb = Nx*(Nx+1)/2;
+% vmb = mb*(mb+1)/2;
 % sB1 = [sA sB];
 % iD = sparse(1:length(dA),1:length(dA),dA);
 % iA = iD - iD*sB*(sparse(1:size(sB,2),1:size(sB,2),ones(size(sB,2),1))+sB'*iD*sB)^(-1)*sB'*iD;
@@ -42,24 +42,24 @@ Nx = K.s;
 % M2 = sB1'*iA;
 
 %% Solve using STRIDE
-% pgdopts.pgdStepSize     = 10;
-% pgdopts.SDPNALpath      = sdpnalpath;
-% pgdopts.tolADMM         = 1e-4;
-% pgdopts.phase1          = 1;
-% pgdopts.rrOpt           = 1:3;
-% pgdopts.rrFunName       = 'local_search_bqp'; % see solvers/local_search_bqp.m for implementation of local search
-% pgdopts.rrPar           = info; % need the original POP formulation for local search
-% pgdopts.maxiterLBFGS    = 1000;
-% pgdopts.maxiterSGS      = 300;
-% % pgdopts.tolLBFGS        = 1e-8;
-% pgdopts.tolPGD          = 1e-6;
+pgdopts.pgdStepSize     = 10;
+pgdopts.SDPNALpath      = sdpnalpath;
+pgdopts.tolADMM         = 1e-4;
+pgdopts.phase1          = 1;
+pgdopts.rrOpt           = 1:3;
+pgdopts.rrFunName       = 'local_search_bqp'; % see solvers/local_search_bqp.m for implementation of local search
+pgdopts.rrPar           = info; % need the original POP formulation for local search
+pgdopts.maxiterLBFGS    = 1000;
+pgdopts.maxiterSGS      = 300;
+% pgdopts.tolLBFGS        = 1e-8;
+pgdopts.tolPGD          = 1e-6;
 % pgdopts.rrFunName       = 'local_mani';
 % pgdopts.rrPar.At = At;
 % pgdopts.rrPar.b = b;
 % pgdopts.rrPar.d = d;
 % pgdopts.rrPar.c = c;
 % pgdopts.rrPar.x = x;
-% pgdopts.rrPar.Nx = Nx;
+% pgdopts.rrPar.mb = mb;
 % pgdopts.rrPar.v = info.v;
 
 % [outPGD,sXopt,syopt,sSopt]     = PGDSDP(SDP.blk, SDP.At, SDP.b, SDP.C, [], pgdopts);
@@ -68,10 +68,10 @@ Nx = K.s;
 % res = get_performance_bqp(Xopt,yopt,Sopt,SDP,info,pgdpath);
 
 %% Solve using MOSEK
-% tic
 % [cAt,cb,cc,cK] = SDPT3data_SEDUMIdata(SDP0.blk,SDP0.At,SDP0.C,SDP0.b); 
-% prob       = convert_sedumi2mosek(cAt, cb, cc, cK);
-% [~,res]    = mosekopt('minimize echo(3)',prob);
+% prob       = convert_sedumi2mosek(At, b, c, K);
+% tic
+% [~,res]    = mosekopt('minimize echo(0)',prob);
 % [Xopt,yopt,Sopt,obj] = recover_mosek_sol_blk(res, SDP.blk);
 % tmosek = toc;
 % figure; bar(eig(Xopt{1}));
@@ -80,11 +80,11 @@ Nx = K.s;
 % m = length(b);
 % p = 2;
 % A = At';
-% C = reshape(c, Nx, Nx);
+% C = reshape(c, mb, mb);
 % options.maxtime = inf;
 
 % tic
-% [Y, fval, info] = SDP_AdptvALM_subprog(A, At, b, C, c, Nx, m, p, options);
+% [Y, fval, info] = SDP_AdptvALM_subprog(A, At, b, C, c, mb, m, p, options);
 % % X = Y'*Y;
 % tmanipop = toc;
  
@@ -93,10 +93,13 @@ Nx = K.s;
 % [px,cv] = fmincon(fobj,zeros(d,1),[],[],[],[],[],[],@binary)
 
 addpath(genpath(sdpnalpath));
-[X, fval] = mani_admm(SDP, At, b, c, Nx);
+[X, fval] = mani_admm(SDP, At, b, c, mb);
 
-% [SDP0.blk, SDP0.At, SDP0.C, SDP0.b] = SOStoSDP_C(f, h, x, kappa);
-% [S, sfval] = manisos(SDP0, At, b, c, Nx);
+% [SDP0.blk, SDP0.At, SDP0.C, SDP0.b, SDP0.dA] = SOStoSDP_C(f, h, x, kappa);
+% tic
+% [X, y, S] = spadmm(SDP0.blk, SDP0.At, SDP0.C, SDP0.b, SDP0.dA);
+% toc
+% [S, sfval] = manisos(SDP0, At, b, c, mb);
 
 % flag = 0;
 % tic 
@@ -116,7 +119,7 @@ addpath(genpath(sdpnalpath));
 %% 迭代循环
 % MaxIter = 20;
 % for iter = 1:MaxIter
-%     [Y, fval, info] = SDP_ALM_subprog(A, At, b, C, c, Nx, p, sigma, yk, Y);
+%     [Y, fval, info] = SDP_ALM_subprog(A, At, b, C, c, mb, p, sigma, yk, Y);
 %     X = Y*Y';
 %     z = X(:);
 %     cx = z'*c;
@@ -135,8 +138,8 @@ addpath(genpath(sdpnalpath));
 % Solve using ADMM+
 % options.tol = 1e-6;
 % tic
-% [obj,aX,~,ay,aS] = admmplus(SDP.blk, SDP.At, SDP.C, SDP.b, [], [], [], [], [], options, {X}, [], yk, aS);
-% % [obj,aX,~,ay,aS] = sdpnalplus(SDP.blk, SDP.At, SDP.C, SDP.b, [], [], [], [], [], options, []);
+% [obj,aX,~,ay,aS] = admmplus(SDP0.blk, SDP0.At, SDP0.C, SDP0.b, [], [], [], [], [], options);
+% % [obj,aX,~,ay,aS] = sdpnalplus(SDP.blk, SDP.At, SDP.C, SDP.b, [], [], [], [], [], options);
 % toc
 
 % % disp(['Mosek: ' num2str(tmosek) 's'])
@@ -169,7 +172,7 @@ addpath(genpath(sdpnalpath));
 
 % psd = V*diag([sol(1:mb-1);0])*V';
 % sol = [Mat2Vec(psd); sol(mb:end)];
-% psd = zeros(Nx, Nx);
+% psd = zeros(mb, mb);
 % sol = zeros(vmb+size(sB,2), 1);
 % psd = S{1};
 % sol = [Mat2Vec(psd); rand(size(sB,2),1)];
@@ -191,9 +194,9 @@ addpath(genpath(sdpnalpath));
 %     lsol = 2*psol - sol;
 %     lsol = M1*lsol + ssb;
 %     sol = sol + 1*(lsol - psol);
-%     psd = Vec2Mat(sol(1:vmb), Nx);
-%     minEig = min(eig(Vec2Mat(lsol(1:vmb), Nx)));
-%     gap = - minEig*Nx/abs(fval);
+%     psd = Vec2Mat(sol(1:vmb), mb);
+%     minEig = min(eig(Vec2Mat(lsol(1:vmb), mb)));
+%     gap = - minEig*mb/abs(fval);
 %     % disp(['Step ' num2str(i) ': gap <= ' num2str(gap)]);
 %     i = i + 1;
 %     if i/100 > j
@@ -235,8 +238,8 @@ addpath(genpath(sdpnalpath));
 % clean(v{1}'*sQ{1}*v{1} + vx'*value(c1)*yh(1) + vx'*value(c2)*yh(2) + value(lower) - p,1e-6)
 
 %% helper functions
-% function s = msspoly2degcoeff(f)
-% [~,degmat,coeff,~] = decomp(f);
-% s.degmat = degmat';
-% s.coefficient = coeff;
-% end
+function s = msspoly2degcoeff(f)
+[~,degmat,coeff,~] = decomp(f);
+s.degmat = degmat';
+s.coefficient = coeff;
+end
