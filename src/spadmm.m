@@ -17,8 +17,8 @@ while i <= maxiter && error >= 0.1
     temp = 1/sigma*X + S - C;
     y = iA*(1/sigma*b - A'*temp);
     temp = X + sigma*(A*y - C);
-    [V,D] = eig(vectomat(temp(1:vmb), mb));
-    psd = V*diag(max(0,diag(D)))*V';
+    [V,D] = eig(vectomat(temp(1:vmb), mb), 'vector');
+    psd = V*diag(max(0,D))*V';
 %     [V,D,~] = poseig(vectomat(temp(1:vmb), mb));
 %     psd = sparse(mb,mb);
 %     for j = 1:length(find(D))
@@ -33,7 +33,7 @@ while i <= maxiter && error >= 0.1
     if mod(i, 100) == 0
         cx = - C'*X;
         error = max(norm(X'*S), norm(S+A*y-C));
-        disp(['Iter ' num2str(i) ': fval = ' num2str(cx,10) ', error = ' num2str(error,10)]);
+        disp(['spADMM iteration ' num2str(i) ': fval = ' num2str(cx,10) ', error = ' num2str(error,10)]);
     end
     i = i + 1;
 end

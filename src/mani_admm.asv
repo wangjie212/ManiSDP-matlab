@@ -1,5 +1,5 @@
 function [X, fval] = mani_admm(SDP, At, b, c, mb, sb, sB, M1, M2, maniIter)
-fprintf('ManiMom is starting...\n');
+fprintf('Launch is starting...\n');
 tic
 options.printlevel = 0;
 options.tol = 1e-6;
@@ -35,5 +35,5 @@ fprintf('\n');
 time = toc;
 X = aX{1};
 fval = obj(1);
-disp(['ManiMom: optimum = ' num2str(fval) ', time = ' num2str(time) 's']);
+disp(['ManiMoment: optimum = ' num2str(fval) ', time = ' num2str(time) 's']);
 end

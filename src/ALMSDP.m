@@ -1,4 +1,4 @@
-function [X, y, cx] = ALMSDP(At, b, c, mb, tao, y, Y)
+function [X, cx] = ALMSDP(At, b, c, mb, tao, y, Y)
 p = 2;
 C = reshape(c, mb, mb);
 sigma = 1e-3;
@@ -15,7 +15,7 @@ for iter = 1:MaxIter
         break;
     else
         sigma = min(sigma*gama, 1e4);
-        disp(['Iter ' num2str(iter) ': fval = ' num2str(cx,10)]);
+        disp(['ALM iteration ' num2str(iter) ': fval = ' num2str(cx,10)]);
     end
 end
 end

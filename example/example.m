@@ -32,14 +32,13 @@ K = SDP.sedumi.K;
 mb = K.s;
 
 %% Generate SOS data
-% [sA, dA, sB, sb] = SOStoSDP(f, h, x, kappa);
-% dA = 1./dA;
-% vmb = mb*(mb+1)/2;
-% sB1 = [sA sB];
-% iD = sparse(1:length(dA),1:length(dA),dA);
-% iA = iD - iD*sB*(sparse(1:size(sB,2),1:size(sB,2),ones(size(sB,2),1))+sB'*iD*sB)^(-1)*sB'*iD;
-% M1 = sparse(1:size(sB1,2),1:size(sB1,2),ones(size(sB1,2),1)) - sB1'*iA*sB1;
-% M2 = sB1'*iA;
+[sA, dA, sB, sb] = SOStoSDP(f, h, x, kappa);
+dA = 1./dA;
+sB1 = [sA sB];
+iD = sparse(1:length(dA),1:length(dA),dA);
+iA = iD - iD*sB*(sparse(1:size(sB,2),1:size(sB,2),ones(size(sB,2),1))+sB'*iD*sB)^(-1)*sB'*iD;
+M1 = sparse(1:size(sB1,2),1:size(sB1,2),ones(size(sB1,2),1)) - sB1'*iA*sB1;
+M2 = sB1'*iA;
 
 %% Solve using STRIDE
 pgdopts.pgdStepSize     = 10;
@@ -93,7 +92,7 @@ pgdopts.tolPGD          = 1e-6;
 % [px,cv] = fmincon(fobj,zeros(d,1),[],[],[],[],[],[],@binary)
 
 addpath(genpath(sdpnalpath));
-[X, fval] = mani_admm(SDP, At, b, c, mb);
+[X, fval] = mani_admm(SDP, At, b, c, mb, sb, sB, M1, M2, 10);
 
 % [SDP0.blk, SDP0.At, SDP0.C, SDP0.b, SDP0.dA] = SOStoSDP_C(f, h, x, kappa);
 % tic
@@ -172,38 +171,6 @@ addpath(genpath(sdpnalpath));
 
 % psd = V*diag([sol(1:mb-1);0])*V';
 % sol = [Mat2Vec(psd); sol(mb:end)];
-% psd = zeros(mb, mb);
-% sol = zeros(vmb+size(sB,2), 1);
-% psd = S{1};
-% sol = [Mat2Vec(psd); rand(size(sB,2),1)];
-% psd = rand(mb); 
-% psd = (psd + psd')/2;
-% sol = [Mat2Vec(psd); rand(size(sB,2),1)];
-% ssb = sb;
-% ssb(1) = ssb(1) - fval;
-% ssb = M2*ssb;
-% ogap = 0.2;
-% gap = 1;
-% i = 1;
-% j = 1;
-% while i <= 50 || (gap > 1e-3 && gap <= ogap/2)
-%     [V,D] = eig(psd);
-%     psd = V*diag(max(0,diag(D)))*V';
-%     psol = sol;
-%     psol(1:vmb) = Mat2Vec(psd);
-%     lsol = 2*psol - sol;
-%     lsol = M1*lsol + ssb;
-%     sol = sol + 1*(lsol - psol);
-%     psd = Vec2Mat(sol(1:vmb), mb);
-%     minEig = min(eig(Vec2Mat(lsol(1:vmb), mb)));
-%     gap = - minEig*mb/abs(fval);
-%     % disp(['Step ' num2str(i) ': gap <= ' num2str(gap)]);
-%     i = i + 1;
-%     if i/100 > j
-%         ogap = ogap/2;
-%         j = j + 1;
-%     end
-% end
 % % disp(['Certify global optimality: ' num2str(tcert) 's']);
 % if gap <= 1e-3
 %     flag = 1;
