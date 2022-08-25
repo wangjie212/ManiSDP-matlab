@@ -5,7 +5,7 @@ pgdpath   = '../../STRIDE';
 sdpnalpath  = '../../SDPNAL+v1.0';
 addpath(genpath(pgdpath));
 %% Generate random binary quadratic program
-d       = 30; % BQP with d variables
+d       = 20; % BQP with d variables
 x       = msspoly('x',d); % symbolic decision variables using SPOTLESS
 Q       = rand(d); Q = (Q + Q')/2; % a random symmetric matrix
 % e       = rand(d,1);
@@ -92,7 +92,7 @@ time_pgd                    = outPGD.totaltime;
 % [px,cv] = fmincon(fobj,zeros(d,1),[],[],[],[],[],[],@binary)
 
 addpath(genpath(sdpnalpath));
-[X, fval] = mani_admm(SDP, At, b, c, mb, sb, sB, M1, M2, 1);
+[X, fval] = mani_admm(SDP, At, b, c, mb, sb, sB, M1, M2, 10);
 
 [SDP0.blk, SDP0.At, SDP0.C, SDP0.b, SDP0.dA] = SOStoSDP_C(f, h, x, kappa);
 % tic

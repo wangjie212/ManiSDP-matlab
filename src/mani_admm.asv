@@ -1,5 +1,5 @@
 function [X, fval] = mani_admm(SDP, At, b, c, mb, sb, sB, M1, M2, maniIter)
-fprintf('Launch is starting...\n');
+fprintf('ManiMom is starting...\n');
 tic
 options.printlevel = 0;
 options.tol = 1e-6;
@@ -19,8 +19,9 @@ if isempty(bsol) || fval < best
 end
 i = i + 1;
 end
-fprintf('AMDD+ is starting...\n');
-[obj,aX,~,~,~] = admmplus(SDP.blk, SDP.At, SDP.C, SDP.b, [], [], [], [], [], options, {bX});
+fprintf('ADMM+ is starting...\n');
+S = Vec2Mat(bsol(1:mb*(mb+1)/2), mb);
+[obj,aX,~,~,~] = admmplus(SDP.blk, SDP.At, SDP.C, SDP.b, [], [], [], [], [], options, {bX}, [], [], {S});
 fprintf('\n');
 % [V,D] = eig(aX{1});
 % Y = [sqrt(D(end,end))*V(:,end) sqrt(D(end-1,end-1))*V(:,end-1)];
@@ -35,5 +36,5 @@ fprintf('\n');
 time = toc;
 X = aX{1};
 fval = obj(1);
-disp(['ManiMoment: optimum = ' num2str(fval) ', time = ' num2str(time) 's']);
+disp(['ManiMom: optimum = ' num2str(fval) ', time = ' num2str(time) 's']);
 end

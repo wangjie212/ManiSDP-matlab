@@ -19,8 +19,9 @@ if isempty(bsol) || fval < best
 end
 i = i + 1;
 end
-fprintf('AMDD+ is starting...\n');
-[obj,aX,~,~,~] = admmplus(SDP.blk, SDP.At, SDP.C, SDP.b, [], [], [], [], [], options, {bX});
+fprintf('ADMM+ is starting...\n');
+S = Vec2Mat(bsol(1:mb*(mb+1)/2), mb);
+[obj,aX,~,~,~] = admmplus(SDP.blk, SDP.At, SDP.C, SDP.b, [], [], [], [], [], options, {bX}, [], [], {S});
 fprintf('\n');
 % [V,D] = eig(aX{1});
 % Y = [sqrt(D(end,end))*V(:,end) sqrt(D(end-1,end-1))*V(:,end-1)];

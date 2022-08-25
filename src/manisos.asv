@@ -17,12 +17,11 @@ if isempty(bsol) || fval < best
 end
 i = i + 1;
 end
-fprintf('spADMM is starting...\n');
+fprintf('spAMDD is starting...\n');
 S = [bsol;best];
-vM = mattovec(M);
-y = SDP.At{1}\vM;
-sM = [vM; SDP.At{2}*y+SDP.C{2}];
-[fval, ~, ~, M] = spadmm(SDP.blk, SDP.At, SDP.C, SDP.b, SDP.dA, S, sM);
+y = SDP.At{1}\mattovec(M);
+SDP.At{2}*y + 
+[fval, ~, ~, M] = spadmm(SDP.blk, SDP.At, SDP.C, SDP.b, SDP.dA, S, []);
 time = toc;
 disp(['ManiSOS: optimum = ' num2str(fval) ', time = ' num2str(time) 's']);
 end
