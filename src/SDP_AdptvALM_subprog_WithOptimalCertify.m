@@ -1,7 +1,7 @@
 function  [xfinal, fval, info, gammas] = SDP_AdptvALM_subprog_WithOptimalCertify(A, At, b, C, c, n, m, p, options)
     %Outer Loop Setting
     localdefaults.rho = 1;
-    localdefaults.gammas = zeros(m,1); % gap不为零
+    localdefaults.gammas = zeros(m,1); 
     localdefaults.bound = 200;
     localdefaults.tau = 0.8;
     localdefaults.thetarho = 0.3;
@@ -11,7 +11,8 @@ function  [xfinal, fval, info, gammas] = SDP_AdptvALM_subprog_WithOptimalCertify
     %Inner Loop Setting
     localdefaults.maxInnerIter = 200;
     localdefaults.startingtolgradnorm = 1e-3;
-    localdefaults.endingtolgradnorm = 1e-10;
+    localdefaults.endingtolgradnorm = 1e-12;
+    localdefaults.maxtime = inf;
     
     if ~exist('options', 'var') || isempty(options)
         options = struct();
@@ -52,11 +53,15 @@ function  [xfinal, fval, info, gammas] = SDP_AdptvALM_subprog_WithOptimalCertify
         X = xCur*xCur';
         x = X(:);
         cx = x'*c;
-        Axb = (x'*At)' - b ;
-        newacc = max(abs(Axb));      
+        Axb = (x'*At)' - b;
+        newacc = max(abs(Axb));
+        AxbA = Axb'*A;
+        yA = reshape(AxbA, n, n);
 
-        r1 = xCur(:,1)./xCur(:,2);
-        r = 2-(sum((r1-sum(r1)/n).^2)<=1e-4);
+        %% It is very important !!!!!!!!! 
+        DfX = C + rho*yA;    % f(X)的导数
+        lamda = diag(DfX*X); % 对角幺模diag(X)对应的对偶变量, lamda(nn) = trace(Y'*Ai*detf*Y)/trace(Y'*Ai*Ai*Y);
+        by  = sum(lamda) + gammas'*b;    % 对偶目标值，严格讲 by = sum(lamda) + gammas'*b;
 
         if OuterIter == 1 || newacc > options.tau * oldacc
             rho = rho/options.thetarho;
@@ -64,7 +69,7 @@ function  [xfinal, fval, info, gammas] = SDP_AdptvALM_subprog_WithOptimalCertify
         oldacc = newacc;
         tolgradnorm = max(options.endingtolgradnorm, tolgradnorm * thetatolgradnorm); 
        
-        fprintf('Iter: %d, fval: %.16e, tolgradnorm: %.16e, rank: %d\n', OuterIter, fval, tolgradnorm, r);
+        fprintf('Iter: %d, cx: %.8e, by: %0.8e, gap: %.5e, tolgradnorm: %0.8e\n', OuterIter, cx, by, abs(cx-by), tolgradnorm);
         %if norm(xPrev-xCur, 'fro') < options.minstepsize && tolgradnorm <= options.endingtolgradnorm
         if tolgradnorm <= options.endingtolgradnorm
             break;
@@ -83,10 +88,10 @@ function  [xfinal, fval, info, gammas] = SDP_AdptvALM_subprog_WithOptimalCertify
         x = X(:);
         cx = x'*c;
         Axb = (x'*At)' - b + gammas/rho;
-        f = cx + rho*(Axb'*Axb);
+        f = cx + 0.5*rho*(Axb'*Axb);
         AxbA = Axb'*A;
         yA = reshape(AxbA, n, n);
-        S = C + 2 * rho*yA;
+        S = C + rho*yA;
         store.G = 2*S*Y;
         store.S = S;
     end
@@ -102,7 +107,7 @@ function  [xfinal, fval, info, gammas] = SDP_AdptvALM_subprog_WithOptimalCertify
         xdot = Xdot(:);
         AxbdotA = xdot'*At*A;
         yAdot = reshape(AxbdotA, n, n);
-        H = H + 8 * rho*(yAdot*Y);
+        H = H + 4 * rho*(yAdot*Y);
     end
 
 end
