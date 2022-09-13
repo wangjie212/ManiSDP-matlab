@@ -1,8 +1,9 @@
 function  [Y, fval, info] = SDP_ALM_subprog(At, b, C, c, n, p, sigma, y, Y0)
     % Pick the manifold of n-by-p matrices with unit norm rows.
-    manifold = obliquefactory(p, n, true);
+    % manifold = obliquefactory(p, n, true);
     % manifold = elliptopefactory(n, p);
-    %manifold = symfixedrankYYfactory(n, p);
+    manifold = symfixedrankYYfactory(n, p);
+    % manifold = spectrahedronfactory(n, p);
     problem.M = manifold;
     
     % Define the cost function to be /minimized/.
@@ -42,7 +43,7 @@ function  [Y, fval, info] = SDP_ALM_subprog(At, b, C, c, n, p, sigma, y, Y0)
     opts = struct();
     opts.verbosity = 0;      % Set to 0 for no output, 2 for normal output
     opts.maxinner = 30;     % maximum Hessian calls per iteration
-    opts.tolgradnorm = 1e-3; % tolerance on gradient norm
+    opts.tolgradnorm = 1e-2; % tolerance on gradient norm
     opts.maxiter = 50;
     [Y, fval, info] = trustregions(problem, Y0, opts);
 

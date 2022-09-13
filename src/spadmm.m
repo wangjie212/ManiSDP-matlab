@@ -1,6 +1,6 @@
 function [cx, S, y, M] = spadmm(blk, At, C, b, dA, S, M)
-gama = 1;
-sigma = 1;
+gama = 1.99;
+sigma = 1e-3;
 maxiter = 5000;
 mb = blk{1,2};
 vmb = mb*(mb+1)/2;
@@ -17,7 +17,7 @@ end
 C = [mattovec(C{1}); full(C{2})];
 i = 1;
 error = 1;
-while i <= maxiter && error >= 0.01
+while i <= maxiter && error >= 1e-6
     temp = 1/sigma*S + M - C;
     y = iA*(1/sigma*b - A'*temp);
     temp = S + sigma*(A*y - C);
@@ -36,7 +36,7 @@ while i <= maxiter && error >= 0.01
     S = S + gama*sigma*(M + A*y - C);
     if mod(i, 200) == 0
         cx = - C'*S;
-        error = max(norm(S'*M), norm(M+A*y-C));
+        error = max([norm(A'*S-b)/(1+norm(b)), abs(C'*S-b'*y)/(1+abs(C'*S)+abs(b'*y)), norm(M+A*y-C)/(1+norm(C))]);
         disp(['spADMM iteration ' num2str(i) ': fval = ' num2str(cx,10) ', error = ' num2str(error,10)]);
     end
     i = i + 1;
