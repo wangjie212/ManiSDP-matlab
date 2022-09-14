@@ -11,7 +11,7 @@ function  [xfinal, fval, info, gammas] = SDP_AdptvALM_subprog_WithOptimalCertify
     %Inner Loop Setting
     localdefaults.maxInnerIter = 200;
     localdefaults.startingtolgradnorm = 1e-3;
-    localdefaults.endingtolgradnorm = 1e-12;
+    localdefaults.endingtolgradnorm = 1e-14;
     localdefaults.maxtime = inf;
     
     if ~exist('options', 'var') || isempty(options)

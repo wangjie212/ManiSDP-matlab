@@ -26,9 +26,9 @@ kappa                   = 2; % relaxation order
 [SDP,info]              = dense_sdp_relax(problem,kappa);
 SDP.M       = length(info.v); % upper bound on the trace of the moment matrix
 % need the following for fast computation in the local search method
-% info.v      = msspoly2degcoeff(info.v);
-% info.f      = msspoly2degcoeff(info.f);
-% info.J      = msspoly2degcoeff(info.J);
+info.v      = msspoly2degcoeff(info.v);
+info.f      = msspoly2degcoeff(info.f);
+info.J      = msspoly2degcoeff(info.J);
 At = SDP.sedumi.At;
 b = SDP.sedumi.b;
 c = SDP.sedumi.c;
@@ -45,17 +45,17 @@ M1 = sparse(1:size(sB1,2),1:size(sB1,2),ones(size(sB1,2),1)) - sB1'*iA*sB1;
 M2 = sB1'*iA;
 
 %% Solve using STRIDE
-% pgdopts.pgdStepSize     = 10;
-% pgdopts.SDPNALpath      = sdpnalpath;
-% pgdopts.tolADMM         = 1e-4;
-% pgdopts.phase1          = 1;
-% pgdopts.rrOpt           = 1:3;
-% pgdopts.rrFunName       = 'local_search_bqp'; % see solvers/local_search_bqp.m for implementation of local search
-% pgdopts.rrPar           = info; % need the original POP formulation for local search
-% pgdopts.maxiterLBFGS    = 1000;
-% pgdopts.maxiterSGS      = 300;
-% % pgdopts.tolLBFGS        = 1e-8;
-% pgdopts.tolPGD          = 1e-6;
+pgdopts.pgdStepSize     = 10;
+pgdopts.SDPNALpath      = sdpnalpath;
+pgdopts.tolADMM         = 1e-4;
+pgdopts.phase1          = 1;
+pgdopts.rrOpt           = 1:3;
+pgdopts.rrFunName       = 'local_search_bqp'; % see solvers/local_search_bqp.m for implementation of local search
+pgdopts.rrPar           = info; % need the original POP formulation for local search
+pgdopts.maxiterLBFGS    = 1000;
+pgdopts.maxiterSGS      = 300;
+% pgdopts.tolLBFGS        = 1e-8;
+pgdopts.tolPGD          = 1e-6;
 % pgdopts.rrFunName       = 'local_mani';
 % pgdopts.rrPar.At = At;
 % pgdopts.rrPar.b = b;
@@ -65,8 +65,8 @@ M2 = sB1'*iA;
 % pgdopts.rrPar.mb = mb;
 % pgdopts.rrPar.v = info.v;
 
-% [outPGD,sXopt,syopt,sSopt]     = PGDSDP(SDP.blk, SDP.At, SDP.b, SDP.C, [], pgdopts);
-% time_pgd                    = outPGD.totaltime;
+[outPGD,sXopt,syopt,sSopt]     = PGDSDP(SDP.blk, SDP.At, SDP.b, SDP.C, [], pgdopts);
+time_pgd                    = outPGD.totaltime;
 % round solutions and check optimality certificate
 % res = get_performance_bqp(Xopt,yopt,Sopt,SDP,info,pgdpath);
 
@@ -116,12 +116,5 @@ M2 = sB1'*iA;
 % toc
 
 % disp(['Mosek: optimum = ' num2str(obj(1)) ', time = ' num2str(tmosek) 's'])
-% disp(['Stride: optimum = ' num2str(outPGD.pobj) ', time = ' num2str(time_pgd) 's'])
-% disp(['ManiPOP: optimum = ' num2str(fval) ', time = ' num2str(tmanipop) 's'])
-
-%% helper functions
-% function s = msspoly2degcoeff(f)
-% [~,degmat,coeff,~] = decomp(f);
-% s.degmat = degmat';
-% s.coefficient = coeff;
-% end
+disp(['Stride: optimum = ' num2str(outPGD.pobj) ', time = ' num2str(time_pgd) 's'])
+disp(['ManiPOP: optimum = ' num2str(fval) ', time = ' num2str(tmanipop) 's'])

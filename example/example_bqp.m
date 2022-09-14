@@ -5,7 +5,7 @@ close all;
 %randn('state',0);
 %rand('state',1);
 %% Generate random binary quadratic program
-d       = 15; % BQP with d variables
+d       = 30; % BQP with d variables
 x       = msspoly('x',d); % symbolic decision variables using SPOTLESS
 Q       = rand(d); Q = (Q + Q')/2; % a random symmetric matrix
 c       = rand(d,1);
