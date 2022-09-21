@@ -1,4 +1,4 @@
-function  [Y, fval, info] = SDP_ALM_subprog(At, b, C, c, n, p, sigma, y, Y0)
+function  [Y, fval, info] = SDP_ALM_subprog(At, b, C, c, n, p, sigma, y, Y0, tolgrad)
     % Pick the manifold of n-by-p matrices with unit norm rows.
     % manifold = obliquefactory(p, n, true);
     % manifold = elliptopefactory(n, p);
@@ -42,8 +42,8 @@ function  [Y, fval, info] = SDP_ALM_subprog(At, b, C, c, n, p, sigma, y, Y0)
     % Call your favorite solver.
     opts = struct();
     opts.verbosity = 0;      % Set to 0 for no output, 2 for normal output
-    opts.maxinner = 30;     % maximum Hessian calls per iteration
-    opts.tolgradnorm = 1e-2; % tolerance on gradient norm
+    % opts.maxinner = 30;     % maximum Hessian calls per iteration
+    opts.tolgradnorm = tolgrad; % tolerance on gradient norm
     opts.maxiter = 50;
     [Y, fval, info] = trustregions(problem, Y0, opts);
 

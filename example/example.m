@@ -5,16 +5,16 @@ pgdpath   = '../../STRIDE';
 sdpnalpath  = '../../SDPNAL+v1.0';
 addpath(genpath(pgdpath));
 %% Generate random binary quadratic program
-d       = 30; % BQP with d variables
+d       = 20; % BQP with d variables
 x       = msspoly('x',d); % symbolic decision variables using SPOTLESS
-% Q       = rand(d); Q = (Q + Q')/2; % a random symmetric matrix
+Q       = rand(d); Q = (Q + Q')/2; % a random symmetric matrix
 % e       = rand(d,1);
-% f       = x'*Q*x; % objective function of the BQP
-% h       = x.^2 - 1; % equality constraints of the BQP (binary variables)
-mon = monomials(x, 0:4);
-coe = randn(length(mon),1);
-f = coe'*mon;
-h       = sum(x.^2) - 1;
+f       = x'*Q*x; % objective function of the BQP
+h       = x.^2 - 1; % equality constraints of the BQP (binary variables)
+% mon = monomials(x, 0:4);
+% coe = randn(length(mon),1);
+% f = coe'*mon;
+% h       = sum(x.^2) - 1;
 g       = []; % ask the first variable to be positive
 
 %% Relax BQP into an SDP
@@ -96,7 +96,7 @@ time_pgd                    = outPGD.totaltime;
 % [px,cv] = fmincon(fobj,zeros(d,1),[],[],[],[],[],[],@binary)
 
 % addpath(genpath(sdpnalpath));
-[X, fval] = mani_admm(SDP, At, b, c, mb, 2, sb, sB, M1, M2, 10);
+% [X, fval] = mani_admm(SDP, At, b, c, mb, 2, sb, sB, M1, M2, 10);
 % tic
 % nDRS(sb, sB, M1, M2, mb, fval, sol, lb, 1e-6);
 % toc
@@ -117,4 +117,4 @@ time_pgd                    = outPGD.totaltime;
 
 % disp(['Mosek: optimum = ' num2str(obj(1)) ', time = ' num2str(tmosek) 's'])
 disp(['Stride: optimum = ' num2str(outPGD.pobj) ', time = ' num2str(time_pgd) 's'])
-disp(['ManiPOP: optimum = ' num2str(fval) ', time = ' num2str(tmanipop) 's'])
+% disp(['ManiPOP: optimum = ' num2str(fval) ', time = ' num2str(tmanipop) 's'])

@@ -19,7 +19,7 @@ if isempty(bsol) || fval < best/(1-bgap/3)
 end
 i = i + 1;
 end
-[~, gap] = DRS(sb, sB, M1, M2, mb, best, bsol, bgap, 1e-5, 1);
+[~, gap] = DRS(sb, sB, M1, M2, mb, best, bsol, bgap, 1e-6, 1);
 % fprintf('ADMM+ is starting...\n');
 % S = Vec2Mat(bsol(1:mb*(mb+1)/2), mb);
 % [obj,aX,~,~,~] = admmplus(SDP.blk, SDP.At, SDP.C, SDP.b, [], [], [], [], [], options, {bX}, [], [], {S});

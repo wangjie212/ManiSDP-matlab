@@ -26,8 +26,8 @@ while i <= 50 || (gap > tol && gap <= ogap) || (flag == 1 && gap > tol)
     psd = Vec2Mat(sol(1:vmb), mb);
     if mod(i,10) == 0
         minEig = min(eig(Vec2Mat(lsol(1:vmb), mb)));
-        % gap = - minEig*mb/abs(fval);
-        gap = - minEig*3/abs(fval);
+        gap = - minEig*mb/abs(fval);
+        % gap = - minEig*3/abs(fval);
         disp(['DRS iteration ' num2str(i) ': gap <= ' num2str(gap)]);
     end
     if mod(i,50) == 0
