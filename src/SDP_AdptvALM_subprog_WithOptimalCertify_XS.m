@@ -1,17 +1,17 @@
-function  [xfinal, fval, info, y] = SDP_AdptvALM_subprog_WithOptimalCertify_XS(A, At, b, C, c, n, m, p, options)
+function  [Xopt, Sopt, yopt, fopt] = SDP_AdptvALM_subprog_WithOptimalCertify_XS(A, At, b, C, c, n, m, p, options)
     %Outer Loop Setting
-    localdefaults.rho = 50;
+    localdefaults.rho = 1;
     localdefaults.gammas = zeros(m,1); 
     localdefaults.bound = 200;
     localdefaults.tau = 0.8;
-    localdefaults.thetarho = 1/3;
-    localdefaults.maxOuterIter = 300;
+    localdefaults.thetarho = 0.3;
+    localdefaults.maxOuterIter = 3000;
     localdefaults.numOuterItertgn = 30;
     
     %Inner Loop Setting
-    localdefaults.maxInnerIter = 200;
+    localdefaults.maxInnerIter = 150;
     localdefaults.startingtolgradnorm = 1e-3;
-    localdefaults.endingtolgradnorm = 1e-15;
+    localdefaults.endingtolgradnorm = 1e-9;
     localdefaults.maxtime = inf;
     
     if ~exist('options', 'var') || isempty(options)
@@ -22,69 +22,71 @@ function  [xfinal, fval, info, y] = SDP_AdptvALM_subprog_WithOptimalCertify_XS(A
     tolgradnorm = options.startingtolgradnorm;
     thetatolgradnorm = nthroot(options.endingtolgradnorm/options.startingtolgradnorm, options.numOuterItertgn);
     
-    %lambdas = options.lambdas;
-    y = options.gammas;
+    y = zeros(m,1); 
     rho = options.rho;
-    oldacc = Inf;
-    xCur = [];
-    xPrev = xCur; 
+    R = [];
+    totaltime = tic();
+    M = obliquefactory(p,n,true);
+    %M = symfixedrankYYfactory(n, p);
+    problem.M = M;
+    problem.cost = @cost;
+    problem.egrad = @egrad;
+    problem.ehess = @ehess;
 
-    totaltime = tic();    
+    inneroptions.tolgradnorm = tolgradnorm;
+    inneroptions.verbosity = 0;
+    inneroptions.maxiter = options.maxInnerIter;
+    inneroptions.useRand = 0;
+
     for OuterIter = 1 : options.maxOuterIter
-        %M = elliptopefactory(n, p);
-        M = obliquefactory(p,n,true);
-        %M = symfixedrankYYfactory(n, p);
-        problem.M = M;
-        problem.cost = @cost;        
-        % Define the Riemannian gradient.
-        problem.egrad = @egrad;
-        % If you want to, you can specify the Riemannian Hessian as well.
-        problem.ehess = @ehess;
-
         inneroptions.tolgradnorm = tolgradnorm;
-        inneroptions.verbosity = 0;
-        inneroptions.maxiter = options.maxInnerIter;
-        %inneroptions.minstepsize = options.minstepsize;
-
-        [xCur, ~, info] = trustregions(problem, xPrev, inneroptions);         
-     
-        %Update Multipliers
-        X = xCur*xCur';
+        [R, f0, info] = trustregions(problem, R, inneroptions); 
+        %[R, f0, info] = arc(problem, xPrev, inneroptions);
+        
+        X = R*R';
         x = X(:);
         cx = x'*c;
         Axb = (x'*At)' - b;
         newacc = max(abs(Axb));
+
+        %Update Multipliers
         y = min(options.bound, max(-options.bound,  y + rho * Axb));        
 
         %% It is very important !!!!!!!!!
         yA = reshape(y'*A, n, n);
-        DfX = C + yA;           % Lagrangian f(X)的导数
+        DfX = C + yA;
         lamda = diag(DfX*X);    % 对角幺模diag(X)对应的对偶变量
-        S = DfX - diag(lamda); % S
-        by = b'*y + sum(lamda); % 对偶目标值，严格讲 by = sum(lamda) + y'*b;
-        meS = min(eig(S));
-        XS = norm(X*S,'fro');
+        St = DfX - diag(lamda);  % S
+        by = b'*y + sum(lamda); % 对偶目标值，严格讲 by = sum(lamda) + b'*y;
+        
+        eigsopts.isreal = true;
+        meS = eigs(St, 1, 'sr', eigsopts);
+        XS = norm(X*St,'fro');
+        gap = abs(cx-by);
 
-        if OuterIter == 1 || newacc > options.tau * oldacc
-            rho = rho/options.thetarho;
-        end
         oldacc = newacc;
         tolgradnorm = max(options.endingtolgradnorm, tolgradnorm * thetatolgradnorm); 
         
-        fprintf('Iter: %d, c*x: %.8e, b*y: %0.8e, minEigS: %.5e, XS: %.5e, |Ax-b|: %0.5e, gap: %.5e, tolgradnorm: %0.8e\n', OuterIter, cx, by, meS, XS, newacc, (cx-by), tolgradnorm);
-        %if norm(xPrev-xCur, 'fro') < options.minstepsize && tolgradnorm <= options.endingtolgradnorm
-        if tolgradnorm <= options.endingtolgradnorm
+        fprintf('Iter: %d, c*x: %.8e, b*y: %0.8e, mineigS: %.5e, XS: %.5e, |Ax-b|: %0.5e, gap: %.5e, rho:%0.5e, tolgradnorm: %0.8e\n', OuterIter, cx, by, meS, XS, newacc, gap, rho,tolgradnorm);
+        if (max([XS newacc gap]) < 1e-7)  && (meS >= -1e-4) % tolgradnorm <= options.endingtolgradnorm
             break;
         end
         if toc(totaltime) > options.maxtime
             break;
         end
-        
-        xPrev = xCur;
+
+        if OuterIter == 1 || newacc > options.tau * oldacc
+            if rho < 1e4
+                rho = rho/options.thetarho;
+            end
+        end
+
     end
 
-    xfinal = xCur;
-    fval = c'*x;
+    Xopt = X;
+    Sopt = St;
+    yopt = y;
+    fopt = c'*x;
 
     function [f, store] = cost(Y, store)
         X = Y*Y';
@@ -100,7 +102,7 @@ function  [xfinal, fval, info, y] = SDP_AdptvALM_subprog_WithOptimalCertify_XS(A
     end
 
     function [G, store] = egrad(Y, store)
-        G = store.G;
+        G = store.G ;
     end
 
     function [H, store] = ehess(Y, Ydot, store)
