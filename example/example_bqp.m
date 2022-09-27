@@ -5,7 +5,7 @@ close all;
 %randn('state',0);
 %rand('state',1);
 %% Generate random binary quadratic program
-d       = 20; % BQP with d variables
+d       = 30; % BQP with d variables
 x       = msspoly('x',d); % symbolic decision variables using SPOTLESS
 Q       = rand(d); Q = (Q + Q')/2; % a random symmetric matrix
 c       = rand(d,1);
@@ -49,6 +49,6 @@ C = reshape(c, Nx, Nx);
 
 options.maxtime = inf;
 tic
-[Y, fval, info] = SDP_AdptvALM_subprog_WithOptimalCertify(A, At, b, C, c, Nx, m, p, options);
+[Y, fval, info] = SDP_AdptvALM_subprog_WithOptimalCertify_LineSearch(A, At, b, C, c, Nx, m, p, options);
 X = Y*Y';
 tmanipop = toc

@@ -16,34 +16,36 @@ for iter = 1:MaxIter
     lamda = diag(DfX*X);
     S = DfX - diag(lamda);
     [v, mineigS] = eigs(S, 1, 'smallestreal');
-%     by = b'*y + sum(lamda);
-%     gap = abs(cx-by)/abs(cx+by);
-%     e = sort(diag(qr(Y)),'descend');
+    by = b'*y + sum(lamda);
+    gap = abs(cx-by)/abs(cx+by);
+    if iter > 10
+    e = sort(diag(qr(Y)),'descend');
     r = 1;
-%     while r < p && e(r+1) > 1e-5*e(1) && e(r+1)/e(r) < 10
-%         r = r + 1;
-%     end
-%     if r < p
+    while r < p && e(r+1) > 1e-5*e(1) && e(r+1)/e(r) < 10
+        r = r + 1;
+    end
+    if r < p
         [q, ~] = eigs(Y'*Y, 1, 'smallestreal');
-%     end
-%     if r == p - 1
+    end
+    if r == p - 1
         U = v*q(:,1)';
-%     elseif r < p - 1
-%         p = r + 1;
-%         [V,D,~] = svd(Y);
-%         Y = V(:,1:p)*D(1:p,1:p);
-%         U = v*q(1:p,1)';
-%     else
-%         U = [zeros(mb,p) v];
-%         Y = [Y zeros(mb,1)];
-%         p = p + 1;
-%     end
+    elseif r < p - 1
+        p = r + 1;
+        [V,D,~] = svd(Y);
+        Y = V(:,1:p)*D(1:p,1:p);
+        U = v*q(1:p,1)';
+    else
+        U = [zeros(mb,p) v];
+        Y = [Y zeros(mb,1)];
+        p = p + 1;
+    end
     Y = Y + 0.1*U;
     for i = 1:mb
         Y(i,:) = Y(i,:)/norm(Y(i,:));
     end
-   disp(['ALM iteration ' num2str(iter) ': fval = ' num2str(cx,10) ', rank X = ' num2str(r) ', mineigS = ' num2str(mineigS) ', p = ' num2str(p)]);
-   if max([norm(Axb),abs(mineigS)]) < tao
+    end
+   disp(['ALM iteration ' num2str(iter) ': fval = ' num2str(cx,10) ', rank X = ' num2str(r) ', mineigS = ' num2str(mineigS) ', gap = ' num2str(gap) ', p = ' num2str(p)]);
+   if max([norm(Axb),abs(mineigS),gap]) < tao
        break;
    else
         sigma = min(sigma*gama, 1e4);

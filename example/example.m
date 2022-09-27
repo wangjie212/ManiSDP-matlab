@@ -96,7 +96,7 @@ time_pgd                    = outPGD.totaltime;
 % [px,cv] = fmincon(fobj,zeros(d,1),[],[],[],[],[],[],@binary)
 
 % addpath(genpath(sdpnalpath));
-% [X, fval] = mani_admm(SDP, At, b, c, mb, 2, sb, sB, M1, M2, 10);
+[X, fval] = mani_admm(SDP, At, b, c, mb, 2, sb, sB, M1, M2, 1);
 % tic
 % nDRS(sb, sB, M1, M2, mb, fval, sol, lb, 1e-6);
 % toc

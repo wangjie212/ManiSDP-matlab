@@ -15,7 +15,7 @@ end
 i = 1;
 gap = 1;
 % while i <= niter
-while i <= 50 || (gap > tol && gap <= ogap) || (flag == 1 && gap > tol)
+while (i <= 50 || (gap > tol && gap <= ogap) || (flag == 1 && gap > tol)) && i <= 1000
     [V,D] = eig(psd, 'vector');
     psd = V*diag(max(0,D))*V';
     psol = sol;
