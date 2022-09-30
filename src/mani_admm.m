@@ -9,7 +9,7 @@ bsol = [];
 bgap = [];
 while i <= maniIter && gap > 1e-2
 y = zeros(length(b),1);
-[X, fval] = ALMSDP(At, b, c, mb, p, 1e-6, y, []);
+[X, S, y, fval] = ALMSDP(At, b, c, mb, p, 1e-6, y, []);
 if isempty(bsol) || fval < best/(1-bgap/3)
     [sol, gap] = DRS(sb, sB, M1, M2, mb, fval, bsol, bgap, 1e-2, 0);
     best = fval;

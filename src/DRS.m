@@ -1,4 +1,4 @@
-function [sol, gap] = DRS(sb, sB, M1, M2, mb, fval, sol, ogap, tol, flag)
+function [lsol, gap] = DRS(sb, sB, M1, M2, mb, fval, sol, ogap, tol, flag)
 vmb = mb*(mb+1)/2;
 if isempty(sol)
     psd = zeros(mb, mb);
