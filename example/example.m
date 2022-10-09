@@ -103,9 +103,7 @@ mb = K.s;
 % fval = DRSPOP(At, b, c, mb, sb, sB, M1, M2);
 rng(0);
 tic
-y = zeros(length(b),1);
-Y = [];
-[Y, S, y, fval] = ALMSDP(At, b, c, mb, 2, 1e-6, y, Y);
+[Y, S, y, fval] = ALMSDP(At, b, c, mb);
 toc
 % tic
 % [X, S, y, cx] = nALMSDP(At, b, c, mb, 1e-6);

@@ -46,22 +46,22 @@ for iter = 1:MaxIter
          Y = [Y zeros(mb,1)]; 
          p = p + 1;
     end
-    Y = Y + 0.1*U;
+   Y = Y + 0.1*U;
     for i = 1:mb
-         Y(i,:) = Y(i,:)/norm(Y(i,:));
+        Y(i,:) = Y(i,:)/norm(Y(i,:));
     end
-    disp(['ALM iter ' num2str(iter) ': fval = ' num2str(fval,10) ', rank X = ' num2str(r) ', mS = ' num2str(mS) ', eta = ' num2str(neta) ', p = ' num2str(p) ', sigma = ' num2str(sigma)]);
-    if max(neta, mS) < tao
-        break;
-    end
-    if iter == 1 || neta > 0.8*eta
-        % sigma = min(sigma*gama, 1);
-        if sigma*gama > 1
-            sigma = 1e-3;
-        else
-            sigma = sigma*gama;
-        end
-    end
+   disp(['ALM iter ' num2str(iter) ': fval = ' num2str(fval,10) ', rank X = ' num2str(r) ', mS = ' num2str(mS) ', eta = ' num2str(neta) ', p = ' num2str(p) ', sigma = ' num2str(sigma)]);
+   if max(neta, mS) < tao
+       break;
+   end
+   % if iter == 1 || neta > 0.8*eta
+       % sigma = min(sigma*gama, 1);
+       if sigma*gama > 1
+           sigma = 1e-3;
+       else
+           sigma = sigma*gama;
+       end
+   % end
     eta = neta;
 end
 end
