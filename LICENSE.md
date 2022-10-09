@@ -1,6 +1,6 @@
 MIT License
 
-Copyright (c) 2022 Jie Wang（王杰）
+Copyright (c) [2019] [Jie Wang, Victor Magron, and Jean B. Lasserre]
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal

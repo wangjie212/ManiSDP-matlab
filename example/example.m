@@ -1,15 +1,15 @@
 clc; 
 clear; 
 close all; 
-pgdpath   = '../../STRIDE';
-sdpnalpath  = '../../SDPNAL+v1.0';
-addpath(genpath(pgdpath));
+% pgdpath   = '../../STRIDE';
+% sdpnalpath  = '../../SDPNAL+v1.0';
+% addpath(genpath(pgdpath));
 %% Generate random binary quadratic program
-d       = 30; % BQP with d variables
+d       = 60; % BQP with d variables
 x       = msspoly('x',d); % symbolic decision variables using SPOTLESS
-Q       = rand(d); Q = (Q + Q')/2; % a random symmetric matrix
-% e       = rand(d,1);
-f       = x'*Q*x; % objective function of the BQP
+Q       = randn(d); Q = (Q + Q')/2; % a random symmetric matrix
+e       = randn(d,1);
+f       = x'*Q*x + x'*e; % objective function of the BQP
 h       = x.^2 - 1; % equality constraints of the BQP (binary variables)
 % mon = monomials(x, 0:4);
 % coe = randn(length(mon),1);
@@ -25,7 +25,7 @@ problem.inequality      = g;
 kappa                   = 2; % relaxation order
 [SDP,info]              = dense_sdp_relax(problem,kappa);
 % SDP.M       = length(info.v); % upper bound on the trace of the moment matrix
-% need the following for fast computation in the local search method
+% % need the following for fast computation in the local search method
 % info.v      = msspoly2degcoeff(info.v);
 % info.f      = msspoly2degcoeff(info.f);
 % info.J      = msspoly2degcoeff(info.J);
@@ -96,18 +96,20 @@ mb = K.s;
 % [px,cv] = fmincon(fobj,zeros(d,1),[],[],[],[],[],[],@binary)
 
 % addpath(genpath(sdpnalpath));
-% [X, fval] = mani_admm(SDP, At, b, c, mb, 2, sb, sB, M1, M2, 1);
+% [Y, fval] = mani_admm(SDP, At, b, c, mb, 2, sb, sB, M1, M2, 5);
 % tic
 % nDRS(sb, sB, M1, M2, mb, fval, sol, lb, 1e-6);
 % toc
 % fval = DRSPOP(At, b, c, mb, sb, sB, M1, M2);
-% tic
-% y = zeros(length(b),1);
-% [X, S, y, fval] = ALMSDP(At, b, c, mb, 2, 1e-6, y, []);
-% toc
+rng(0);
 tic
-[X, S, y, cx] = nALMSDP(At, b, c, mb, 1e-6);
+y = zeros(length(b),1);
+Y = [];
+[Y, S, y, fval] = ALMSDP(At, b, c, mb, 2, 1e-6, y, Y);
 toc
+% tic
+% [X, S, y, cx] = nALMSDP(At, b, c, mb, 1e-6);
+% toc
 
 % [SDP0.blk, SDP0.At, SDP0.C, SDP0.b, SDP0.dA] = SOStoSDP_C(f, h, x, kappa);
 % tic

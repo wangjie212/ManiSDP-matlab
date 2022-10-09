@@ -24,28 +24,28 @@ function  [Y, fval, info] = SDP_ALM_subprog(At, b, c, C, n, p, sigma, y, Y0, U, 
     % Define the Riemannian gradient.
     problem.egrad = @egrad;
     function [G, store] = egrad(Y, store)
-        X = Y*Y';
-        x = X(:);
-        Axb = At'*x - b - y/sigma;
-        AxbA = Axb'*At';
-        yA = reshape(AxbA, n, n);
-        S = C + sigma*yA;
-        G = 2*S*Y;
-        % G = store.G;
+%         X = Y*Y';
+%         x = X(:);
+%         Axb = At'*x - b - y/sigma;
+%         AxbA = Axb'*At';
+%         yA = reshape(AxbA, n, n);
+%         S = C + sigma*yA;
+%         G = 2*S*Y;
+        G = store.G;
     end
 
     % If you want to, you can specify the Riemannian Hessian as well.
     problem.ehess = @ehess;
     function [H, store] = ehess(Y, Ydot, store)
-        X = Y*Y';
-        x = X(:);
-        Axb = At'*x - b - y/sigma;
-        AxbA = Axb'*At';
-        yA = reshape(AxbA, n, n);
-        S = C + sigma*yA;
-        % S = store.S;
+%         X = Y*Y';
+%         x = X(:);
+%         Axb = At'*x - b - y/sigma;
+%         AxbA = Axb'*At';
+%         yA = reshape(AxbA, n, n);
+%         S = C + sigma*yA;
+        S = store.S;
         H = 2*S*Ydot;
-        Xdot = Y*Ydot'+Ydot*Y';
+        Xdot = Y*Ydot'+ Ydot*Y';
         xdot = Xdot(:);
         AxbdotA = xdot'*At*At';
         yAdot = reshape(AxbdotA, n, n);
@@ -55,18 +55,19 @@ function  [Y, fval, info] = SDP_ALM_subprog(At, b, c, C, n, p, sigma, y, Y0, U, 
     % Call your favorite solver.
     opts = struct();
     opts.verbosity = 0;      % Set to 0 for no output, 2 for normal output
-    opts.maxinner = 30;     % maximum Hessian calls per iteration
+    opts.maxinner = 15;     % maximum Hessian calls per iteration
+    opts.mininner = 5;
     opts.tolgradnorm = tolgrad; % tolerance on gradient norm
-    opts.maxiter = 50;
-    if ~isempty(U)
-        g = getGradient(problem, Y0);
-        h = getHessian(problem, Y0, U);
-        disp(['grad: ' num2str(trace(g'*U)) ', hess: ' num2str(trace(U'*h))]);
+    opts.maxiter = 5;
+%     if ~isempty(U)
+%         g = getGradient(problem, Y0);
+%         h = getHessian(problem, Y0, U);
+%         disp(['grad: ' num2str(trace(g'*U)) ', hess: ' num2str(trace(U'*h))]);
 %         X = Y0*Y0';
 %         x = X(:);
 %         cx = x'*c;
 %         [stepsize, Y0] = linesearch_decrease(problem, Y0, U, cx);
 %         disp(['saddle point stepsize:' num2str(stepsize)])
-    end
+%     end
     [Y, fval, info] = trustregions(problem, Y0, opts);
 end
