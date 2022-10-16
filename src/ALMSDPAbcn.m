@@ -31,24 +31,26 @@ for iter = 1:MaxIter
     [vS, dS] = eig(S, 'vector');
     v = vS(:,1);
     mineigS = dS(1);
-    % by = b'*y + sum(lamda);
-    % gap = abs(cx-by)/abs(cx+by);
-    [V,e] = svd(Y,'vector');
+    by = b'*y + sum(lamda);
+    gap = abs(fval-by)/(abs(by)+abs(fval)+1);
+    [V, e, UY] = svd(Y,'vector');
     % r = 1;
     % while r < p && e(r+1) > 1e-3*e(1)
     %   r = r + 1;
     % end
     r = sum(e > 1e-3*e(1)); % r = rank(Y)
     if r == p - 1
-        [vY, ~] = eig(Y'*Y, 'vector');
-        q = vY(:,1);
-        U = v*q';
+        % [vY, ~] = eig(Y'*Y, 'vector');
+        % q = vY(:,1);
+        q = UY(:,end);
+        U = v*q';        
     elseif r < p - 1
         p = r + 1;
         Y = V(:,1:p)*diag(e(1:p));
-        [vY, ~] = eig(Y'*Y, 'vector');
-        q = vY(:,1);
-        U = v*q';
+        % [vY, ~] = eig(Y'*Y, 'vector');
+        % q = vY(:,1);
+        % U = v*q';
+        U = [zeros(n,r) v];   
     else
         U = [zeros(n,p) v];
         Y = [Y zeros(n,1)];
@@ -63,8 +65,8 @@ for iter = 1:MaxIter
     Y = bsxfun(@times, Y, 1./nrms);
     Y = Y';
     %disp(['ALM iter ' num2str(iter) ': fval = ' num2str(fval,10) ', rank X = ' num2str(r) ', mS = ' num2str(mS) ', eta = ' num2str(neta) ', p = ' num2str(p) ', sigma = ' num2str(sigma)]);
-    fprintf('Iter:%d, fval:%0.8f, mineigS:%0.1e, pinf:%0.1e, r:%d, p:%d, sigam:%0.3f, time:%0.2fs\n', ... 
-            iter,     fval,    mineigS,       neta,       r,    p,    sigma,   toc(timespend));
+    fprintf('Iter:%d, fval:%0.8f, gap:%0.1e, mineigS:%0.1e, pinf:%0.1e, r:%d, p:%d, sigam:%0.3f, time:%0.2fs\n', ... 
+             iter,    fval,        gap,       mineigS,       neta,       r,    p,    sigma,   toc(timespend));
     if max(neta, abs(mineigS)) < tao
         break;
     end
