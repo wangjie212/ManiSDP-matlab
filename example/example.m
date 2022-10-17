@@ -1,11 +1,13 @@
 clc; 
 clear; 
 close all; 
-% pgdpath   = '../../STRIDE';
+spotpath   = '../../../Programs/spotless';
+addpath(genpath(spotpath));
+pgdpath   = '../../STRIDE';
 % sdpnalpath  = '../../SDPNAL+v1.0';
-% addpath(genpath(pgdpath));
+addpath(genpath(pgdpath));
 %% Generate random binary quadratic program
-d       = 60; % BQP with d variables
+d       = 6; % BQP with d variables
 x       = msspoly('x',d); % symbolic decision variables using SPOTLESS
 Q       = randn(d); Q = (Q + Q')/2; % a random symmetric matrix
 e       = randn(d,1);
@@ -71,7 +73,7 @@ mb = K.s;
 % res = get_performance_bqp(Xopt,yopt,Sopt,SDP,info,pgdpath);
 
 %% Solve using MOSEK
-% [cAt,cb,cc,cK] = SDPT3data_SEDUMIdata(SDP0.blk,SDP0.At,SDP0.C,SDP0.b); 
+% [At,b,c,K] = SDPT3data_SEDUMIdata(SDP.blk,tAt,tC,tb); 
 % prob       = convert_sedumi2mosek(At, b, c, K);
 % tic
 % [~,res]    = mosekopt('minimize echo(0)',prob);
