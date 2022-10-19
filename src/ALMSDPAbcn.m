@@ -26,14 +26,17 @@ for iter = 1:MaxIter
     y = y - sigma*Axb;
     yA = reshape(A'*y, n, n);
     DfX = C - yA;
-    lamda = diag(DfX*X);
+    %lamda = diag(DfX*X); % 避免求其他乘积，从而加速
+    lamda = sum(reshape(x.*DfX(:), n, n)); % lamda = diag(DfX*X); 
     S = DfX - diag(lamda);
-    [vS, dS] = eig(S, 'vector');
+    %[vS, dS] = eig(S,'vector');
+    [vS, dS] = mineig(S);
     v = vS(:,1);
     mineigS = dS(1);
     by = b'*y + sum(lamda);
     gap = abs(fval-by)/(abs(by)+abs(fval)+1);
-    [V, e, UY] = svd(Y,'vector');
+    [V, D, UY] = svd(Y);
+    e = diag(D);
     % r = 1;
     % while r < p && e(r+1) > 1e-3*e(1)
     %   r = r + 1;
@@ -93,8 +96,7 @@ Xopt = Y*Y';
             x0 = X0(:);
             Axb0 = At'*x0 - b - y/sigma;
             f = c'*x0 + 0.5*sigma*(Axb0'*Axb0);
-            AxbA = A'*Axb0;
-            yA0 = reshape(AxbA, n, n);
+            yA0 = reshape(A'*Axb0, n, n);
             S0 = C + sigma*yA0;
             store.S = S0;
             store.G = 2*S0*Y;
@@ -103,12 +105,11 @@ Xopt = Y*Y';
 
         % If you want to, you can specify the Riemannian Hessian as well.        
         function [He, store] = hess(Y, Ydot, store)
-            H = 2*store.S*Ydot;
             Xdot = Y*Ydot';
             xdot = Xdot(:);
             AxbdotA = A'*(At'*xdot);
             yAdot = reshape(AxbdotA, n, n);
-            H = H + 4*sigma*(yAdot*Y);
+            H = 2*store.S*Ydot + 4*sigma*(yAdot*Y);
             He = problem.M.ehess2rhess(Y, store.G, H, Ydot);
         end
         
