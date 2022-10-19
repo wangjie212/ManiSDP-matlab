@@ -4,9 +4,10 @@ A = At';
 p = 2;
 sigma = 1e-3;
 gama = 2;
-MaxIter = 300;
+MaxIter = 3000;
 tolgrad = 1e-8;
 tao = 1e-6;
+egrad = zeros(p,n);
 y = zeros(length(b),1);
 Y = [];
 % Call your favorite solver.
@@ -17,7 +18,7 @@ opts.mininner = 5;
 opts.tolgradnorm = tolgrad; % tolerance on gradient norm
 opts.maxiter = 4;
 normb = 1+norm(b);
-
+problem = [];
 timespend = tic;
 for iter = 1:MaxIter
     Y = SDP_ALM_subprog(Y);
@@ -28,15 +29,17 @@ for iter = 1:MaxIter
     neta = norm(Axb)/normb;
     y = y - sigma*Axb;
     yA = reshape(A'*y, n, n);
-    DfX = C - yA;
-    lamda = diag(DfX*X);
+    DfX = C - yA;    
+    lamda = sum(reshape(x.*DfX(:), n, n)); % lamda = diag(DfX*X); 避免求其他乘积，从而加速
     S = DfX - diag(lamda);
-    [vS, dS] = eig(S, 'vector');
+    %[vS, dS] = eig(S, 'vector');
+    [vS, dS] = mineig(S);
     v = vS(:,1)';
     mineigS = abs(dS(1));
     by = b'*y + sum(lamda);
     gap = abs(fval-by)/(abs(by)+abs(fval)+1);
-    [UY, e, V] = svd(Y, 'vector');
+    [UY, D, V] = svd(Y);
+    e = diag(D);
     r = sum(e > 1e-3*e(1)); % r = rank(Y)
     if r == p - 1
         q = UY(end,:);
@@ -50,6 +53,7 @@ for iter = 1:MaxIter
         Y = [Y; zeros(1,n)];
         p = p + 1;
     end
+    % Z = manifold.proj(Y0, [zeros(n, rr-1) v]);
     Y = Y + 0.1*U;
     nrms = sqrt(sum(Y.^2, 1));
     Y = bsxfun(@times, Y, 1./nrms);
@@ -80,24 +84,21 @@ end
             x0 = X0(:);
             Axb0 = At'*x0 - b - y/sigma;
             f = c'*x0 + 0.5*sigma*(Axb0'*Axb0);
-            AxbA = A'*Axb0;
-            yA0 = reshape(AxbA, n, n);
-            S0 = C + sigma*yA0;
-            store.S = S0;
-            store.G = 2*Y*S0;
-            G = problem.M.egrad2rgrad(Y, store.G);
+            yA0 = reshape(A'*Axb0, n, n);
+            S = C + sigma*yA0;
+            egrad = 2*Y*S;            
+            G = egrad - bsxfun(@times, Y, sum(Y.*egrad, 1));
         end
 
         % If you want to, you can specify the Riemannian Hessian as well.
         function [He, store] = hess(Y, Ydot, store)
-            H = 2*Ydot*store.S;
             Xdot = Y'*Ydot;
             xdot = Xdot(:);
             AxbdotA = A'*(At'*xdot);
             yAdot = reshape(AxbdotA, n, n);
-            H = H + 4*sigma*(Y*yAdot);
-            He = problem.M.ehess2rhess(Y, store.G, H, Ydot);
-        end
+            H = 2*Ydot*S + 4*sigma*(Y*yAdot);
+            He = H - bsxfun(@times, Y, sum(Y.*H, 1)) - bsxfun(@times, Ydot, sum(Y.*egrad, 1)); % He = problem.M.ehess2rhess(Y, eG, H, Ydot);
+         end
 
         function M = obliquefactoryNTrans(n, m)
             M.name = @() sprintf('Oblique manifold OB(%d, %d)', n, m);
@@ -114,7 +115,7 @@ end
                 PXehess = projection(X, ehess);
                 inners = sum(X.*egrad, 1);
                 rhess = PXehess - bsxfun(@times, U, inners);
-                %rhess = PXehess - U.*inners;  % optimized by huliangbing
+                %rhess = PXehess - U.*reshape(inners,1,size(X,2));  % optimized by huliangbing
             end
 
             M.exp = @exponential;
