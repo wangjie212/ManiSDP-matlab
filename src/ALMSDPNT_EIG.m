@@ -36,6 +36,9 @@ for iter = 1:MaxIter
     %[vS, dS] = mineig(S);
     d = dS(dS<0);
     if isempty(d)  % S没有负的特征值，结束
+       fprintf('Iter:%d, fval:%0.8f, gap:%0.1e, mineigS:%0.1e, pinf:%0.1e, r:%d, p:%d, sigam:%0.3f, time:%0.2fs\n', ...
+                iter,    fval,        gap,      min(dS),       neta,       r,    p,    sigma,   toc(timespend));
+
         break;
     end
     rmiusS = min(length(d), 8); % 取小，防止Y增加太大
