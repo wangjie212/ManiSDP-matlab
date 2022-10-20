@@ -1,9 +1,9 @@
 function [Y, S, y, fval] = ALMSDP(At, b, c, mb)
 C = reshape(c, mb, mb);
 p = 2;
-sigma = 1e-1;
-% gama = 2;
-MaxIter = 30;
+sigma = 1e-3;
+gama = 2;
+MaxIter = 300;
 tolgrad = 1e-6;
 tao = 1e-6;
 y = zeros(length(b),1);
@@ -55,14 +55,14 @@ for iter = 1:MaxIter
     if max(neta, mS) < tao
         break;
     end
-%    if iter == 1 || neta > 0.8*eta
+   if iter == 1 || neta > 0.8*eta
         % sigma = min(sigma*gama, 1);
-%         if sigma*gama > 1
-%             sigma = 1e-3;
-%         else
-%            sigma = sigma*gama;
-%         end
-%    end
+        if sigma*gama > 1
+            sigma = 1e-3;
+        else
+            sigma = sigma*gama;
+        end
+   end
     eta = neta;
 end
 end

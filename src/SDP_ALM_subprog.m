@@ -58,7 +58,7 @@ function  [Y, fval, info] = SDP_ALM_subprog(At, b, c, C, n, p, sigma, y, Y0, U, 
     opts.maxinner = 20;     % maximum Hessian calls per iteration
     opts.mininner = 5;
     opts.tolgradnorm = tolgrad; % tolerance on gradient norm
-    opts.maxiter = 7;
+    opts.maxiter = 4;
 %     if ~isempty(U)
 %         g = getGradient(problem, Y0);
 %         h = getHessian(problem, Y0, U);

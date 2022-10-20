@@ -33,7 +33,7 @@ for iter = 1:MaxIter
     mineigS = dS(1);
     by = b'*y + sum(lamda);
     gap = abs(fval-by)/(abs(by)+abs(fval)+1);
-    [V, e, UY] = svd(Y,'vector');
+    [V, e, UY] = svd(Y, 'vector');
     % r = 1;
     % while r < p && e(r+1) > 1e-3*e(1)
     %   r = r + 1;
