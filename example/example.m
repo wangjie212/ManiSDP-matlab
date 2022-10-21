@@ -7,7 +7,7 @@ pgdpath   = '../../STRIDE';
 % sdpnalpath  = '../../SDPNAL+v1.0';
 addpath(genpath(pgdpath));
 %% Generate random binary quadratic program
-d       = 20; % BQP with d variables
+d       = 10; % BQP with d variables
 x       = msspoly('x',d); % symbolic decision variables using SPOTLESS
 Q       = randn(d); Q = (Q + Q')/2; % a random symmetric matrix
 e       = randn(d,1);
