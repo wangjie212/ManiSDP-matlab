@@ -1,8 +1,8 @@
 function [Y, S, y, fval] = ALMSDP(At, b, c, mb)
 C = reshape(c, mb, mb);
 p = 2;
-sigma = 1e-3;
-gama = 2;
+sigma = 1e-0;
+gama = 1;
 MaxIter = 300;
 tolgrad = 1e-6;
 tao = 1e-6;

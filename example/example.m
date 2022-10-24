@@ -6,8 +6,9 @@ addpath(genpath(spotpath));
 pgdpath   = '../../STRIDE';
 % sdpnalpath  = '../../SDPNAL+v1.0';
 addpath(genpath(pgdpath));
+rng(0);
 %% Generate random binary quadratic program
-d       = 10; % BQP with d variables
+d       = 30; % BQP with d variables
 x       = msspoly('x',d); % symbolic decision variables using SPOTLESS
 Q       = randn(d); Q = (Q + Q')/2; % a random symmetric matrix
 e       = randn(d,1);
@@ -103,9 +104,8 @@ mb = K.s;
 % nDRS(sb, sB, M1, M2, mb, fval, sol, lb, 1e-6);
 % toc
 % fval = DRSPOP(At, b, c, mb, sb, sB, M1, M2);
-rng(0);
 tic
-[Y, S, y, fval] = ALMSDPAbcn(At, b, c, mb);
+[Y, S, y, fval] = ALMSDPNT_EIG(At, b, c, mb);
 toc
 % tic
 % [X, S, y, cx] = nALMSDP(At, b, c, mb, 1e-6);

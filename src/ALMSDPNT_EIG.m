@@ -4,7 +4,7 @@ A = At';
 p = 2;
 sigma = 1e-3;
 gama = 2;
-MaxIter = 3000;
+MaxIter = 300;
 tolgrad = 1e-8;
 tao = 1e-6;
 egrad = zeros(p,n);
@@ -20,6 +20,7 @@ opts.maxiter = 4;
 normb = 1+norm(b);
 problem = [];
 timespend = tic;
+flag = 0;
 for iter = 1:MaxIter
     Y0 = SDP_ALM_subprog(Y);
     X = Y0'*Y0;
@@ -62,8 +63,10 @@ for iter = 1:MaxIter
     if max(neta, mineigS) < tao
         break;
     end
-    if iter == 1 || neta > 0.7*eta
+    if iter == 1 || neta > 0.8*eta
         % sigma = min(sigma*gama, 1);
+%         if neta < 1e-3
+%             sigma = 1e-3;
         if sigma*gama > 1
             sigma = 1e-3;
         else
