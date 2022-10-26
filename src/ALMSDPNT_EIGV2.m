@@ -1,10 +1,10 @@
-function [X, S, y, fval] = ALMSDPNT_EIGV2(At, b, c, n)
+function [Y, S, y, fval] = ALMSDPNT_EIGV2(At, b, c, n)
 C = reshape(c, n, n);
 A = At';
 p = 2;
 sigma = 1e-3;
 gama = 2;
-MaxIter = 30000;
+MaxIter = 300;
 tolgrad = 1e-8;
 tao = 1e-6;
 egrad = zeros(p,n);
@@ -13,6 +13,7 @@ gap = 1e3;
 normb = 1+norm(b);
 r = p - 1;
 Y = [];
+flag = 1;
 
 problem.costgrad = @costgrad;
 problem.hess = @hess;
@@ -42,7 +43,7 @@ for iter = 1:MaxIter
     [vS, dS] = eig(S,'vector');
     d = dS(dS<0);
     if isempty(d)  % S没有负的特征值，结束
-       fprintf('Iter:%d, fval:%0.8f, gap:%0.1e, mineigS:%0.1e, pinf:%0.1e, r:%d, p:%d, sigam:%0.3f, time:%0.2fs\n', ...
+       fprintf('Iter:%d, fval:%0.8f, gap:%0.1e, mineigS:%0.1e, pinf:%0.1e, r:%d, p:%d, sigma:%0.3f, time:%0.2fs\n', ...
                 iter,    fval,        gap,      min(dS),       neta,       r,    p,    sigma,   toc(timespend));
        break;
     end
@@ -63,12 +64,12 @@ for iter = 1:MaxIter
     Y = [Y0; 0.1*v]; % U = [zeros(p,n) ; v]; Y = Y + 0.1*U;         
     Y = Y./sqrt(sum(Y.^2)); % nrms = sqrt(sum(Y.^2, 1)); Y = bsxfun(@times, Y, 1./nrms);
 
-    fprintf('Iter:%d, fval:%0.8f, gap:%0.1e, mineigS:%0.1e, pinf:%0.1e, r:%d, p:%d, sigam:%0.3f, time:%0.2fs\n', ...
+    fprintf('Iter:%d, fval:%0.8f, gap:%0.1e, mineigS:%0.1e, pinf:%0.1e, r:%d, p:%d, sigma:%0.3f, time:%0.2fs\n', ...
              iter,    fval,       gap,       mineigS,       neta,       r,    p,    sigma,   toc(timespend));
     if max(neta, mineigS) < tao
         break;
     end
-    if iter == 1 || neta > 0.7*eta
+    if iter == 1 || neta > 0.5*eta
         % sigma = min(sigma*gama, 1);
         if sigma*gama > 1
             sigma = 1e-3;
@@ -76,6 +77,19 @@ for iter = 1:MaxIter
             sigma = sigma*gama;
         end
     end
+%     if sigma < 1e-2
+%         sigma = 1;
+%         flag = 0;
+%     end
+%     if iter > 1
+%         if neta > eta 
+%             if flag == 1
+%                 sigma = sigma/gama;
+%             elseif flag == 0
+%                 sigma = min(sigma*gama,5e1);
+%             end
+%         end
+%     end
     eta = neta;
 end
 
@@ -109,7 +123,7 @@ end
         M.norm = @(x, d) norm(d(:));
         M.dist = @(x, y) norm(real(2*asin(.5*sqrt(sum(trnsp(x - y).^2, 1)))));
         M.typicaldist = @() pi*sqrt(m);
-        M.proj = @(X, U) U - X.*sum(X.*U);;
+        M.proj = @(X, U) U - X.*sum(X.*U);
         M.tangent = M.proj;
 
         M.retr = @retraction;
