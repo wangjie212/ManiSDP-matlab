@@ -8,12 +8,12 @@ pgdpath   = '../../STRIDE';
 addpath(genpath(pgdpath));
 rng(0);
 %% Generate random binary quadratic program
-d       = 20; % BQP with d variables
+d       = 10; % BQP with d variables
 x       = msspoly('x',d); % symbolic decision variables using SPOTLESS
 Q       = randn(d); Q = (Q + Q')/2; % a random symmetric matrix
 e       = randn(d,1);
 f       = x'*Q*x + x'*e; % objective function of the BQP
-h       = x.^2 - 1; % equality constraints of the BQP (binary variables)
+h       = [sum(x.^2) - 10]; % equality constraints of the BQP (binary variables)
 % mon = monomials(x, 0:4);
 % coe = randn(length(mon),1);
 % f = coe'*mon;
@@ -83,44 +83,10 @@ mb = K.s;
 % figure; bar(eig(Xopt{1}));
 
 %% Solve using Manopt
-% m = length(b);
-% p = 2;
-% A = At';
-% C = reshape(c, mb, mb);
-% options.maxtime = inf;
-
-% tic
-% [Y, fval, info] = SDP_AdptvALM_subprog(A, At, b, C, c, mb, m, p, options);
-% % X = Y'*Y;
-% tmanipop = toc;
- 
-%% Solve using fmincon
-% fobj = @(y) y'*Q*y + e'*y;
-% [px,cv] = fmincon(fobj,zeros(d,1),[],[],[],[],[],[],@binary)
-
-% addpath(genpath(sdpnalpath));
-% [Y, fval] = mani_admm(SDP, At, b, c, mb, 2, sb, sB, M1, M2, 5);
-% tic
-% nDRS(sb, sB, M1, M2, mb, fval, sol, lb, 1e-6);
-% toc
-% fval = DRSPOP(At, b, c, mb, sb, sB, M1, M2);
 rng(0);
 tic
-[Y, S, y, fval] = ALMSDP(At, b, c, mb);
+[Y, S, y, fval] = ALMSDP0(At, b, c, mb);
 toc
-
-% [SDP0.blk, SDP0.At, SDP0.C, SDP0.b, SDP0.dA] = SOStoSDP_C(f, h, x, kappa);
-% tic
-% [X, y, S] = spadmm(SDP0.blk, SDP0.At, SDP0.C, SDP0.b, SDP0.dA);
-% toc
-% [M, fval] = manisos(SDP0, At, b, c, mb, sb, sB, M1, M2, 1);
-
-% Solve using ADMM+
-% options.tol = 1e-6;
-% tic
-% [obj,aX,~,ay,aS] = admmplus(SDP0.blk, SDP0.At, SDP0.C, SDP0.b, [], [], [], [], [], options);
-% % [obj,aX,~,ay,aS] = sdpnalplus(SDP.blk, SDP.At, SDP.C, SDP.b, [], [], [], [], [], options);
-% toc
 
 % disp(['Mosek: optimum = ' num2str(obj(1)) ', time = ' num2str(tmosek) 's'])
 % disp(['Stride: optimum = ' num2str(outPGD.pobj) ', time = ' num2str(time_pgd) 's'])

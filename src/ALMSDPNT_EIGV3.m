@@ -52,6 +52,8 @@ for iter = 1:MaxIter
     %[vS, dS] = mineig(S);
     dS = diag(dS);
     d = dS(dS<0);
+    by = b'*y + sum(lamda);
+    gap = abs(fval-by)/(abs(by)+abs(fval)+1);
     if isempty(d)  % S没有负的特征值，结束
        fprintf('Iter:%d, fval:%0.8f, gap:%0.1e, mineigS:%0.1e, pinf:%0.1e, r:%d, p:%d, sigam:%0.3f, time:%0.2fs\n', ...
                 iter,    fval,        gap,      min(dS),       neta,       r,    p,    sigma,   toc(timespend));
@@ -60,8 +62,6 @@ for iter = 1:MaxIter
     rmiusS = min(length(d), 8); % 取小，防止Y增加太大
     v = vS(:,1:rmiusS)'; % 取主要的不大于8个负特征值对应的特征向量组
     mineigS = abs(d(1));
-    by = b'*y + sum(lamda);
-    gap = abs(fval-by)/(abs(by)+abs(fval)+1);
     [~, D, V] = svd(Y0);
     e = diag(D);
     r = sum(e > 1e-3*e(1)); % r = rank(Y)
@@ -79,7 +79,7 @@ for iter = 1:MaxIter
     if max(neta, mineigS) < tao
         break;
     end
-    if iter == 1 || neta > 0.7*eta
+    if iter == 1 || neta > 0.5*eta
         % sigma = min(sigma*gama, 1);
         if sigma*gama > 1
             sigma = 1e-3;

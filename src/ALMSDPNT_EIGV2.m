@@ -5,11 +5,10 @@ p = 2;
 sigma = 1e-3;
 gama = 2;
 MaxIter = 300;
-tolgrad = 1e-8;
+tolgrad = 1e-4;
 tao = 1e-6;
 egrad = zeros(p,n);
 y = zeros(length(b),1);
-gap = 1e3;
 normb = 1+norm(b);
 r = p - 1;
 Y = [];
@@ -36,12 +35,15 @@ for iter = 1:MaxIter
     neta = norm(Axb)/normb;
     y = y - sigma*Axb;
     yA = reshape(A'*y, n, n);
-    DfX = C - yA;    
-    lamda = sum(reshape(x.*DfX(:), n, n)); % lamda = diag(DfX*X); 避免求其他乘积，从而加速
-    S = DfX - diag(lamda);
+    eS = C - yA;    
+    lamda = sum(reshape(x.*eS(:), n, n)); % lamda = diag(eS*X); 避免求其他乘积，从而加速
+    S = eS - diag(lamda);
     S = (S + S')/2;
     [vS, dS] = eig(S,'vector');
     d = dS(dS<0);
+    sy = norm(Y0*eS);
+    by = b'*y + sum(lamda);
+    gap = abs(fval-by)/(abs(by)+abs(fval)+1);
     if isempty(d)  % S没有负的特征值，结束
        fprintf('Iter:%d, fval:%0.8f, gap:%0.1e, mineigS:%0.1e, pinf:%0.1e, r:%d, p:%d, sigma:%0.3f, time:%0.2fs\n', ...
                 iter,    fval,        gap,      min(dS),       neta,       r,    p,    sigma,   toc(timespend));
@@ -49,9 +51,7 @@ for iter = 1:MaxIter
     end
     rmiusS = min(length(d), 8); % 取小，防止Y增加太大
     v = vS(:,1:rmiusS)'; % 取主要的不大于8个负特征值对应的特征向量组
-    mineigS = abs(d(1));
-    by = b'*y + sum(lamda);
-    gap = abs(fval-by)/(abs(by)+abs(fval)+1);
+    mineigS = d(1);
     [~, D, V] = svd(Y0);
     e = diag(D);
     r = sum(e > 1e-3*e(1)); % r = rank(Y)
@@ -71,11 +71,14 @@ for iter = 1:MaxIter
     end
     if iter == 1 || neta > 0.5*eta
         % sigma = min(sigma*gama, 1);
-        if sigma*gama > 1
-            sigma = 1e-3;
-        else
-            sigma = sigma*gama;
-        end
+%         if sigma*gama > 1
+%             sigma = 1e-3;
+%         else
+        if sigma < 1 || sy < 2
+              sigma = gama*sigma;
+          elseif sy >= 2
+              sigma = 1e-3;
+          end
     end
 %     if sigma < 1e-2
 %         sigma = 1;

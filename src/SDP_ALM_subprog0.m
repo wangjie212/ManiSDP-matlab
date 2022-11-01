@@ -1,6 +1,7 @@
-function  [Y, fval, info] = SDP_ALM_subprog(At, b, c, C, n, p, sigma, y, Y0, U, tolgrad)
+function  [Y, fval, info] = SDP_ALM_subprog0(At, b, c, C, n, p, sigma, y, Y0, U, tolgrad)
     % Pick the manifold of n-by-p matrices with unit norm rows.
-    manifold = obliquefactory(p, n, true);
+    % manifold = obliquefactory(p, n, true);
+    manifold = euclideanfactory(n, p);
     % manifold = elliptopefactory(n, p);
     % manifold = symfixedrankYYfactory(n, p);
     % manifold = spectrahedronfactory(n, p);
@@ -22,8 +23,8 @@ function  [Y, fval, info] = SDP_ALM_subprog(At, b, c, C, n, p, sigma, y, Y0, U, 
     end
     
     % Define the Riemannian gradient.
-    problem.egrad = @egrad;
-    function [G, store] = egrad(Y, store)
+    problem.grad = @grad;
+    function [G, store] = grad(Y, store)
 %         X = Y*Y';
 %         x = X(:);
 %         Axb = At'*x - b - y/sigma;
@@ -35,8 +36,8 @@ function  [Y, fval, info] = SDP_ALM_subprog(At, b, c, C, n, p, sigma, y, Y0, U, 
     end
 
     % If you want to, you can specify the Riemannian Hessian as well.
-    problem.ehess = @ehess;
-    function [H, store] = ehess(Y, Ydot, store)
+    problem.hess = @hess;
+    function [H, store] = hess(Y, Ydot, store)
 %         X = Y*Y';
 %         x = X(:);
 %         Axb = At'*x - b - y/sigma;

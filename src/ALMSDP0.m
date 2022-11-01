@@ -1,7 +1,7 @@
-function [Y, S, y, fval] = ALMSDP(At, b, c, mb)
+function [Y, S, y, fval] = ALMSDP0(At, b, c, mb)
 C = reshape(c, mb, mb);
 p = 2;
-sigma = 1e-3;
+sigma = 1;
 gama = 2;
 MaxIter = 300;
 tolgrad = 1e-6;
@@ -11,7 +11,7 @@ normb = 1+norm(b);
 Y = [];
 U = [];
 for iter = 1:MaxIter
-    [Y, ~, ~] = SDP_ALM_subprog(At, b, c, C, mb, p, sigma, y, Y, U, tolgrad);
+    [Y, ~, ~] = SDP_ALM_subprog0(At, b, c, C, mb, p, sigma, y, Y, U, tolgrad);
     X = Y*Y';
     x = X(:);
     fval = x'*c;
@@ -19,41 +19,37 @@ for iter = 1:MaxIter
     neta = norm(Axb)/normb;
     y = y - sigma*Axb;
     yA = reshape(y'*At', mb, mb);
-    eS = C - yA;
-    lamda = sum(reshape(x.*eS(:), mb, mb));
-    S = eS - diag(lamda);
+    S = C - yA;
     [vS, dS] = eig(S, 'vector');
-    mS = min(dS)/(1+norm(S));
-    sy = norm(eS*Y);
+    mS = min(dS)/(1+dS(end));
 %     by = b'*y + sum(lamda);
 %     gap = abs(cx-by)/abs(cx+by);
     [V,D,~] = svd(Y);
-    e = diag(D);
-    r = sum(e > 1e-3*e(1));
+    if size(D, 2) > 1
+        e = diag(D);
+    else
+        e = D(1);
+    end
+    r = sum(e > 1e-1*e(1));
     if r <= p - 1         
         Y = V(:,1:r)*diag(e(1:r));
         p = r;
     end
-    nne = max(min(sum(dS < 0), 8), 1);
+    nne = min(sum(dS < 0), 4);
     p = p + nne;
     Y = [Y 0.1*vS(:,1:nne)];
-    for i = 1:mb
-        Y(i,:) = Y(i,:)/norm(Y(i,:));
-    end
     disp(['ALM iter ' num2str(iter) ': fval = ' num2str(fval,10) ', rank X = ' num2str(r) ', mS = ' num2str(mS) ', eta = ' num2str(neta) ', p = ' num2str(p) ', sigma = ' num2str(sigma)]);
     if max(neta, abs(mS)) < tao
         break;
     end
-   if iter == 1 || neta > 0.5*eta
-%         if gama*sigma > 1
-%             sigma = 1e-3;
-%         else
-          if sigma < 1 || sy < 2
+    if iter == 1 || neta > 0.5*eta
+        if sigma < 1
               sigma = gama*sigma;
-          elseif sy >= 2
-              sigma = 1e-3;
-          end
-   end
+        else
+              sigma = 1;
+        end
+    else
+    end
     eta = neta;
 end
 end
