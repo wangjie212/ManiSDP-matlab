@@ -1,4 +1,4 @@
-function [X, S, y, fval] = ALMSDPNT_EIGV3(At, b, c, n)
+function [Y, S, y, fval] = ALMSDPNT_EIGV3(At, b, c, n)
 % Solve standar linear SDP problem via Augmented Lagrangian Method  based 
 % on Manifolds Optimization
 % 
@@ -7,18 +7,21 @@ function [X, S, y, fval] = ALMSDPNT_EIGV3(At, b, c, n)
 %       problem using cost, grad and hess function, while ALMSDPNT_EIGV2
 %       using costgrad and hess function. 
 
+% Change log
+%   WJ 2022-11-1:
+%   merge the fprintf. 
+
 C = reshape(c, n, n);
 A = At';
 p = 2;
 sigma = 1e-3;
 gama = 2;
-MaxIter = 30000;
-tolgrad = 1e-8;
+MaxIter = 300;
+tolgrad = 1e-6;
 tao = 1e-6;
-egrad = zeros(p,n);
-y = zeros(length(b),1);
-gap = 1e3;
-normb = 1+norm(b);
+egrad = zeros(p, n);
+y = zeros(length(b), 1);
+normb = 1 + norm(b);
 r = p - 1;
 Y = [];
 
@@ -35,48 +38,37 @@ opts.maxiter = 4;
 timespend = tic;
 for iter = 1:MaxIter
     problem.M = obliquefactoryNTrans(p, n);
-    Y0 = trustregions(problem, Y, opts);
-    X = Y0'*Y0;
+    Y = trustregions(problem, Y, opts);
+    X = Y'*Y;
     x = X(:);
     fval = c'*x;
     Axb = At'*x - b;
     neta = norm(Axb)/normb;
     y = y - sigma*Axb;
     yA = reshape(A'*y, n, n);
-    DfX = C - yA;    
-    lamda = sum(reshape(x.*DfX(:), n, n)); % lamda = diag(DfX*X); 避免求其他乘积，从而加速
-    S = DfX - diag(lamda);
-    S = (S + S')/2;
-    [vS, dS] = eig(S);
-    %[vS, dS] = eigs(S, 8,'sr');
-    %[vS, dS] = mineig(S);
-    dS = diag(dS);
-    d = dS(dS<0);
+    eS = C - yA;    
+    lamda = sum(reshape(x.*eS(:), n, n)); % lamda = diag(DfX*X); 避免求其他乘积，从而加速
+    S = eS - diag(lamda);
+    % S = (S + S')/2;
+    [vS, dS] = eig(S, 'vector');
+    mS = min(dS)/(1+dS(end));
     by = b'*y + sum(lamda);
     gap = abs(fval-by)/(abs(by)+abs(fval)+1);
-    if isempty(d)  % S没有负的特征值，结束
-       fprintf('Iter:%d, fval:%0.8f, gap:%0.1e, mineigS:%0.1e, pinf:%0.1e, r:%d, p:%d, sigam:%0.3f, time:%0.2fs\n', ...
-                iter,    fval,        gap,      min(dS),       neta,       r,    p,    sigma,   toc(timespend));
-       break;
-    end
-    rmiusS = min(length(d), 8); % 取小，防止Y增加太大
-    v = vS(:,1:rmiusS)'; % 取主要的不大于8个负特征值对应的特征向量组
-    mineigS = abs(d(1));
-    [~, D, V] = svd(Y0);
+    [~, D, V] = svd(Y);
     e = diag(D);
-    r = sum(e > 1e-3*e(1)); % r = rank(Y)
+    r = sum(e > 1e-3*e(1));
     if r <= p - 1         
-        % Y0 = diag(e(1:r))*V(:,1:r)';  % r个主分量
-        Y0 = V(:,1:r)'.*e(1:r);  % r个主分量
+        Y = V(:,1:r)'.*e(1:r);
         p = r;
     end
-    p = p + rmiusS;
-    Y = [Y0; 0.1*v]; % U = [zeros(p,n) ; v]; Y = Y + 0.1*U;         
-    Y = Y./sqrt(sum(Y.^2)); % nrms = sqrt(sum(Y.^2, 1)); Y = bsxfun(@times, Y, 1./nrms);
+    nne = max(min(sum(dS < 0), 4), 1);
+    p = p + nne;
+    Y = [Y; 0.1*vS(:,1:nne)'];        
+    Y = Y./sqrt(sum(Y.^2));
 
     fprintf('Iter:%d, fval:%0.8f, gap:%0.1e, mineigS:%0.1e, pinf:%0.1e, r:%d, p:%d, sigam:%0.3f, time:%0.2fs\n', ...
-             iter,    fval,       gap,       mineigS,       neta,       r,    p,    sigma,   toc(timespend));
-    if max(neta, mineigS) < tao
+             iter,    fval,       gap,       mS,       neta,       r,    p,    sigma,   toc(timespend));
+    if max(neta, abs(mS)) < tao
         break;
     end
     if iter == 1 || neta > 0.5*eta
@@ -128,7 +120,7 @@ end
 
         M.retr = @retraction;
         % Retraction on the oblique manifold
-        function y = retraction(x, d, t)            
+        function y = retraction(x, d)            
             xtd = x + d;
             y = xtd./sqrt(sum(xtd.^2)); % y = normalize_columns(x + td);
         end

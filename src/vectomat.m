@@ -5,7 +5,7 @@ M = zeros(n, n);
 l = 0;
 for i = 1:n
    M(1:i-1, i) = v(l+1:l+i-1)/sqrt(2);
-   M(i, 1:i-1) = v(l+1:l+i-1)/sqrt(2);
+   M(i, 1:i-1) = M(1:i-1, i);
    M(i, i) = v(l+i);
    l = l + i;
 end
