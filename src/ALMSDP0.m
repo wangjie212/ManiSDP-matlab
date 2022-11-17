@@ -1,54 +1,56 @@
-function [Y, S, y, fval] = ALMSDP0(At, b, c, mb)
-C = reshape(c, mb, mb);
-p = 2;
-sigma = 1;
+function [Y, S, y, fval, error] = ALMSDP0(At, b, c, n)
+C = reshape(c, n, n);
+A = At';
+p = 1;
+sigma = 1e1;
 gama = 2;
 MaxIter = 300;
-tolgrad = 1e-6;
-tao = 1e-6;
+tolgrad = 1e-8;
+tao = 1e-8;
 y = zeros(length(b),1);
-normb = 1+norm(b);
+normb = 1 + norm(b);
 Y = [];
-U = [];
+
+timespend = tic;
 for iter = 1:MaxIter
-    [Y, ~, ~] = SDP_ALM_subprog0(At, b, c, C, mb, p, sigma, y, Y, U, tolgrad);
+    Y = SDP_ALM_subprog0(At, A, b, c, C, n, p, sigma, y, Y, tolgrad);
     X = Y*Y';
     x = X(:);
-    fval = x'*c;
-    Axb = At'*x - b;
+    fval = c'*x;
+    Axb = A*x - b;
     neta = norm(Axb)/normb;
     y = y - sigma*Axb;
-    yA = reshape(y'*At', mb, mb);
-    S = C - yA;
+    S = C - reshape(y'*A, n, n);
     [vS, dS] = eig(S, 'vector');
-    mS = min(dS)/(1+dS(end));
-%     by = b'*y + sum(lamda);
-%     gap = abs(cx-by)/abs(cx+by);
-    [V,D,~] = svd(Y);
+    mS = abs(min(dS))/(1+dS(end));
+    by = b'*y;
+    gap = abs(fval-by)/(abs(by)+abs(fval)+1);
+    [V, D, ~] = svd(Y);
     if size(D, 2) > 1
         e = diag(D);
     else
         e = D(1);
     end
-    r = sum(e > 1e-1*e(1));
+    r = sum(e > 1e-3*e(1));
     if r <= p - 1         
         Y = V(:,1:r)*diag(e(1:r));
         p = r;
     end
-    nne = min(sum(dS < 0), 4);
+    nne = min(sum(dS < 0), 8);
     p = p + nne;
     Y = [Y 0.1*vS(:,1:nne)];
-    disp(['ALM iter ' num2str(iter) ': fval = ' num2str(fval,10) ', rank X = ' num2str(r) ', mS = ' num2str(mS) ', eta = ' num2str(neta) ', p = ' num2str(p) ', sigma = ' num2str(sigma)]);
-    if max(neta, abs(mS)) < tao
+    fprintf('Iter:%d, fval:%0.8f, gap:%0.1e, mineigS:%0.1e, pinf:%0.1e, r:%d, p:%d, sigam:%0.3f, time:%0.2fs\n', ...
+             iter,    fval,       gap,       mS,       neta,       r,    p,    sigma,   toc(timespend));
+    error = max([neta, gap, mS]);
+    if error < tao
         break;
     end
-    if iter == 1 || neta > 0.5*eta
-        if sigma < 1
+    if iter == 1 || neta > 0.7*eta
+        if sigma < 1e4
               sigma = gama*sigma;
         else
-              sigma = 1;
+              sigma = 1e2;
         end
-    else
     end
     eta = neta;
 end

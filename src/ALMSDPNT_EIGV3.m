@@ -1,4 +1,4 @@
-function [Y, S, y, fval] = ALMSDPNT_EIGV3(At, b, c, n)
+function [Y, S, y, fval, error] = ALMSDPNT_EIGV3(At, b, c, n)
 % Solve standar linear SDP problem via Augmented Lagrangian Method  based 
 % on Manifolds Optimization
 % 
@@ -17,12 +17,11 @@ p = 2;
 sigma = 1e-3;
 gama = 2;
 MaxIter = 300;
-tolgrad = 1e-6;
-tao = 1e-6;
+tolgrad = 1e-8;
+tao = 1e-8;
 egrad = zeros(p, n);
 y = zeros(length(b), 1);
 normb = 1 + norm(b);
-r = p - 1;
 Y = [];
 
 problem.cost = @cost;
@@ -31,7 +30,6 @@ problem.hess = @hess;
 opts.subproblemsolver = @trs_tCG_cached; % Call your favorite solver.
 opts.verbosity = 0;     % Set to 0 for no output, 2 for normal output
 opts.maxinner = 20;     % maximum Hessian calls per iteration
-opts.mininner = 5;
 opts.tolgradnorm = tolgrad; % tolerance on gradient norm
 opts.maxiter = 4;
 
@@ -42,17 +40,18 @@ for iter = 1:MaxIter
     X = Y'*Y;
     x = X(:);
     fval = c'*x;
-    Axb = At'*x - b;
+    Axb = A*x - b;
     neta = norm(Axb)/normb;
     y = y - sigma*Axb;
-    yA = reshape(A'*y, n, n);
-    eS = C - yA;    
-    lamda = sum(reshape(x.*eS(:), n, n)); % lamda = diag(DfX*X); 避免求其他乘积，从而加速
-    S = eS - diag(lamda);
+    yA = reshape(At*y, n, n);
+    eS = C - yA;
+    lambda = sum(reshape(x.*eS(:), n, n));
+    S = eS - diag(lambda);
     % S = (S + S')/2;
     [vS, dS] = eig(S, 'vector');
-    mS = min(dS)/(1+dS(end));
-    by = b'*y + sum(lamda);
+    mS = abs(min(dS))/(1+dS(end));
+    % sy = norm(Y*eS);
+    by = b'*y + sum(lambda);
     gap = abs(fval-by)/(abs(by)+abs(fval)+1);
     [~, D, V] = svd(Y);
     e = diag(D);
@@ -61,22 +60,26 @@ for iter = 1:MaxIter
         Y = V(:,1:r)'.*e(1:r);
         p = r;
     end
-    nne = max(min(sum(dS < 0), 4), 1);
+    nne = max(min(sum(dS < 0), 8), 1);
     p = p + nne;
     Y = [Y; 0.1*vS(:,1:nne)'];        
     Y = Y./sqrt(sum(Y.^2));
 
     fprintf('Iter:%d, fval:%0.8f, gap:%0.1e, mineigS:%0.1e, pinf:%0.1e, r:%d, p:%d, sigam:%0.3f, time:%0.2fs\n', ...
              iter,    fval,       gap,       mS,       neta,       r,    p,    sigma,   toc(timespend));
-    if max(neta, abs(mS)) < tao
+    error = max([neta, gap, mS]);
+    if error < tao
         break;
     end
-    if iter == 1 || neta > 0.5*eta
-        % sigma = min(sigma*gama, 1);
-        if sigma*gama > 1
-            sigma = 1e-3;
+    if iter == 1 || neta > 0.7*eta
+        if sigma > 1
+            sigma = 1e-2;
         else
             sigma = sigma*gama;
+% if sigma < 1 || sy < 2
+%               sigma = gama*sigma;
+%           elseif sy >= 2
+%               sigma = 1e-3;
         end
     end
     eta = neta;
@@ -85,15 +88,14 @@ end
     function [f, store] = cost(Y, store)
         X0 = Y'*Y;
         x0 = X0(:);
-        Axb = At'*x0 - b - y/sigma;
+        Axb = A*x0 - b - y/sigma;
         f = c'*x0 + 0.5*sigma*(Axb'*Axb);
     end
 
     function [G, store] = grad(Y, store)
-        yA0 = reshape(A'*Axb, n, n);
+        yA0 = reshape(At*Axb, n, n);
         S = C + sigma*yA0;
         egrad = 2*Y*S;
-        % G = egrad - bsxfun(@times, Y, sum(Y.*egrad, 1));
         G = egrad - Y.*sum(Y.*egrad);
     end
 
@@ -101,10 +103,9 @@ end
     function [He, store] = hess(Y, Ydot, store)
         Xdot = Y'*Ydot;
         xdot = Xdot(:);
-        AxbdotA = A'*(At'*xdot);
+        AxbdotA = At*(A*xdot);
         yAdot = reshape(AxbdotA, n, n);
         H = 2*Ydot*S + 4*sigma*(Y*yAdot);
-        % He = H - bsxfun(@times, Y, sum(Y.*H, 1)) - bsxfun(@times, Ydot, sum(Y.*egrad, 1)); % He = problem.M.ehess2rhess(Y, eG, H, Ydot);
         He = H - Y.*sum(Y.*H) - Ydot.*sum(Y.*egrad);
     end
 
