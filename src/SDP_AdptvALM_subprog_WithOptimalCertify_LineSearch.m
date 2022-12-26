@@ -127,5 +127,4 @@ function  [Xopt, Sopt, y, fopt] = SDP_AdptvALM_subprog_WithOptimalCertify_LineSe
         AxbdotAM = reshape(AxbdotA, n, n);
         H = H + 4*AxbdotAM*Y;
     end
-
 end

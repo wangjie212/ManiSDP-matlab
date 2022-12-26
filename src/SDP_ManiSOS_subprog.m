@@ -137,5 +137,4 @@ function [xfinal, fval, info] = SDP_ManiSOS_subprog1(A, At, b, C, c, n, m, p, Y0
          H.Y = rho*(-store.V *Ydot - Vdot*Y + 2*S*Ydot + Ydot*(Y'*Y));
          H.y = -b + 0.5*rho*((ydot'*A)*At)' + 0.5*rho*((Sdot(:)-c+x/rho)'*At)';
      end
-
 end

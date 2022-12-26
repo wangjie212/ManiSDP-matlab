@@ -76,7 +76,6 @@ C = full(reshape(c, mb, mb));
 
 %% Solve using MOSEK
 % [At,b,c,K] = SDPT3data_SEDUMIdata(SDP.blk,tAt,tC,tb); 
-
 % prob       = convert_sedumi2mosek(At, b, c, K);
 % tic
 % [~,res]    = mosekopt('minimize echo(3)',prob);

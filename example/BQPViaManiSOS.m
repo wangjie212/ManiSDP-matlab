@@ -35,4 +35,3 @@ C = reshape(c,n,n);
 p = 2;
 
 [xfinal, fval] = SDP_ManiSOS_subprog(A, At, b, C, c, n, m, p,[]);
-

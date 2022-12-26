@@ -102,5 +102,4 @@ function  [xfinal, fval, info] = SDP_AdptvALM_obliqueNT_subprog(A, At, b, C, c, 
         yAdot = reshape(AxbdotA, n, n);
         H = H + 8 * rho*(Y*yAdot);
     end
-
 end

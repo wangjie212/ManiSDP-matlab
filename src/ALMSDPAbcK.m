@@ -105,5 +105,4 @@ Xopt = Y*Y';
 
         [Y, fval, info] = trustregions(problem, Y0, opts);
     end
-
 end
