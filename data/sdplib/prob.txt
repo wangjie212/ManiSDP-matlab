@@ -1,0 +1,5 @@
+gpp
+mcp
+qap
+qp
+theta
