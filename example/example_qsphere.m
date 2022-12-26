@@ -6,7 +6,7 @@ sdpnalpath  = '../../SDPNAL+v1.0';
 
 %% Generate random quartic program
 rng(1);
-d = 20;
+d = 40;
 x = msspoly('x', d);
 mon = monomials(x, 0:4);
 coe = randn(length(mon), 1);
@@ -111,8 +111,7 @@ C = full(reshape(c, mb, mb));
 %% Solve using ManiSDP
 rng(0);
 tic
-[~, ~, ~, fval, emani] = ALMSDP0(At, b, c, mb);
-% [~, ~, ~, fval, emani] = ALM_quotient(At, b, c, mb);
+[~, ~, ~, fval, emani] = ManiSDP(At, b, c, mb);
 tmani = toc;
 
 %% Solve using SDPNAL+

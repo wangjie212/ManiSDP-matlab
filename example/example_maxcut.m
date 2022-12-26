@@ -76,7 +76,7 @@ tlr = toc;
 %% Solve using ManiSDP
 rng(0);
 tic
-[~, ~, fval, emani] = SDP_unitdiag(C);
+[~, ~, fval, emani] = ManiSDP_unitdiag_noaffine(C);
 tmani = toc;
 
 %% Solve using SDPNAL+

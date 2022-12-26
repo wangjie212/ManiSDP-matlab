@@ -71,35 +71,35 @@ fprintf('Relative suboptimality: %3.2e.\n',subopt);
 %}
 
 %% Solve using STRIDE
-options.pgdStepSize     = 10; % step size, default 10
-% options.maxiterPGD      = 10; % maximum outer iterations for STRIDE, default 5-10
-options.SDPNALpath      = sdpnalpath; % provide path to SDPNAL
-options.tolADMM         = 1e-4; % tolerance for warmstart, decrease this parameter for a better warmstart (but takes more time)
-options.tolPGD          = 1e-8; % tolerance on KKT residual of the SDP
-% options.lbfgseps        = false;
-pgdopts.maxiterLBFGS    = 1000;
-pgdopts.maxiterSGS      = 300;
-options.rrOpt           = 1:3; % round the leading 3 eigenvectors to generate hypotheses
-options.rrFunName       = 'local_search_quasar'; % name of the .m file that implements the local search
-
-% Primal initialization
-% [R_gnc,info_gnc]    = GNC_Wahba(a,wb,betasq,1.4);
-% q_gnc               = rotm2quat(R_gnc); q_gnc = [q_gnc(2:4),q_gnc(1)]';
-% v_gnc               = kron([1;info_gnc.theta_gnc],q_gnc);
-% X0                  = {v_gnc*v_gnc'};
-
-% call STRIDE
-rng(0);
-tic
-[outPGD,X,y,S]     = PGDSDP(SDP.blk, SDP.At, SDP.b, SDP.C, [], options);
-by = b'*y;
-gap = abs(outPGD.pobj-by)/(abs(by)+abs(outPGD.pobj)+1);
-x = X{1}(:);
-eta = norm(At'*x - b)/(1+norm(b));
-[~, dS] = eig(S{1}, 'vector');
-mS = abs(min(dS))/(1+dS(end));
-epgd = max([gap, eta, mS]);
-time_pgd = toc;
+% options.pgdStepSize     = 10; % step size, default 10
+% % options.maxiterPGD      = 10; % maximum outer iterations for STRIDE, default 5-10
+% options.SDPNALpath      = sdpnalpath; % provide path to SDPNAL
+% options.tolADMM         = 1e-4; % tolerance for warmstart, decrease this parameter for a better warmstart (but takes more time)
+% options.tolPGD          = 1e-8; % tolerance on KKT residual of the SDP
+% % options.lbfgseps        = false;
+% pgdopts.maxiterLBFGS    = 1000;
+% pgdopts.maxiterSGS      = 300;
+% options.rrOpt           = 1:3; % round the leading 3 eigenvectors to generate hypotheses
+% options.rrFunName       = 'local_search_quasar'; % name of the .m file that implements the local search
+% 
+% % Primal initialization
+% % [R_gnc,info_gnc]    = GNC_Wahba(a,wb,betasq,1.4);
+% % q_gnc               = rotm2quat(R_gnc); q_gnc = [q_gnc(2:4),q_gnc(1)]';
+% % v_gnc               = kron([1;info_gnc.theta_gnc],q_gnc);
+% % X0                  = {v_gnc*v_gnc'};
+% 
+% % call STRIDE
+% rng(0);
+% tic
+% [outPGD,X,y,S]     = PGDSDP(SDP.blk, SDP.At, SDP.b, SDP.C, [], options);
+% by = b'*y;
+% gap = abs(outPGD.pobj-by)/(abs(by)+abs(outPGD.pobj)+1);
+% x = X{1}(:);
+% eta = norm(At'*x - b)/(1+norm(b));
+% [~, dS] = eig(S{1}, 'vector');
+% mS = abs(min(dS))/(1+dS(end));
+% epgd = max([gap, eta, mS]);
+% time_pgd = toc;
 
 %% Solve using MOSEK
 % prob       = convert_sedumi2mosek(At, b, c, K);
@@ -166,11 +166,11 @@ time_pgd = toc;
 %% Solve using ManiSDP
 rng(0);
 tic
-[Y, S, y, fval, emani] = SDP_trace(At, b/(N+1), c, mb);
+[Y, S, y, fval, emani] = ManiSDP_unittrace(At, b/(N+1), c, mb);
 tmani = toc;
 
 % fprintf('Mosek: optimum = %0.8f, eta = %0.1e, time = %0.2fs\n', mobj(1), emosek, tmosek);
 % fprintf('COPT: optimum = %0.8f, eta = %0.1e, time = %0.2fs\n', vcopt, ecopt, tcopt);
 % fprintf('SDPNAL: optimum = %0.8f, eta = %0.1e, time = %0.2fs\n', objnal(1), enal, tnal);
-fprintf('Stride: optimum = %0.8f, eta = %0.1e, time = %0.2fs\n', outPGD.pobj, epgd, time_pgd);
+% fprintf('Stride: optimum = %0.8f, eta = %0.1e, time = %0.2fs\n', outPGD.pobj, epgd, time_pgd);
 fprintf('ManiSDP: optimum = %0.8f, eta = %0.1e, time = %0.2fs\n', fval*(N+1), emani, tmani);

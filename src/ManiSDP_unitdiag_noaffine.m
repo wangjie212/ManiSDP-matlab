@@ -1,4 +1,8 @@
-function [Y, S, fval, mS] = SDP_unitdiag(C)
+% This function solves linear SDPs with unital diagonal and without extra affine constraints.
+% Min  <C, X>
+% s.t. X_ii = 1, i = 1,...,n.
+
+function [Y, S, fval, mS] = ManiSDP_unitdiag_noaffine(C)
 n = size(C,1);
 c = C(:);
 p = 2;
@@ -12,7 +16,6 @@ U = [];
 problem.cost = @cost;
 problem.grad = @grad;
 problem.hess = @hess;
-% opts.subproblemsolver = @trs_tCG_cached; % Call your favorite solver.
 opts.verbosity = 0;     % Set to 0 for no output, 2 for normal output
 opts.maxinner = 40;     % maximum Hessian calls per iteration
 opts.tolgradnorm = tolgrad; % tolerance on gradient norm
@@ -34,6 +37,11 @@ for iter = 1:MaxIter
     [~, D, V] = svd(Y);
     e = diag(D);
     r = sum(e > 1e-1*e(1));
+    fprintf('Iter:%d, fval:%0.8f, mineigS:%0.1e, r:%d, p:%d, time:%0.2fs\n', ...
+             iter,    fval,       mS,       r,    p,    toc(timespend));
+    if mS < tao
+        break;
+    end
     if r <= p - 1         
         Y = V(:,1:r)'.*e(1:r);
         p = r;
@@ -41,14 +49,9 @@ for iter = 1:MaxIter
     nne = max(min(sum(dS < 0), 8), 1);
 %    U = [zeros(p, n); vS(:,1:nne)'];
     p = p + nne;
- %   Y = [Y; zeros(nne,n)]; 
+%   Y = [Y; zeros(nne,n)]; 
     Y = [Y; 0.5*vS(:,1:nne)'];
     Y = Y./sqrt(sum(Y.^2));
-    fprintf('Iter:%d, fval:%0.8f, mineigS:%0.1e, r:%d, p:%d, time:%0.2fs\n', ...
-             iter,    fval,       mS,       r,    p,    toc(timespend));
-    if mS < tao
-        break;
-    end
 end
 
     function val = co(Y)
@@ -90,9 +93,7 @@ end
         M.dim = @() (n-1)*m;
         M.inner = @(x, d1, d2) d1(:)'*d2(:);
         M.norm = @(x, d) norm(d(:));
-        M.typicaldist = @() pi*sqrt(m);
-        M.proj = @(X, U) U - X.*sum(X.*U);
-        M.tangent = @(X, U) U - X.*sum(X.*U); %M.proj;
+        M.tangent = @(X, U) U - X.*sum(X.*U);
 
         M.retr = @retraction;
         % Retraction on the oblique manifold
@@ -104,7 +105,6 @@ end
         M.rand = @() random(n, m);
         M.lincomb = @matrixlincomb;
         M.zerovec = @(x) zeros(n, m);
-        M.transp = @(x1, x2, d) d - x2.*sum(x2.*d); %M.proj(x2, d);
 
         % Uniform random sampling on the sphere.
         function x = random(n, m)

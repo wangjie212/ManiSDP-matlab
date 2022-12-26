@@ -3,8 +3,8 @@ addpath(genpath(pgdpath));
 sdpnalpath  = '../../SDPNAL+v1.0';
 %% construct space of n1 x n2 hankel matrices (n1 <= n2)
 rng(1);
-n1 = 10;
-n2 = 10;
+n1 = 20;
+n2 = 20;
 [S,k,Scell] = hankel_struct(n1,n2);
 % generate random hankel matrix
 u1 = randn(k,1);
@@ -71,7 +71,7 @@ time_pgd = toc;
 %% Solve using ManiSDP
 rng(0);
 tic
-[~, ~, ~, fval, emani] = ALMSDP0(At, b, c, n);
+[~, ~, ~, fval, emani] = ManiSDP(At, b, c, n);
 tmani = toc;
 
 % fprintf('Mosek: optimum = %0.8f, eta = %0.1e, time = %0.2fs\n', mobj(1), emosek, tmosek);

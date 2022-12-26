@@ -78,7 +78,7 @@ tnal = toc;
 %% Solve using ManiSDP
 rng(0);
 tic
-[~, ~, ~, fval, emani] = ALMSDP0(At, b, c, n);
+[~, ~, ~, fval, emani] = ManiSDP0(At, b, c, n);
 tmani = toc;
 
 % norm(X{1}(1:p,p+1:n)-M)

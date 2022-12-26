@@ -11,14 +11,14 @@ pinf < gradnorm/1e2
 rs
 sigma0 = 1e1
 sigma1 = 1e2
-sigma2 = 1e7
+sigma2 = 1e5
 r0 = 1e-2
 nne = 10
 maxinner = 40
 maxiter = 3
-pinf < gradnorm/6e3
 
 mc
+p0 = 1
 sigma0 = 1e-2
 sigma1 = 1e1
 sigma2 = 1e-1
@@ -29,6 +29,7 @@ maxinner = 10
 maxiter = 6
 
 stls
+p0 = 1
 sigma0 = 1e-2
 sigma1 = 1e-1
 sigma2 = 1e7
