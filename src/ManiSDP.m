@@ -22,7 +22,7 @@ problem.cost = @cost;
 problem.grad = @grad;
 problem.hess = @hess;
 opts.verbosity = 0;     % Set to 0 for no output, 2 for normal output
-opts.maxinner = 40;     % maximum Hessian calls per iteration
+opts.maxinner = 20;     % maximum Hessian calls per iteration
 opts.maxiter = 4;
 opts.tolgradnorm = tolgrad;
 timespend = tic;
@@ -50,7 +50,7 @@ for iter = 1:MaxIter
     else
         e = D(1);
     end
-    r = sum(e > 1e-1*e(1));
+    r = sum(e > 1e-2*e(1));
     fprintf('Iter:%d, fval:%0.8f, gap:%0.1e, mineigS:%0.1e, pinf:%0.1e, gradnorm:%0.1e, r:%d, p:%d, sigma:%0.3f, time:%0.2fs\n', ...
              iter,    fval,       gap,       mS,       pinf,   gradnorm,    r,    p,    sigma,   toc(timespend));
     error = max([pinf, gap, mS]);
@@ -61,11 +61,11 @@ for iter = 1:MaxIter
         Y = V(:,1:r)*diag(e(1:r));
         p = r;
     end
-    nne = min(sum(dS < 0), 8);
-    % U = [zeros(n, p) vS(:,1:nne)];
+    nne = min(sum(dS < 0), 6);
+    U = [zeros(n, p) vS(:,1:nne)];
     p = p + nne;
-    % Y = [Y zeros(n, nne)];
-    Y = [Y 0.1*vS(:,1:nne)];
+    Y = [Y zeros(n, nne)];
+    % Y = [Y 0.02*vS(:,1:nne)];
         
 %     if iter == 1 || pinf > 0.3*opinf
 %         if sigma > 1e3
@@ -76,7 +76,7 @@ for iter = 1:MaxIter
 %     end
 %     opinf = pinf;
     
-    if pinf < gradnorm/4
+    if pinf < gradnorm/1e2
           sigma = max(sigma/gama, sigma_min);
     else
           sigma = min(sigma*gama, sigma_max);

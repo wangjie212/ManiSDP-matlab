@@ -33,6 +33,8 @@ sigma0 = 1e-2
 sigma1 = 1e-1
 sigma2 = 1e7
 r0 = 1e-1
-nne = 6
-maxinner = 20
+nne = 8
+maxinner = 50
 maxiter = 4
+alpha = 0.2
+pinf < gradnorm/4

@@ -6,7 +6,7 @@ sdpnalpath  = '../../SDPNAL+v1.0';
 
 %% Generate random quartic program
 rng(1);
-d = 40;
+d = 10;
 x = msspoly('x', d);
 mon = monomials(x, 0:4);
 coe = randn(length(mon), 1);

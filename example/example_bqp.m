@@ -6,7 +6,7 @@ addpath(genpath(pgdpath));
 
 %% Generate random binary quadratic program
 rng(3);
-d       = 50; % BQP with d variables
+d       = 30; % BQP with d variables
 x       = msspoly('x',d); % symbolic decision variables using SPOTLESS
 Q       = randn(d); Q = (Q + Q')/2; % a random symmetric matrix
 e       = randn(d,1);
@@ -107,26 +107,26 @@ C = full(reshape(c, mb, mb));
 % tlr = toc;
 
 %% Solve using SDPLR
-% rng(0);
-% pars.printlevel = 1;
-% pars.feastol = 1e-8;
-% tic
-% [x,y] = sdplr(At', b, c, K, pars);
-% vlr = c'*x;
-% S = C - reshape(At*y, mb, mb);
-% by = b'*y;
-% gap = abs(vlr-by)/(abs(by)+abs(vlr)+1);
-% eta = norm(At'*x - b)/(1+norm(b));
-% [~, dS] = eig(S, 'vector');
-% mS = abs(min(dS))/(1+dS(end));
-% elr = max([eta, gap, mS]);
-% tlr = toc;
+rng(0);
+pars.printlevel = 1;
+pars.feastol = 1e-8;
+tic
+[x,y] = sdplr(At', b, c, K, pars);
+vlr = c'*x;
+S = C - reshape(At*y, mb, mb);
+by = b'*y;
+gap = abs(vlr-by)/(abs(by)+abs(vlr)+1);
+eta = norm(At'*x - b)/(1+norm(b));
+[~, dS] = eig(S, 'vector');
+mS = abs(min(dS))/(1+dS(end));
+elr = max([eta, gap, mS]);
+tlr = toc;
 
 %% Solve using ManiSDP
-rng(0);
-tic
-[~, ~, ~, fval, emani] = ManiSDP_unitdiag(At, b, c, mb);
-tmani = toc;
+% rng(0);
+% tic
+% [~, ~, ~, fval, emani] = ManiSDP_unitdiag(At, b, c, mb);
+% tmani = toc;
 
 %% Solve using SDPNAL+
 % options.tol = 1e-8;
@@ -145,7 +145,7 @@ tmani = toc;
 
 % fprintf('SDP size: matrix = %i, numeq = %i\n', mb, size(b,1));
 % fprintf('Mosek: optimum = %0.8f, eta = %0.1e, time = %0.2fs\n', mobj(1), emosek, tmosek);
-% fprintf('SDPLR: optimum = %0.8f, eta = %0.1e, time = %0.2fs\n', vlr, elr, tlr);
+fprintf('SDPLR: optimum = %0.8f, eta = %0.1e, time = %0.2fs\n', vlr, elr, tlr);
 % fprintf('SDPNAL: optimum = %0.8f, eta = %0.1e, time = %0.2fs\n', objnal(1), enal, tnal);
 % fprintf('Stride: optimum = %0.8f, eta = %0.1e, time = %0.2fs\n', outPGD.pobj, epgd, time_pgd);
-fprintf('ManiSDP: optimum = %0.8f, eta = %0.1e, time = %0.2fs\n', fval, emani, tmani);
+% fprintf('ManiSDP: optimum = %0.8f, eta = %0.1e, time = %0.2fs\n', fval, emani, tmani);
