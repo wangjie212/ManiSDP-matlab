@@ -1,6 +1,7 @@
 % This function solves linear SDPs with unital diagonal.
 % Min  <C, X>
 % s.t. A(X) = b,
+%      X >= 0,
 %      X_ii = 1, i = 1,...,n.
 
 function [Y, S, y, fval, error] = ManiSDP_unitdiag(At, b, c, n)
@@ -63,11 +64,11 @@ for iter = 1:MaxIter
         p = r;
     end
     nne = max(min(sum(dS < 0), 8), 1);
-    % U = [zeros(p, n); vS(:,1:nne)'];
+    U = [zeros(p, n); vS(:,1:nne)'];
     p = p + nne;
-    % Y = [Y; zeros(nne,n)]; 
-    Y = [Y; 0.1*vS(:,1:nne)'];
-    Y = Y./sqrt(sum(Y.^2));
+    Y = [Y; zeros(nne,n)]; 
+    % Y = [Y; 0.1*vS(:,1:nne)'];
+    % Y = Y./sqrt(sum(Y.^2));
     
 %     if iter == 1 || neta > 0.7*eta
 %         if sigma > 1
@@ -86,6 +87,19 @@ for iter = 1:MaxIter
 %    tolgrad = pinf/2;
 end
 
+%     function Y = line_search(Y, U)
+%         alpha = [0;0.02;0.04;0.06;0.08;0.1;0.12;0.14;0.16;0.18;0.2];
+%         val = [];
+%         for i = 1:length(alpha)
+%             nY = Y + alpha(i)*U;
+%             nY = nY./sqrt(sum(nY.^2));
+%             val = [val; co(nY)];
+%         end
+%         [~,I] = min(val);
+%         Y = Y + alpha(I)*U;
+%         Y = Y./sqrt(sum(Y.^2));
+%     end
+        
     function val = co(Y)
         X = Y'*Y;
         x = X(:);
@@ -133,6 +147,7 @@ end
         M.dim = @() (n-1)*m;
         M.inner = @(x, d1, d2) d1(:)'*d2(:);
         M.norm = @(x, d) norm(d(:));
+%        M.typicaldist = @() pi*sqrt(m);
         M.tangent = @(X, U) U - X.*sum(X.*U);
 
         M.retr = @retraction;

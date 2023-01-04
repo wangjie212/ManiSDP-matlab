@@ -1,6 +1,6 @@
 qs
-sigma0 = 1e-2 or 1e-1
-sigma1 = 1e-1 or 1e0
+sigma0 = 1e-2
+sigma1 = 1e-1
 sigma2 = 1e7
 r0 = 1e-2
 nne = 6

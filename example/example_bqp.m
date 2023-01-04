@@ -5,43 +5,31 @@ sdpnalpath  = '../../SDPNAL+v1.0';
 addpath(genpath(pgdpath));
 
 %% Generate random binary quadratic program
-rng(3);
+rng(1);
 d       = 30; % BQP with d variables
 x       = msspoly('x',d); % symbolic decision variables using SPOTLESS
 Q       = randn(d); Q = (Q + Q')/2; % a random symmetric matrix
 e       = randn(d,1);
 f       = x'*Q*x + x'*e; % objective function of the BQP
 h       = x.^2 - 1; % equality constraints of the BQP (binary variables)
-% mon = monomials(x, 0:4);
-% coe = randn(length(mon),1);
-% f = coe'*mon;
-% h       = sum(x.^2) - 1;
 
 % writematrix(Q, '../data/bqp_Q_60_1.txt');
 % writematrix(e, '../data/bqp_e_60_1.txt');
 
 %% Relax BQP into an SDP
-problem.vars            = x;
-problem.objective       = f;
-problem.equality        = h; 
-% problem.inequality      = g;
-kappa                   = 2; % relaxation order
-[SDP,info]              = dense_sdp_relax_binary(problem,kappa);
-At = SDP.sedumi.At;
-b = SDP.sedumi.b;
-c = SDP.sedumi.c;
-K = SDP.sedumi.K;
-mb = K.s;
-C = full(reshape(c, mb, mb));
+% problem.vars            = x;
+% problem.objective       = f;
+% problem.equality        = h; 
+% kappa                   = 2; % relaxation order
+% [SDP,info]              = dense_sdp_relax_binary(problem,kappa);
+% At = SDP.sedumi.At;
+% b = SDP.sedumi.b;
+% c = SDP.sedumi.c;
+% K = SDP.sedumi.K;
+% mb = K.s;
 
-%% Generate SOS data
-% [sA, dA, sB, sb] = SOStoSDP(f, h, x, kappa);
-% dA = 1./dA;
-% sB1 = [sA sB];
-% iD = sparse(1:length(dA),1:length(dA),dA);
-% iA = iD - iD*sB*(sparse(1:size(sB,2),1:size(sB,2),ones(size(sB,2),1))+sB'*iD*sB)^(-1)*sB'*iD;
-% M1 = sparse(1:size(sB1,2),1:size(sB1,2),ones(size(sB1,2),1)) - sB1'*iA*sB1;
-% M2 = sB1'*iA;
+[At, b, c, mb] = bqpmom(d, Q, e, 0);
+% C = full(reshape(c, mb, mb));
 
 %% Solve using STRIDE
 % SDP.M       = length(info.v); % upper bound on the trace of the moment matrix need the following for fast computation in the local search method
@@ -107,26 +95,26 @@ C = full(reshape(c, mb, mb));
 % tlr = toc;
 
 %% Solve using SDPLR
-rng(0);
-pars.printlevel = 1;
-pars.feastol = 1e-8;
-tic
-[x,y] = sdplr(At', b, c, K, pars);
-vlr = c'*x;
-S = C - reshape(At*y, mb, mb);
-by = b'*y;
-gap = abs(vlr-by)/(abs(by)+abs(vlr)+1);
-eta = norm(At'*x - b)/(1+norm(b));
-[~, dS] = eig(S, 'vector');
-mS = abs(min(dS))/(1+dS(end));
-elr = max([eta, gap, mS]);
-tlr = toc;
+% rng(0);
+% pars.printlevel = 1;
+% pars.feastol = 1e-8;
+% tic
+% [x,y] = sdplr(At', b, c, K, pars);
+% vlr = c'*x;
+% S = C - reshape(At*y, mb, mb);
+% by = b'*y;
+% gap = abs(vlr-by)/(abs(by)+abs(vlr)+1);
+% eta = norm(At'*x - b)/(1+norm(b));
+% [~, dS] = eig(S, 'vector');
+% mS = abs(min(dS))/(1+dS(end));
+% elr = max([eta, gap, mS]);
+% tlr = toc;
 
 %% Solve using ManiSDP
-% rng(0);
-% tic
-% [~, ~, ~, fval, emani] = ManiSDP_unitdiag(At, b, c, mb);
-% tmani = toc;
+rng(0);
+tic
+[Y, S, y, fval, emani] = ManiSDP_unitdiag(At, b, c, mb);
+tmani = toc;
 
 %% Solve using SDPNAL+
 % options.tol = 1e-8;
@@ -145,7 +133,7 @@ tlr = toc;
 
 % fprintf('SDP size: matrix = %i, numeq = %i\n', mb, size(b,1));
 % fprintf('Mosek: optimum = %0.8f, eta = %0.1e, time = %0.2fs\n', mobj(1), emosek, tmosek);
-fprintf('SDPLR: optimum = %0.8f, eta = %0.1e, time = %0.2fs\n', vlr, elr, tlr);
+% fprintf('SDPLR: optimum = %0.8f, eta = %0.1e, time = %0.2fs\n', vlr, elr, tlr);
 % fprintf('SDPNAL: optimum = %0.8f, eta = %0.1e, time = %0.2fs\n', objnal(1), enal, tnal);
 % fprintf('Stride: optimum = %0.8f, eta = %0.1e, time = %0.2fs\n', outPGD.pobj, epgd, time_pgd);
-% fprintf('ManiSDP: optimum = %0.8f, eta = %0.1e, time = %0.2fs\n', fval, emani, tmani);
+fprintf('ManiSDP: optimum = %0.8f, eta = %0.1e, time = %0.2fs\n', fval, emani, tmani);

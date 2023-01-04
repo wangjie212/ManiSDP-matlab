@@ -2,9 +2,9 @@ pgdpath   = '../../STRIDE';
 addpath(genpath(pgdpath));
 sdpnalpath  = '../../SDPNAL+v1.0';
 %% construct space of n1 x n2 hankel matrices (n1 <= n2)
-rng(3);
-n1 = 10;
-n2 = 10;
+rng(1);
+n1 = 20;
+n2 = 20;
 [S,k,Scell] = hankel_struct(n1,n2);
 % generate random hankel matrix
 u1 = randn(k,1);
@@ -15,6 +15,8 @@ SDP     = nearest_hankel_sdp(S,u1);
 [At,b,c,K] = SDPT3data_SEDUMIdata(SDP.blk,SDP.At,SDP.C,SDP.b); 
 n = SDP.n;
 fprintf('SDP size: n = %d, m = %d.\n\n\n',n,SDP.m);
+mb = n;
+C = full(reshape(c, mb, mb));
 
 %% Optimistic initialization using SLRA
 % s.m             = n1;
@@ -68,14 +70,59 @@ fprintf('SDP size: n = %d, m = %d.\n\n\n',n,SDP.m);
 % ztUnorm         = norm(z'*U); % measure of rank deficientness
 % fprintf('norm(zt*U) = %3.2e, eta = %3.2e.\n',ztUnorm,eta);
 
-%% Solve using ManiSDP
+%% Solve using MOSEK
+% prob       = convert_sedumi2mosek(At, b, c, K);
+% tic
+% [~,res]    = mosekopt('minimize echo(3)',prob);
+% [X,y,S,mobj] = recover_mosek_sol_blk(res, SDP.blk);
+% by = b'*y;
+% gap = abs(mobj(1)-by)/(abs(by)+abs(mobj(1))+1);
+% x = X{1}(:);
+% eta = norm(At'*x - b)/(1+norm(b));
+% [~, dS] = eig(S{1}, 'vector');
+% mS = abs(min(dS))/(1+dS(end));
+% emosek = max([eta, gap, mS]);
+% tmosek = toc;
+
+%% Solve using SDPLR
+rng(0);
+pars.printlevel = 1;
+pars.feastol = 1e-8;
+tic
+[x,y] = sdplr(At', b, c, K, pars);
+% vlr = c'*x;
+% S = C - reshape(At*y, mb, mb);
+% by = b'*y;
+% gap = abs(vlr-by)/(abs(by)+abs(vlr)+1);
+% eta = norm(At'*x - b)/(1+norm(b));
+% [~, dS] = eig(S, 'vector');
+% mS = abs(min(dS))/(1+dS(end));
+% elr = max([eta, gap, mS]);
+tlr = toc;
+
+%% Solve using SDPNAL+
+options.tol = 1e-8;
+addpath(genpath(sdpnalpath));
 rng(0);
 tic
-[~, ~, ~, fval, emani] = ManiSDP(At, b, c, n);
-tmani = toc;
+[objnal,X,~,y,S] = sdpnalplus(SDP.blk, SDP.At, SDP.C, SDP.b, [], [], [], [], [], options);
+by = b'*y;
+gap = abs(objnal(1)-by)/(abs(by)+abs(objnal(1))+1);
+x = X{1}(:);
+eta = norm(At'*x - b)/(1+norm(b));
+[~, dS] = eig(S{1}, 'vector');
+mS = abs(min(dS))/(1+dS(end));
+enal = max([eta, gap, mS]);
+tnal = toc;
+
+%% Solve using ManiSDP
+% rng(0);
+% tic
+% [~, ~, ~, fval, emani] = ManiSDP(At, b, c, n);
+% tmani = toc;
 
 % fprintf('Mosek: optimum = %0.8f, eta = %0.1e, time = %0.2fs\n', mobj(1), emosek, tmosek);
-% fprintf('SDPLR: optimum = %0.8f, eta = %0.1e, time = %0.2fs\n', vlr, elr, tlr);
-% fprintf('SDPNAL: optimum = %0.8f, eta = %0.1e, time = %0.2fs\n', objnal(1), enal, tnal);
+fprintf('SDPLR: optimum = %0.8f, eta = %0.1e, time = %0.2fs\n', vlr, elr, tlr);
+fprintf('SDPNAL: optimum = %0.8f, eta = %0.1e, time = %0.2fs\n', objnal(1), enal, tnal);
 % fprintf('Stride: optimum = %0.8f, eta = %0.1e, time = %0.2fs\n', outPGD.pobj, epgd, time_pgd);
-fprintf('ManiSDP: optimum = %0.8f, eta = %0.1e, time = %0.2fs\n', fval, emani, tmani);
+% fprintf('ManiSDP: optimum = %0.8f, eta = %0.1e, time = %0.2fs\n', fval, emani, tmani);

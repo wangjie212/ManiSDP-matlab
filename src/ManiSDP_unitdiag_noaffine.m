@@ -1,6 +1,7 @@
 % This function solves linear SDPs with unital diagonal and without extra affine constraints.
 % Min  <C, X>
-% s.t. X_ii = 1, i = 1,...,n.
+% s.t. X >= 0,
+%      X_ii = 1, i = 1,...,n.
 
 function [Y, S, fval, mS] = ManiSDP_unitdiag_noaffine(C)
 n = size(C,1);

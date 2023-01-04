@@ -1,6 +1,7 @@
 % This function solves linear SDPs with unital trace.
 % Min  <C, X>
 % s.t. A(X) = b,
+%      X >= 0,
 %      tr(X) = 1.
 
 function [Y, S, y, fval, error] = ManiSDP_unittrace(At, b, c, n)
