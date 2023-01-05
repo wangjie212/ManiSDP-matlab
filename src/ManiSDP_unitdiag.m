@@ -64,11 +64,11 @@ for iter = 1:MaxIter
         p = r;
     end
     nne = max(min(sum(dS < 0), 8), 1);
-    U = [zeros(p, n); vS(:,1:nne)'];
+    % U = [zeros(p, n); vS(:,1:nne)'];
     p = p + nne;
-    Y = [Y; zeros(nne,n)]; 
-    % Y = [Y; 0.1*vS(:,1:nne)'];
-    % Y = Y./sqrt(sum(Y.^2));
+    % Y = [Y; zeros(nne,n)]; 
+    Y = [Y; 0.1*vS(:,1:nne)'];
+    Y = Y./sqrt(sum(Y.^2));
     
 %     if iter == 1 || neta > 0.7*eta
 %         if sigma > 1
@@ -89,11 +89,11 @@ end
 
 %     function Y = line_search(Y, U)
 %         alpha = [0;0.02;0.04;0.06;0.08;0.1;0.12;0.14;0.16;0.18;0.2];
-%         val = [];
+%         val = zeros(length(alpha),1);
 %         for i = 1:length(alpha)
 %             nY = Y + alpha(i)*U;
 %             nY = nY./sqrt(sum(nY.^2));
-%             val = [val; co(nY)];
+%             val(i) = co(nY);
 %         end
 %         [~,I] = min(val);
 %         Y = Y + alpha(I)*U;
@@ -107,19 +107,19 @@ end
         val = c'*x + sigma/2*(Axb'*Axb);
     end
 
-    function nY = line_search(Y, U)
-         alpha = 0.2;
-         cost0 = co(Y);
-         i = 1;
-         nY = Y + alpha*U;
-         nY = nY./sqrt(sum(nY.^2));
-         while i <= 15 && co(nY) - cost0 > -1e-3
-              alpha = 0.8*alpha;
-              nY = Y + alpha*U;
-              nY = nY./sqrt(sum(nY.^2));
-              i = i + 1;
-         end
-    end
+%     function nY = line_search(Y, U)
+%          alpha = 0.2;
+%          cost0 = co(Y);
+%          i = 1;
+%          nY = Y + alpha*U;
+%          nY = nY./sqrt(sum(nY.^2));
+%          while i <= 15 && co(nY) - cost0 > -1e-3
+%               alpha = 0.8*alpha;
+%               nY = Y + alpha*U;
+%               nY = nY./sqrt(sum(nY.^2));
+%               i = i + 1;
+%          end
+%     end
 
     function [f, store] = cost(Y, store)
         X = Y'*Y;

@@ -2,9 +2,8 @@
 % Min  x'*Q*x + x'*e
 % s.t. x_i^2 = 1, i = 1,...,n.
 % Output sedumi format data.
-% If unitdiag = 1, then include unit diagonal constraints.
 
-function [At, b, c, mb] = bqpmom(n, Q, e, unitdiag)
+function [At, b, c, mb] = bqpmom(n, Q, e)
 basis = get_basis(n, 2);
 ind = true(size(basis, 2), 1);
 for i = 1:size(basis, 2)
@@ -31,55 +30,58 @@ for i = 1:mb
          mm{ind} = [mm{ind} [i;j]];
     end
 end
-ncons = mb*(mb+1)/2 - lsp - mb + n*(mb-n-1);
-if unitdiag == 1
-    ncons = ncons + mb;
-end
-row = [];
-col = [];
-val = [];
+ncons = mb*(mb+1)/2 - lsp + n*(mb-1) - mb + 1;
+row = [1];
+col = [1];
+val = [1];
 b = sparse(ncons, 1);
-l = 1;
-if unitdiag == 1
-    b(1:mb) = ones(mb,1);
-    for i = 1:mb
-        row = [row; (i-1)*mb+i];
-        col = [col; i];
-        val = [val; 1];
-    end
-    l = l + mb;
+b(1) = 1;
+for i = 2:n+1
+    row = [row; 1; (i-1)*mb+i];
+    col = [col; i; i];
+    val = [val; 1; -1];
+end
+l = n + 2;
+ind = [1:n];
+for i = n+2:mb
+    cc = ind(basis(:,i)==1) + 1;
+    row = [row; (cc(1)-1)*mb+cc(1); (i-1)*mb+i; (cc(2)-1)*mb+cc(2); (i-1)*mb+i];
+    col = [col; l; l; l+1; l+1];
+    val = [val; 1; -1; 1; -1];
+    l = l + 2;
 end
 loa = cell(lsp,1);
-lob = cell(lsp,1);
 for i = 1:lsp
-     loca0 = (mm{i}(2,1)-1)*mb + mm{i}(1,1);
-     locb0 = (mm{i}(1,1)-1)*mb + mm{i}(2,1);
-     loa{i} = [loca0];
-     lob{i} = [locb0];
-     for j = 2:size(mm{i},2)
-          loca = (mm{i}(2,j)-1)*mb + mm{i}(1,j);
-          locb = (mm{i}(1,j)-1)*mb + mm{i}(2,j);
-          loa{i} = [loa{i};loca];
-          lob{i} = [lob{i};locb];
-          row = [row; loca0; locb0; loca; locb];
-          col = [col; l; l; l; l];
-          val = [val; 0.5; 0.5; -0.5; -0.5];
-          l = l + 1;
+     loa{i} = zeros(2*size(mm{i},2),1);
+     for j = 1:size(mm{i},2)
+          loa{i}(2*j-1:2*j) = [(mm{i}(2,j)-1)*mb + mm{i}(1,j);(mm{i}(1,j)-1)*mb + mm{i}(2,j)];
      end
 end
 for k = 1:n
-    for i = 2:mb
+    for i = 2:size(basis, 2)
         if basis(k, i) == 0
             bi = basis(:,i);
             bi(k) = 2;
             ind1 = bfind(sp, lsp, bi, n);
             ind2 = bfind(sp, lsp, basis(:,i), n);
-            row = [row; loa{ind1}; lob{ind1}; loa{ind2}; lob{ind2}];
-            col = [col; l*ones(2*(length(loa{ind1})+length(loa{ind2})),1)];
-            val = [val; 1/(2*length(loa{ind1}))*ones(2*length(loa{ind1}),1); -1/(2*length(loa{ind2}))*ones(2*length(loa{ind2}),1)];
-            l = l + 1;
+            row = [row; loa{ind1}; loa{ind2}];
+            col = [col; l*ones(length(loa{ind1})+length(loa{ind2}),1)];
+            val = [val; 1/length(loa{ind1})*ones(length(loa{ind1}),1); -1/length(loa{ind2})*ones(length(loa{ind2}),1)];
+            l = l + 1;          
         end
     end
+end
+
+for i = 1:lsp
+     [~, idx] = max(mm{i}(1,:));
+     for j = 1:size(mm{i},2)
+         if j ~= idx
+             row = [row; loa{i}(2*idx-1:2*idx); loa{i}(2*j-1:2*j)];
+             col = [col; l; l; l; l];
+             val = [val; 0.5; 0.5; -0.5; -0.5];
+             l = l + 1;
+        end
+     end
 end
 At = sparse(row,col,val,mb^2,ncons);
 

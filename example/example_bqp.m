@@ -1,15 +1,15 @@
-spotpath   = '../../../Programs/spotless';
-addpath(genpath(spotpath));
-pgdpath   = '../../STRIDE';
-sdpnalpath  = '../../SDPNAL+v1.0';
-addpath(genpath(pgdpath));
+% spotpath   = '../../../Programs/spotless';
+% addpath(genpath(spotpath));
+% pgdpath   = '../../STRIDE';
+% sdpnalpath  = '../../SDPNAL+v1.0';
+% addpath(genpath(pgdpath));
 
 %% Generate random binary quadratic program
 rng(1);
-d       = 30; % BQP with d variables
-x       = msspoly('x',d); % symbolic decision variables using SPOTLESS
+d       = 40; % BQP with d variables
 Q       = randn(d); Q = (Q + Q')/2; % a random symmetric matrix
 e       = randn(d,1);
+x       = msspoly('x',d); % symbolic decision variables using SPOTLESS
 f       = x'*Q*x + x'*e; % objective function of the BQP
 h       = x.^2 - 1; % equality constraints of the BQP (binary variables)
 
@@ -17,18 +17,18 @@ h       = x.^2 - 1; % equality constraints of the BQP (binary variables)
 % writematrix(e, '../data/bqp_e_60_1.txt');
 
 %% Relax BQP into an SDP
-% problem.vars            = x;
-% problem.objective       = f;
-% problem.equality        = h; 
-% kappa                   = 2; % relaxation order
-% [SDP,info]              = dense_sdp_relax_binary(problem,kappa);
-% At = SDP.sedumi.At;
-% b = SDP.sedumi.b;
-% c = SDP.sedumi.c;
-% K = SDP.sedumi.K;
-% mb = K.s;
+problem.vars            = x;
+problem.objective       = f;
+problem.equality        = h; 
+kappa                   = 2; % relaxation order
+[SDP,info]              = dense_sdp_relax_binary(problem,kappa);
+At = SDP.sedumi.At;
+b = SDP.sedumi.b;
+c = SDP.sedumi.c;
+K = SDP.sedumi.K;
+mb = K.s;
 
-[At, b, c, mb] = bqpmom(d, Q, e, 0);
+[pAt, pb, pc, mb] = bqpmom(d, Q, e);
 % C = full(reshape(c, mb, mb));
 
 %% Solve using STRIDE
@@ -113,7 +113,7 @@ h       = x.^2 - 1; % equality constraints of the BQP (binary variables)
 %% Solve using ManiSDP
 rng(0);
 tic
-[Y, S, y, fval, emani] = ManiSDP_unitdiag(At, b, c, mb);
+[Y, S, y, fval, emani] = ManiSDP_unitdiag(pAt, pb, pc, mb);
 tmani = toc;
 
 %% Solve using SDPNAL+

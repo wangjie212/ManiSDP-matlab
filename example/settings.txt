@@ -1,3 +1,14 @@
+bqp
+sigma0 = 1e-3
+sigma1 = 1e-2
+sigma2 = 1e7
+r0 = 1e-3
+nne = 8
+maxinner = 20
+maxiter = 4
+alpha = 0.1
+pinf < gradnorm
+
 qs
 sigma0 = 1e-2
 sigma1 = 1e-1
@@ -18,16 +29,6 @@ maxinner = 40
 maxiter = 3
 pinf < gradnorm/6e3
 
-mc
-sigma0 = 1e-2
-sigma1 = 1e1
-sigma2 = 1e-1
-r0 = 1e-2
-nne = 4
-tau = 0.3
-maxinner = 10
-maxiter = 6
-
 stls
 sigma0 = 1e-2
 sigma1 = 1e-1
@@ -38,3 +39,13 @@ maxinner = 50
 maxiter = 4
 alpha = 0.2
 pinf < gradnorm/4
+
+mc
+sigma0 = 1e-2
+sigma1 = 1e1
+sigma2 = 1e-1
+r0 = 1e-2
+nne = 4
+tau = 0.3
+maxinner = 10
+maxiter = 6

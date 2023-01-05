@@ -41,7 +41,8 @@ if l_h > 0
     for i = 1:l_h
         hi      = h(i);
         deghi   = deg(hi);
-        lamhi   = monomials(x,0:(kappa2 - deghi));
+        lamhi   = [1;x;monomials(x(end:-1:1),2:(kappa2 - deghi))];
+        % lamhi   = monomials(x,0:(kappa2 - deghi));
         ind = true(length(lamhi), 1);
         for j = 1:length(lamhi)
             mon = lamhi(j);
