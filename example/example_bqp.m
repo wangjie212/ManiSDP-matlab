@@ -5,30 +5,31 @@
 % addpath(genpath(pgdpath));
 
 %% Generate random binary quadratic program
-rng(1);
-d       = 40; % BQP with d variables
-Q       = randn(d); Q = (Q + Q')/2; % a random symmetric matrix
+rng(2);
+d       = 60; % BQP with d variables
+Q       = randn(d);
+Q = (Q + Q')/2; % a random symmetric matrix
 e       = randn(d,1);
-x       = msspoly('x',d); % symbolic decision variables using SPOTLESS
-f       = x'*Q*x + x'*e; % objective function of the BQP
-h       = x.^2 - 1; % equality constraints of the BQP (binary variables)
+% x       = msspoly('x',d); % symbolic decision variables using SPOTLESS
+% f       = x'*Q*x + x'*e; % objective function of the BQP
+% h       = x.^2 - 1; % equality constraints of the BQP (binary variables)
 
 % writematrix(Q, '../data/bqp_Q_60_1.txt');
 % writematrix(e, '../data/bqp_e_60_1.txt');
 
 %% Relax BQP into an SDP
-problem.vars            = x;
-problem.objective       = f;
-problem.equality        = h; 
-kappa                   = 2; % relaxation order
-[SDP,info]              = dense_sdp_relax_binary(problem,kappa);
-At = SDP.sedumi.At;
-b = SDP.sedumi.b;
-c = SDP.sedumi.c;
-K = SDP.sedumi.K;
-mb = K.s;
+% problem.vars            = x;
+% problem.objective       = f;
+% problem.equality        = h; 
+% kappa                   = 2; % relaxation order
+% [SDP,info]              = dense_sdp_relax_binary(problem,kappa);
+% At = SDP.sedumi.At;
+% b = SDP.sedumi.b;
+% c = SDP.sedumi.c;
+% K = SDP.sedumi.K;
+% mb = K.s;
 
-[pAt, pb, pc, mb] = bqpmom(d, Q, e);
+[At, b, c, mb] = bqpmom(d, Q, e);
 % C = full(reshape(c, mb, mb));
 
 %% Solve using STRIDE
@@ -111,9 +112,13 @@ mb = K.s;
 % tlr = toc;
 
 %% Solve using ManiSDP
+% rng(0);
+% tic
+% [~, ~, ~, fval0, emani0] = ManiSDP_unitdiag(At, b, c/max(abs(c)), mb);
+% tmani0 = toc;
 rng(0);
 tic
-[Y, S, y, fval, emani] = ManiSDP_unitdiag(pAt, pb, pc, mb);
+[~, ~, ~, fval, emani] = ManiSDP_unitdiag(At, b, c, mb);
 tmani = toc;
 
 %% Solve using SDPNAL+
@@ -136,4 +141,5 @@ tmani = toc;
 % fprintf('SDPLR: optimum = %0.8f, eta = %0.1e, time = %0.2fs\n', vlr, elr, tlr);
 % fprintf('SDPNAL: optimum = %0.8f, eta = %0.1e, time = %0.2fs\n', objnal(1), enal, tnal);
 % fprintf('Stride: optimum = %0.8f, eta = %0.1e, time = %0.2fs\n', outPGD.pobj, epgd, time_pgd);
+% fprintf('ManiSDP0: optimum = %0.8f, eta = %0.1e, time = %0.2fs\n', fval0, emani0, tmani0);
 fprintf('ManiSDP: optimum = %0.8f, eta = %0.1e, time = %0.2fs\n', fval, emani, tmani);

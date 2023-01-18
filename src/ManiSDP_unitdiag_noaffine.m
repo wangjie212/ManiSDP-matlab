@@ -6,8 +6,8 @@
 function [Y, S, fval, mS] = ManiSDP_unitdiag_noaffine(C)
 n = size(C,1);
 c = C(:);
-p = 2;
-MaxIter = 300;
+p = 40;
+MaxIter = 20;
 tolgrad = 1e-8;
 tao = 1e-8;
 egrad = zeros(p, n);
@@ -18,9 +18,9 @@ problem.cost = @cost;
 problem.grad = @grad;
 problem.hess = @hess;
 opts.verbosity = 0;     % Set to 0 for no output, 2 for normal output
-opts.maxinner = 40;     % maximum Hessian calls per iteration
+opts.maxinner = 100;     % maximum Hessian calls per iteration
 opts.tolgradnorm = tolgrad; % tolerance on gradient norm
-opts.maxiter = 25;
+opts.maxiter = 20;
 
 timespend = tic;
 for iter = 1:MaxIter
@@ -48,31 +48,44 @@ for iter = 1:MaxIter
         p = r;
     end
     nne = max(min(sum(dS < 0), 8), 1);
-%    U = [zeros(p, n); vS(:,1:nne)'];
+    % U = [zeros(p, n); vS(:,1:nne)'];
     p = p + nne;
-%   Y = [Y; zeros(nne,n)]; 
+    % Y = [Y; zeros(nne,n)]; 
     Y = [Y; 0.5*vS(:,1:nne)'];
     Y = Y./sqrt(sum(Y.^2));
 end
 
-    function val = co(Y)
-        X = Y'*Y;
-        val = c'*X(:);
-    end
+%     function val = co(Y)
+%         X = Y'*Y;
+%         val = c'*X(:);
+%     end
+    
+%    function Y = line_search(Y, U)
+%         alpha = [0.02;0.04;0.06;0.08;0.1;0.2;0.5];
+%         val = zeros(length(alpha),1);
+%         for i = 1:length(alpha)
+%             nY = Y + alpha(i)*U;
+%             nY = nY./sqrt(sum(nY.^2));
+%             val(i) = co(nY);
+%         end
+%         [~,I] = min(val);
+%         Y = Y + alpha(I)*U;
+%         Y = Y./sqrt(sum(Y.^2));
+%    end
 
-    function nY = line_search(Y, U)
-         alpha = 0.2;
-         cost0 = co(Y);
-         i = 1;
-         nY = Y + alpha*U;
-         nY = nY./sqrt(sum(nY.^2));
-         while i <= 15 && co(nY) - cost0 > -1e-3
-              alpha = 0.8*alpha;
-              nY = Y + alpha*U;
-              nY = nY./sqrt(sum(nY.^2));
-              i = i + 1;
-         end
-    end
+%     function nY = line_search(Y, U)
+%          alpha = 0.5;
+%          cost0 = co(Y);
+%          i = 1;
+%          nY = Y + alpha*U;
+%          nY = nY./sqrt(sum(nY.^2));
+%          while i <= 15 && co(nY) - cost0 > -1e-3
+%               alpha = 0.8*alpha;
+%               nY = Y + alpha*U;
+%               nY = nY./sqrt(sum(nY.^2));
+%               i = i + 1;
+%          end
+%     end
     
     function [f, store] = cost(Y, store)
         X = Y'*Y;
@@ -94,6 +107,8 @@ end
         M.dim = @() (n-1)*m;
         M.inner = @(x, d1, d2) d1(:)'*d2(:);
         M.norm = @(x, d) norm(d(:));
+        M.typicaldist = @() pi*sqrt(m);
+        M.proj = @(X, U) U - X.*sum(X.*U);
         M.tangent = @(X, U) U - X.*sum(X.*U);
 
         M.retr = @retraction;
@@ -106,6 +121,7 @@ end
         M.rand = @() random(n, m);
         M.lincomb = @matrixlincomb;
         M.zerovec = @(x) zeros(n, m);
+        M.transp = @(x1, x2, d) d - x2.*sum(x2.*d);
 
         % Uniform random sampling on the sphere.
         function x = random(n, m)

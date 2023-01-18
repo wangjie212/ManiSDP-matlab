@@ -94,6 +94,19 @@ end
         Axb = A*x - b - y/sigma;
         val = c'*x + sigma/2*(Axb'*Axb);
     end
+    
+%  function Y = line_search(Y, U)
+%         alpha = [0.02;0.04;0.06;0.08;0.1;0.2];
+%         val = zeros(length(alpha),1);
+%         for i = 1:length(alpha)
+%             nY = Y + alpha(i)*U;
+%             nY = nY/norm(nY, 'fro');
+%             val(i) = co(nY);
+%         end
+%         [~,I] = min(val);
+%         Y = Y + alpha(I)*U;
+%         Y = Y/norm(Y, 'fro');
+%  end
 
     function nY = line_search(Y, U)
          alpha = 0.2;

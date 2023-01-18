@@ -1,10 +1,9 @@
-spotpath = '../../../Programs/spotless';
-addpath(genpath(spotpath));
-pgdpath = '../../STRIDE';
-sdpnalpath = '../../SDPNAL+v1.0';
-addpath(genpath(pgdpath));
-
-L = Laplacian('../data/Gset/G11.txt');
+% sdpnalpath = '../../SDPNAL+v1.0';
+% addpath(genpath(sdpnalpath));
+% fileID = fopen('../data/bqp_results.txt', 'w');
+set = ["G61", "G62","G63","G64","G65","G66","G67","G70","G72","G77","G81"];
+for i = 1:length(set)
+L = Laplacian(append('../data/Gset/', set(i), '.txt'));
 C = -1/4*sparse(L);
 c = C(:);
 
@@ -24,18 +23,18 @@ for i = 1:mb
 end
 
 %% Solve using MOSEK
-prob       = convert_sedumi2mosek(At, b, c, K);
-tic
-[~,res]    = mosekopt('minimize echo(3)',prob);
-[X,y,S,mobj] = recover_mosek_sol_blk(res, blk);
-by = b'*y;
-gap = abs(mobj(1)-by)/(abs(by)+abs(mobj(1))+1);
-x = X{1}(:);
-eta = norm(At'*x - b)/(1+norm(b));
-[~, dS] = eig(S{1}, 'vector');
-mS = abs(min(dS))/(1+dS(end));
-emosek = max([eta, gap, mS]);
-tmosek = toc;
+% prob       = convert_sedumi2mosek(At, b, c, K);
+% tic
+% [~,res]    = mosekopt('minimize echo(3)',prob);
+% [X,y,S,mobj] = recover_mosek_sol_blk(res, blk);
+% by = b'*y;
+% gap = abs(mobj(1)-by)/(abs(by)+abs(mobj(1))+1);
+% x = X{1}(:);
+% eta = norm(At'*x - b)/(1+norm(b));
+% [~, dS] = eig(S{1}, 'vector');
+% mS = abs(min(dS))/(1+dS(end));
+% emosek = max([eta, gap, mS]);
+% tmosek = toc;
 
 %% Solve using COPT
 % tic
@@ -58,20 +57,20 @@ tmosek = toc;
 % tlr = toc;
 
 %% Solve using SDPLR
-rng(0);
-pars.printlevel = 1;
-pars.feastol = 1e-8;
-tic
-[x,y] = sdplr(At', b, c, K, pars);
-vlr = c'*x;
-S = C - reshape(At*y, mb, mb);
-by = b'*y;
-gap = abs(vlr-by)/(abs(by)+abs(vlr)+1);
-eta = norm(At'*x - b)/(1+norm(b));
-[~, dS] = eig(S, 'vector');
-mS = abs(min(dS))/(1+dS(end));
-elr = max([eta, gap, mS]);
-tlr = toc;
+% rng(0);
+% pars.printlevel = 1;
+% pars.feastol = 1e-8;
+% tic
+% [x,y] = sdplr(At', b, c, K, pars);
+% vlr = c'*x;
+% S = C - reshape(At*y, mb, mb);
+% by = b'*y;
+% gap = abs(vlr-by)/(abs(by)+abs(vlr)+1);
+% eta = norm(At'*x - b)/(1+norm(b));
+% [~, dS] = eig(S, 'vector');
+% mS = abs(min(dS))/(1+dS(end));
+% elr = max([eta, gap, mS]);
+% tlr = toc;
 
 %% Solve using ManiSDP
 rng(0);
@@ -94,7 +93,10 @@ tmani = toc;
 % enal = max([eta, gap, mS]);
 % tnal = toc;
 
-fprintf('Mosek: optimum = %0.8f, eta = %0.1e, time = %0.2fs\n', mobj(1), emosek, tmosek);
-fprintf('SDPLR: optimum = %0.8f, eta = %0.1e, time = %0.2fs\n', vlr, elr, tlr);
+% fprintf(fileID, 'Mosek: optimum = %0.8f, eta = %0.1e, time = %0.2fs\n', mobj(1), emosek, tmosek);
+% fprintf('Mosek: optimum = %0.8f, eta = %0.1e, time = %0.2fs\n', mobj(1), emosek, tmosek);
+% fprintf('SDPLR: optimum = %0.8f, eta = %0.1e, time = %0.2fs\n', vlr, elr, tlr);
 % fprintf('SDPNAL: optimum = %0.8f, eta = %0.1e, time = %0.2fs\n', objnal(1), enal, tnal);
 fprintf('ManiSDP: optimum = %0.8f, eta = %0.1e, time = %0.2fs\n', fval, emani, tmani);
+end
+% fclose(fileID);

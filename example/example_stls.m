@@ -1,11 +1,10 @@
-for i = 1:3
 pgdpath   = '../../STRIDE';
 addpath(genpath(pgdpath));
 sdpnalpath  = '../../SDPNAL+v1.0';
 %% construct space of n1 x n2 hankel matrices (n1 <= n2)
-rng(i);
-n1 = 40;
-n2 = 40;
+rng(1);
+n1 = 30;
+n2 = 30;
 [S,k,Scell] = hankel_struct(n1,n2);
 % generate random hankel matrix
 u1 = randn(k,1);
@@ -41,30 +40,30 @@ C = full(reshape(c, mb, mb));
 % X0              = {xtld * xtld'};
 
 %% STRIDE
-pgdopts.pgdStepSize     = 10;
-pgdopts.maxiterSGS      = 300;
-pgdopts.maxiterLBFGS    = 1000;
-pgdopts.SDPNALpath      = sdpnalpath;
-pgdopts.tolADMM         = 5e-5;
-pgdopts.phase1          = 1;
-pgdopts.rrOpt           = 1:3;
-pgdopts.lbfgsmemory     = 10;
-pgdopts.tolPGD          = 1e-8;
-pgdopts.rrFunName       = 'rr_hankel';
-rrPar.m = n1; rrPar.n = n2; rrPar.k = k; rrPar.theta = u1; rrPar.S = S;
-pgdopts.rrPar           = rrPar;
-
-rng(0);
-tic
-[outPGD,X,y,S] = PGDSDP(SDP.blk, SDP.At, SDP.b, SDP.C, [], pgdopts);
-by = b'*y;
-gap = abs(outPGD.pobj-by)/(abs(by)+abs(outPGD.pobj)+1);
-x = X{1}(:);
-eta = norm(At'*x - b)/(1+norm(b));
-[~, dS] = eig(S{1}, 'vector');
-mS = abs(min(dS))/(1+dS(end));
-epgd = max([gap, eta, mS]);
-time_pgd = toc;
+% pgdopts.pgdStepSize     = 10;
+% pgdopts.maxiterSGS      = 300;
+% pgdopts.maxiterLBFGS    = 1000;
+% pgdopts.SDPNALpath      = sdpnalpath;
+% pgdopts.tolADMM         = 5e-5;
+% pgdopts.phase1          = 1;
+% pgdopts.rrOpt           = 1:3;
+% pgdopts.lbfgsmemory     = 10;
+% pgdopts.tolPGD          = 1e-8;
+% pgdopts.rrFunName       = 'rr_hankel';
+% rrPar.m = n1; rrPar.n = n2; rrPar.k = k; rrPar.theta = u1; rrPar.S = S;
+% pgdopts.rrPar           = rrPar;
+% 
+% rng(0);
+% tic
+% [outPGD,X,y,S] = PGDSDP(SDP.blk, SDP.At, SDP.b, SDP.C, [], pgdopts);
+% by = b'*y;
+% gap = abs(outPGD.pobj-by)/(abs(by)+abs(outPGD.pobj)+1);
+% x = X{1}(:);
+% eta = norm(At'*x - b)/(1+norm(b));
+% [~, dS] = eig(S{1}, 'vector');
+% mS = abs(min(dS))/(1+dS(end));
+% epgd = max([gap, eta, mS]);
+% time_pgd = toc;
 
 % [z,u,f_est]     = recover_solution(Xopt,SDP.C,n1,k);
 % U               = applyAffineMapCell(Scell,u);
@@ -101,7 +100,7 @@ time_pgd = toc;
 % elr = max([eta, gap, mS]);
 % tlr = toc;
 
-%% Solve using SDPNAL+
+% %% Solve using SDPNAL+
 % options.tol = 1e-8;
 % addpath(genpath(sdpnalpath));
 % rng(0);
@@ -117,14 +116,13 @@ time_pgd = toc;
 % tnal = toc;
 
 %% Solve using ManiSDP
-rng(0);
-tic
-[~, ~, ~, fval, emani] = ManiSDP(At, b, c, n);
-tmani = toc;
+% rng(0);
+% tic
+% [~, ~, ~, fval, emani] = ManiSDP(At, b, c, n);
+% tmani = toc;
 
 % fprintf('Mosek: optimum = %0.8f, eta = %0.1e, time = %0.2fs\n', mobj(1), emosek, tmosek);
 % fprintf('SDPLR: optimum = %0.8f, eta = %0.1e, time = %0.2fs\n', vlr, elr, tlr);
 % fprintf('SDPNAL: optimum = %0.8f, eta = %0.1e, time = %0.2fs\n', objnal(1), enal, tnal);
-fprintf('Stride: optimum = %0.8f, eta = %0.1e, time = %0.2fs\n', outPGD.pobj, epgd, time_pgd);
-fprintf('ManiSDP: optimum = %0.8f, eta = %0.1e, time = %0.2fs\n', fval, emani, tmani);
-end
+% fprintf('Stride: optimum = %0.8f, eta = %0.1e, time = %0.2fs\n', outPGD.pobj, epgd, time_pgd);
+% fprintf('ManiSDP: optimum = %0.8f, eta = %0.1e, time = %0.2fs\n', fval, emani, tmani);
