@@ -1,11 +1,12 @@
-clear all
-clc
+% clear all
+% clc
 
 rng(1);
-N  = 17; % code length
-e  = 1e-4*randn(N,1);
+N  = 15; % code length
 x  = msspoly('x',N); % symbolic decision variables using SPOTLESS
-f  = x'*e; % 偏置加速收敛,只取一个最优解
+% e  = 1e-4*randn(N,1);
+% f  = x'*e; % 偏置加速收敛,只取一个最优解
+f = 0;
 for k=1:N-2 % 副瓣平方和
     f = f + sum(x(1:N-k).*x(1+k:N))^2;
 end
@@ -25,6 +26,5 @@ mb = K.s;
 
 rng(0);
 tic
-[Y, S, y, fval, emani] = ManiSDP_unitdiag(At, b, c, mb);
-X = Y'*Y
+[X, fval, data] = ManiSDP_unitdiag(At, b, c, mb);
 tmani = toc;

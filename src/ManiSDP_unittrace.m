@@ -4,17 +4,32 @@
 %      X >= 0,
 %      tr(X) = 1.
 
-function [Y, S, y, fval, error] = ManiSDP_unittrace(At, b, c, n)
+function [X, obj, data] = ManiSDP_unittrace(At, b, c, n, options)
+
+if ~isfield(options,'p0'); options.p0 = 1; end
+if ~isfield(options,'AL_maxiter'); options.AL_maxiter = 300; end
+if ~isfield(options,'gama'); options.gama = 2; end
+if ~isfield(options,'sigma0'); options.sigma0 = 1e1; end
+if ~isfield(options,'sigma_min'); options.sigma_min = 1e2; end
+if ~isfield(options,'sigma_max'); options.sigma_max = 1e7; end
+if ~isfield(options,'tol'); options.tol = 1e-8; end
+if ~isfield(options,'theta'); options.theta = 1e-2; end
+if ~isfield(options,'delta'); options.delta = 10; end
+if ~isfield(options,'alpha'); options.alpha = 0.04; end
+if ~isfield(options,'tolgradnorm'); options.tolgrad = 1e-8; end
+if ~isfield(options,'TR_maxinner'); options.TR_maxinner = 40; end
+if ~isfield(options,'TR_maxiter'); options.TR_maxiter = 3; end
+if ~isfield(options,'tao'); options.tao = 1e-4; end
+if ~isfield(options,'line_search'); options.line_search = 1; end
+
+fprintf('ManiSDP is starting...\n');
+fprintf('SDP size: n = %i, m = %i\n', n, size(b,1));
+
 C = reshape(c, n, n);
 A = At';
-p = 1;
-sigma = 1e1;
-sigma_min = 1e2; 
-sigma_max = 1e7;
-gama = 2;
-MaxIter = 300;
-tolgrad = 1e-8;
-tao = 1e-8;
+p = options.p0;
+sigma = options.sigma0;
+gama = options.gama;
 y = zeros(length(b),1);
 normb = 1 + norm(b);
 Y = [];
@@ -24,69 +39,83 @@ problem.cost = @cost;
 problem.grad = @grad;
 problem.hess = @hess;
 opts.verbosity = 0;
-opts.maxinner = 40;
-opts.maxiter = 3;
+opts.maxinner = options.TR_maxinner;
+opts.maxiter = options.TR_maxiter;
+opts.tolgradnorm = options.tolgrad;
+
 timespend = tic;
-for iter = 1:MaxIter
+for iter = 1:options.AL_maxiter
     problem.M = spherefactory(n, p);
     if ~isempty(U)
         Y = line_search(Y, U);
     end
-    opts.tolgradnorm = tolgrad;
     [Y, ~, info] = trustregions(problem, Y, opts);
     gradnorm = info(end).gradnorm;
     X = Y*Y';
     x = X(:);
-    fval = c'*x;
+    obj = c'*x;
     Axb = A*x - b;
     pinf = norm(Axb)/normb;
     y = y - sigma*Axb;
     eS = C - reshape(y'*A, n, n);
-    lambda = sum(eS.*X,'all');
-    S = eS - lambda*eye(n);
+    z = sum(eS.*X,'all');
+    S = eS - z*eye(n);
     [vS, dS] = eig(S, 'vector');
-    mS = abs(min(dS))/(1+dS(end));
-    by = b'*y + lambda;
-    gap = abs(fval-by)/(abs(by)+abs(fval)+1);
+    dinf = abs(min(dS))/(1+dS(end));
+    by = b'*y + z;
+    gap = abs(obj-by)/(abs(by)+abs(obj)+1);
     [V, D, ~] = svd(Y);
     if size(D, 2) > 1
         e = diag(D);
     else
         e = D(1);
     end
-    r = sum(e > 1e-2*e(1));
-    fprintf('Iter:%d, fval:%0.8f, gap:%0.1e, mineigS:%0.1e, pinf:%0.1e, dinf:%0.1e, r:%d, p:%d, sigma:%0.3f, time:%0.2fs\n', ...
-             iter,    fval,       gap,       mS,       pinf,   gradnorm,    r,    p,    sigma,   toc(timespend));
-    error = max([pinf, gap, mS]);
-    if error < tao
+    r = sum(e > options.theta*e(1));
+    fprintf('Iter %d, obj:%0.8f, gap:%0.1e, pinf:%0.1e, dinf:%0.1e, gradnorm:%0.1e, r:%d, p:%d, sigma:%0.3f, time:%0.2fs\n', ...
+             iter,    obj,       gap,       pinf,       dinf,       gradnorm,    r,    p,    sigma,   toc(timespend));
+    eta = max([pinf, gap, dinf]);
+    if eta < options.tol
+        data.status = 0;
+        fprintf('Optimality is reached!\n');
         break;
     end
     if r <= p - 1         
         Y = V(:,1:r)*diag(e(1:r));
         p = r;
     end
-    nne = min(sum(dS < 0), 10);
-    U = [zeros(n, p) vS(:,1:nne)];
+    nne = min(sum(dS < 0), options.delta);
+    if options.line_search == 1
+       U = [zeros(n, p) vS(:,1:nne)];
+    end
     p = p + nne;
-    Y = [Y zeros(n, nne)];
-    % Y = [Y 0.04*vS(:,1:nne)];
-    % Y = Y/norm(Y, 'fro');
-%     if iter == 1 || neta > 0.5*eta
-%         if sigma < 1e5
-%               sigma = gama*sigma;
-%         else
-%               sigma = 1e3;
-%         end
-%     end
-%     eta = neta;
-    
-    if pinf < gradnorm/6e3
-          sigma = max(sigma/gama, sigma_min);
+    if options.line_search == 1
+        Y = [Y zeros(n, nne)];
     else
-          sigma = min(sigma*gama, sigma_max);
+        Y = [Y options.alpha*vS(:,1:nne)];
+        Y = Y/norm(Y, 'fro');
+    end
+    
+    if pinf < options.tao*gradnorm
+          sigma = max(sigma/gama, options.sigma_min);
+    else
+          sigma = min(sigma*gama, options.sigma_max);
     end
 %    tolgrad = 6e2*pinf;
 end
+data.S = S;
+data.y = y;
+data.z = z;
+data.gap = gap;
+data.pinf = pinf;
+data.dinf = dinf;
+data.gradnorm = gradnorm;
+data.time = toc(timespend);
+if eta >= options.tol
+    data.status = 1;
+    fprintf('Iteration maximum is reached!\n');
+end
+
+fprintf('ManiSDP: optimum = %0.8f, time = %0.2fs\n', obj, toc(timespend));
 
     function val = co(Y)
         X = Y*Y';
@@ -128,8 +157,8 @@ end
         Axb = A*x - b - y/sigma;
         f = c'*x + sigma/2*(Axb'*Axb);
         eS = C + sigma*reshape(Axb'*A, n, n);
-        store.lambda = sum(X.*eS,'all');
-        store.G = 2*eS*Y - 2*store.lambda*Y;
+        store.z = sum(X.*eS,'all');
+        store.G = 2*eS*Y - 2*store.z*Y;
         store.eS = eS;
     end
     
@@ -141,6 +170,6 @@ end
         YU = U*Y';
         AyU= reshape(YU(:)'*At*A, n, n);
         H = 2*store.eS*U + 4*sigma*(AyU*Y);
-        H = H - trace(H*Y')*Y - 2*store.lambda*U;
+        H = H - trace(H*Y')*Y - 2*store.z*U;
     end
 end

@@ -3,17 +3,33 @@
 % s.t. A(X) = b,
 %      X >= 0.
 
-function [Y, S, y, fval, error] = ManiSDP(At, b, c, n)
+function [X, obj, data] = ManiSDP(At, b, c, n, options)
+
+if ~isfield(options,'p0'); options.p0 = 1; end
+if ~isfield(options,'AL_maxiter'); options.AL_maxiter = 300; end
+if ~isfield(options,'gama'); options.gama = 2; end
+if ~isfield(options,'sigma0'); options.sigma0 = 1e-2; end
+if ~isfield(options,'sigma_min'); options.sigma_min = 1e-1; end
+if ~isfield(options,'sigma_max'); options.sigma_max = 1e7; end
+if ~isfield(options,'tol'); options.tol = 1e-8; end
+if ~isfield(options,'theta'); options.theta = 1e-1; end
+if ~isfield(options,'delta'); options.delta = 8; end
+if ~isfield(options,'alpha'); options.alpha = 0.2; end
+if ~isfield(options,'tolgradnorm'); options.tolgrad = 1e-8; end
+if ~isfield(options,'TR_maxinner'); options.TR_maxinner = 50; end
+if ~isfield(options,'TR_maxiter'); options.TR_maxiter = 4; end
+if ~isfield(options,'tao'); options.tao = 0.25; end
+if ~isfield(options,'line_search'); options.line_search = 1; end
+if ~isfield(options,'solver'); options.solver = 0; end
+
+fprintf('ManiSDP is starting...\n');
+fprintf('SDP size: n = %i, m = %i\n', n, size(b,1));
+
 C = reshape(c, n, n);
 A = At';
-p = 1;
-sigma = 1e-2;
-sigma_min = 1e-1; 
-sigma_max = 1e7;
-gama = 2;
-MaxIter = 300;
-tolgrad = 1e-8;
-tao = 1e-8;
+p = options.p0;
+sigma = options.sigma0;
+gama = options.gama;
 y = zeros(length(b),1);
 normb = 1 + norm(b);
 Y = [];
@@ -23,68 +39,95 @@ problem.cost = @cost;
 problem.grad = @grad;
 problem.hess = @hess;
 opts.verbosity = 0;     % Set to 0 for no output, 2 for normal output
-opts.maxinner = 50;     % maximum Hessian calls per iteration
-opts.maxiter = 4;
-opts.tolgradnorm = tolgrad;
+opts.maxinner = options.TR_maxinner;     % maximum Hessian calls per iteration
+opts.maxiter = options.TR_maxiter;
+opts.tolgradnorm = options.tolgrad;
+
 timespend = tic;
-for iter = 1:MaxIter
+for iter = 1:options.AL_maxiter
     problem.M = euclideanfactory(n, p);
     if ~isempty(U)
         Y = line_search(Y, U);
     end
-    [Y, ~, info] = trustregions(problem, Y, opts);
+    if options.solver == 0
+        [Y, ~, info] = trustregions(problem, Y, opts);
+    elseif options.solver == 1
+        [Y, ~, info] = arc(problem, Y, opts);
+    elseif options.solver == 2
+        [Y, ~, info] = steepestdescent(problem, Y, opts);
+    elseif options.solver == 3
+        [Y, ~, info] = conjugategradient(problem, Y, opts);
+    elseif options.solver == 4
+        [Y, ~, info] = barzilaiborwein(problem, Y, opts);
+    elseif options.solver == 5
+        [Y, ~, info] = rlbfgs(problem, Y, opts);
+    else
+        fprintf('Solver is not supported!\n');
+        return;
+    end
     gradnorm = info(end).gradnorm;
     X = Y*Y';
     x = X(:);
-    fval = c'*x;
+    obj = c'*x;
     Axb = A*x - b;
     pinf = norm(Axb)/normb;
     y = y - sigma*Axb;
     S = C - reshape(y'*A, n, n);
     [vS, dS] = eig(S, 'vector');
-    mS = abs(min(dS))/(1+dS(end));
+    dinf = abs(min(dS))/(1+dS(end));
     by = b'*y;
-    gap = abs(fval-by)/(abs(by)+abs(fval)+1);
+    gap = abs(obj-by)/(abs(by)+abs(obj)+1);
     [V, D, ~] = svd(Y);
     if size(D, 2) > 1
         e = diag(D);
     else
         e = D(1);
     end
-    r = sum(e > 1e-1*e(1));
-    fprintf('Iter %d, fval:%0.8f, gap:%0.1e, mineigS:%0.1e, pinf:%0.1e, gradnorm:%0.1e, r:%d, p:%d, sigma:%0.3f, time:%0.2fs\n', ...
-             iter,    fval,       gap,       mS,       pinf,   gradnorm,    r,    p,    sigma,   toc(timespend));
-    error = max([pinf, gap, mS]);
-    if error < tao
+    r = sum(e > options.theta*e(1));
+    fprintf('Iter %d, obj:%0.8f, gap:%0.1e, pinf:%0.1e, dinf:%0.1e, gradnorm:%0.1e, r:%d, p:%d, sigma:%0.3f, time:%0.2fs\n', ...
+             iter,    obj,       gap,       pinf,       dinf,   gradnorm,    r,    p,    sigma,   toc(timespend));
+    eta = max([pinf, gap, dinf]);
+    if eta < options.tol
+        data.status = 0;
+        fprintf('Optimality is reached!\n');
         break;
     end
     if r <= p - 1         
         Y = V(:,1:r)*diag(e(1:r));
         p = r;
     end
-    nne = min(sum(dS < 0), 8);
-    % U = [zeros(n, p) vS(:,1:nne)];
+    nne = min(sum(dS < 0), options.delta);
+    if options.line_search == 1
+        U = [zeros(n, p) vS(:,1:nne)];
+    end
     p = p + nne;
-    % Y = [Y zeros(n, nne)];
-    Y = [Y 0.2*vS(:,1:nne)];
-        
-%     if iter == 1 || pinf > 0.3*opinf
-%         if sigma > 1e3
-%             sigma = 1e2;
-%         else
-%             sigma = sigma*gama;
-%         end
-%     end
-%     opinf = pinf;
-    
-    if pinf < gradnorm/4
-          sigma = max(sigma/gama, sigma_min);
+    if options.line_search == 1
+        Y = [Y zeros(n, nne)];
     else
-          sigma = min(sigma*gama, sigma_max);
+        Y = [Y options.alpha*vS(:,1:nne)];
+    end
+    
+    if pinf < options.tao*gradnorm
+          sigma = max(sigma/gama, options.sigma_min);
+    else
+          sigma = min(sigma*gama, options.sigma_max);
     end
 %    tolgrad = pinf;
 end
-   
+data.S = S;
+data.y = y;
+data.gap = gap;
+data.pinf = pinf;
+data.dinf = dinf;
+data.gradnorm = gradnorm;
+data.time = toc(timespend);
+if eta >= options.tol
+    data.status = 1;
+    fprintf('Iteration maximum is reached!\n');
+end
+
+fprintf('ManiSDP: optimum = %0.8f, time = %0.2fs\n', obj, toc(timespend));
+
 %         function Y = line_search(Y, U, t)
 %             X = Y*Y';
 %             D = U*U';
@@ -114,24 +157,24 @@ end
 %              Y = Y + alpha(I)*U;
 %         end
 
-%     function nY = line_search(Y, U)
-%          alpha = 0.2;
-%          cost0 = co(Y);
-%          i = 1;
-%          nY = Y + alpha*U;
-%          while i <= 15 && co(nY) - cost0 > -1e-3
-%               alpha = 0.8*alpha;
-%               nY = Y + alpha*U;
-%               i = i + 1;
-%          end
-%     end
+    function nY = line_search(Y, U)
+         alpha = 0.2;
+         cost0 = co(Y);
+         i = 1;
+         nY = Y + alpha*U;
+         while i <= 15 && co(nY) - cost0 > -1e-3
+              alpha = 0.8*alpha;
+              nY = Y + alpha*U;
+              i = i + 1;
+         end
+    end
 
-%    function val = co(Y)
-%         X = Y*Y';
-%         x = X(:);
-%         Axb = A*x - b - y/sigma;
-%         val = c'*x + sigma/2*(Axb'*Axb);
-%    end
+   function val = co(Y)
+        X = Y*Y';
+        x = X(:);
+        Axb = A*x - b - y/sigma;
+        val = c'*x + sigma/2*(Axb'*Axb);
+   end
 
    function [f, store] = cost(Y, store)
         X = Y*Y';

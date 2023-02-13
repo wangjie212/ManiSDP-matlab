@@ -5,8 +5,8 @@
 % addpath(genpath(pgdpath));
 
 %% Generate random binary quadratic program
-rng(2);
-d       = 60; % BQP with d variables
+rng(1);
+d       = 30; % BQP with d variables
 Q       = randn(d);
 Q = (Q + Q')/2; % a random symmetric matrix
 e       = randn(d,1);
@@ -112,13 +112,13 @@ e       = randn(d,1);
 % tlr = toc;
 
 %% Solve using ManiSDP
-% rng(0);
-% tic
-% [~, ~, ~, fval0, emani0] = ManiSDP_unitdiag(At, b, c/max(abs(c)), mb);
-% tmani0 = toc;
 rng(0);
+clear options;
+options.tol = 1e-8;
+options.TR_maxinner = 25;
 tic
-[~, ~, ~, fval, emani] = ManiSDP_unitdiag(At, b, c, mb);
+[~, fval, data] = ManiSDP_unitdiag(At, b, c, mb, options);
+emani = max([data.gap, data.pinf, data.dinf]);
 tmani = toc;
 
 %% Solve using SDPNAL+

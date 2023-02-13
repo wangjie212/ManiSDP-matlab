@@ -103,8 +103,11 @@ C = full(reshape(c, mb, mb));
 
 %% Solve using ManiSDP
 rng(0);
+clear options;
+options.tol = 1e-8;
 tic
-[Y, S, y, fval, emani] = ManiSDP_unittrace(At, b/(N+1), c, mb);
+[~, fval, data] = ManiSDP_unittrace(At, b/(N+1), c, mb, options);
+emani = max([data.gap, data.pinf, data.dinf]);
 tmani = toc;
 
 % fprintf('Mosek: optimum = %0.8f, eta = %0.1e, time = %0.2fs\n', mobj(1), emosek, tmosek);

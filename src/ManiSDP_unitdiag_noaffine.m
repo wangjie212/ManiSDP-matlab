@@ -3,13 +3,25 @@
 % s.t. X >= 0,
 %      X_ii = 1, i = 1,...,n.
 
-function [Y, S, fval, mS] = ManiSDP_unitdiag_noaffine(C)
+function [X, obj, data] = ManiSDP_unitdiag_noaffine(C, options)
+
+if ~isfield(options,'p0'); options.p0 = 2; end
+if ~isfield(options,'AL_maxiter'); options.AL_maxiter = 20; end
+if ~isfield(options,'tol'); options.tol = 1e-8; end
+if ~isfield(options,'theta'); options.theta = 1e-1; end
+if ~isfield(options,'delta'); options.delta = 8; end
+if ~isfield(options,'alpha'); options.alpha = 0.5; end
+if ~isfield(options,'tolgradnorm'); options.tolgrad = 1e-8; end
+if ~isfield(options,'TR_maxinner'); options.TR_maxinner = 100; end
+if ~isfield(options,'TR_maxiter'); options.TR_maxiter = 20; end
+if ~isfield(options,'line_search'); options.line_search = 0; end
+
+fprintf('ManiSDP is starting...\n');
 n = size(C,1);
+fprintf('SDP size: n = %i, m = %i\n', n, n);
+
 c = C(:);
-p = 40;
-MaxIter = 20;
-tolgrad = 1e-8;
-tao = 1e-8;
+p = options.p0;
 egrad = zeros(p, n);
 Y = [];
 U = [];
@@ -18,50 +30,69 @@ problem.cost = @cost;
 problem.grad = @grad;
 problem.hess = @hess;
 opts.verbosity = 0;     % Set to 0 for no output, 2 for normal output
-opts.maxinner = 100;     % maximum Hessian calls per iteration
-opts.tolgradnorm = tolgrad; % tolerance on gradient norm
-opts.maxiter = 20;
+opts.maxinner = options.TR_maxinner;     % maximum Hessian calls per iteration
+opts.maxiter = options.TR_maxiter;
+opts.tolgradnorm = options.tolgrad; % tolerance on gradient norm
 
 timespend = tic;
-for iter = 1:MaxIter
+for iter = 1:options.AL_maxiter
     problem.M = obliquefactoryNTrans(p, n);
     if ~isempty(U)
         Y = line_search(Y, U);
     end
-    Y = trustregions(problem, Y, opts);
+    [Y, ~, info] = trustregions(problem, Y, opts);
+    gradnorm = info(end).gradnorm;
     X = Y'*Y;
-    lambda = sum(C.*X);
-    fval = full(sum(lambda));
-    S = C - diag(lambda);
+    z = sum(C.*X);
+    obj = full(sum(z));
+    S = C - diag(z);
     [vS, dS] = eig(full(S), 'vector');
-    mS = abs(min(dS))/(1+dS(end));
+    dinf = abs(min(dS))/(1+dS(end));
     [~, D, V] = svd(Y);
     e = diag(D);
-    r = sum(e > 1e-1*e(1));
-    fprintf('Iter:%d, fval:%0.8f, mineigS:%0.1e, r:%d, p:%d, time:%0.2fs\n', ...
-             iter,    fval,       mS,       r,    p,    toc(timespend));
-    if mS < tao
+    r = sum(e > options.theta*e(1));
+    fprintf('Iter %d, obj:%0.8f, dinf:%0.1e, r:%d, p:%d, time:%0.2fs\n', ...
+             iter,    obj,       dinf,       r,    p,    toc(timespend));
+    if dinf < options.tol
+        data.status = 0;
+        fprintf('Optimality is reached!\n');
         break;
     end
     if r <= p - 1         
         Y = V(:,1:r)'.*e(1:r);
         p = r;
     end
-    nne = max(min(sum(dS < 0), 8), 1);
-    % U = [zeros(p, n); vS(:,1:nne)'];
+    nne = max(min(sum(dS < 0), options.delta), 1);
+    if options.line_search == 1
+        U = [zeros(p, n); vS(:,1:nne)'];
+    end
     p = p + nne;
-    % Y = [Y; zeros(nne,n)]; 
-    Y = [Y; 0.5*vS(:,1:nne)'];
-    Y = Y./sqrt(sum(Y.^2));
+    if options.line_search == 1
+        Y = [Y; zeros(nne,n)];
+    else
+        Y = [Y; options.alpha*vS(:,1:nne)'];
+        Y = Y./sqrt(sum(Y.^2));
+    end
+end
+data.S = S;
+data.z = z;
+data.dinf = dinf;
+data.gradnorm = gradnorm;
+data.time = toc(timespend);
+if dinf >= options.tol
+    data.status = 1;
+    fprintf('Iteration maximum is reached!\n');
 end
 
-%     function val = co(Y)
-%         X = Y'*Y;
-%         val = c'*X(:);
-%     end
+fprintf('ManiSDP: optimum = %0.8f, time = %0.2fs\n', obj, toc(timespend));
+
+    function val = co(Y)
+        X = Y'*Y;
+        val = c'*X(:);
+    end
     
 %    function Y = line_search(Y, U)
-%         alpha = [0.02;0.04;0.06;0.08;0.1;0.2;0.5];
+%         alpha = [0.02;0.04;0.06;0.08;0.1;0.2];
 %         val = zeros(length(alpha),1);
 %         for i = 1:length(alpha)
 %             nY = Y + alpha(i)*U;
@@ -73,19 +104,19 @@ end
 %         Y = Y./sqrt(sum(Y.^2));
 %    end
 
-%     function nY = line_search(Y, U)
-%          alpha = 0.5;
-%          cost0 = co(Y);
-%          i = 1;
-%          nY = Y + alpha*U;
-%          nY = nY./sqrt(sum(nY.^2));
-%          while i <= 15 && co(nY) - cost0 > -1e-3
-%               alpha = 0.8*alpha;
-%               nY = Y + alpha*U;
-%               nY = nY./sqrt(sum(nY.^2));
-%               i = i + 1;
-%          end
-%     end
+    function nY = line_search(Y, U)
+         alpha = 0.5;
+         cost0 = co(Y);
+         i = 1;
+         nY = Y + alpha*U;
+         nY = nY./sqrt(sum(nY.^2));
+         while i <= 15 && co(nY) - cost0 > -1e-3
+              alpha = 0.8*alpha;
+              nY = Y + alpha*U;
+              nY = nY./sqrt(sum(nY.^2));
+              i = i + 1;
+         end
+    end
     
     function [f, store] = cost(Y, store)
         X = Y'*Y;
@@ -97,7 +128,6 @@ end
         G = egrad - Y.*sum(Y.*egrad);
     end
 
-    % If you want to, you can specify the Riemannian Hessian as well.
     function [He, store] = hess(Y, U, store)
         H = 2*U*C;
         He = H - Y.*sum(Y.*H) - U.*sum(Y.*egrad);
@@ -112,10 +142,9 @@ end
         M.tangent = @(X, U) U - X.*sum(X.*U);
 
         M.retr = @retraction;
-        % Retraction on the oblique manifold
         function y = retraction(x, d)            
             xtd = x + d;
-            y = xtd./sqrt(sum(xtd.^2)); % y = normalize_columns(x + td);
+            y = xtd./sqrt(sum(xtd.^2));
         end
 
         M.rand = @() random(n, m);
@@ -123,7 +152,6 @@ end
         M.zerovec = @(x) zeros(n, m);
         M.transp = @(x1, x2, d) d - x2.*sum(x2.*d);
 
-        % Uniform random sampling on the sphere.
         function x = random(n, m)
             x = randn(n, m);
             x = x./sqrt(sum(x.^2, 1));

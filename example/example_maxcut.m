@@ -1,9 +1,8 @@
 % sdpnalpath = '../../SDPNAL+v1.0';
 % addpath(genpath(sdpnalpath));
 % fileID = fopen('../data/bqp_results.txt', 'w');
-set = ["G61", "G62","G63","G64","G65","G66","G67","G70","G72","G77","G81"];
-for i = 1:length(set)
-L = Laplacian(append('../data/Gset/', set(i), '.txt'));
+
+L = Laplacian(append('../data/Gset/', "G63", '.txt'));
 C = -1/4*sparse(L);
 c = C(:);
 
@@ -74,8 +73,12 @@ end
 
 %% Solve using ManiSDP
 rng(0);
+clear options;
+options.p0 = 40;
+options.TR_maxiter = 40;
 tic
-[~, ~, fval, emani] = ManiSDP_unitdiag_noaffine(C);
+[~, fval, data] = ManiSDP_unitdiag_noaffine(C, options);
+emani = data.dinf;
 tmani = toc;
 
 %% Solve using SDPNAL+
@@ -98,5 +101,4 @@ tmani = toc;
 % fprintf('SDPLR: optimum = %0.8f, eta = %0.1e, time = %0.2fs\n', vlr, elr, tlr);
 % fprintf('SDPNAL: optimum = %0.8f, eta = %0.1e, time = %0.2fs\n', objnal(1), enal, tnal);
 fprintf('ManiSDP: optimum = %0.8f, eta = %0.1e, time = %0.2fs\n', fval, emani, tmani);
-end
 % fclose(fileID);

@@ -7,26 +7,28 @@ sdpnalpath  = '../../SDPNAL+v1.0';
 %% Generate random quartic program
 rng(1);
 d = 10;
-x = msspoly('x', d);
-mon = monomials(x, 0:4);
-coe = randn(length(mon), 1);
-f = coe'*mon;
-h = sum(x.^2) - 1;
+coe = randn(nchoosek(d+4, 4), 1);
+% x = msspoly('x', d);
+% mon = monomials(x, 0:4);
+% coe = randn(length(mon), 1);
+% f = coe'*mon;
+% h = sum(x.^2) - 1;
+[At, b, c, mb] = qsmom(d, coe);
 
 % writematrix(coe, '../data/qs_c_60_3.txt');
 
 %% Relax QP into an SDP
-problem.vars            = x;
-problem.objective       = f;
-problem.equality        = h; 
-kappa                   = 2; % relaxation order
-[SDP,info]              = dense_sdp_relax(problem,kappa);
-At = SDP.sedumi.At;
-b = SDP.sedumi.b;
-c = SDP.sedumi.c;
-K = SDP.sedumi.K;
-mb = K.s;
-C = full(reshape(c, mb, mb));
+% problem.vars            = x;
+% problem.objective       = f;
+% problem.equality        = h; 
+% kappa                   = 2; % relaxation order
+% [SDP,info]              = dense_sdp_relax(problem,kappa);
+% At = SDP.sedumi.At;
+% b = SDP.sedumi.b;
+% c = SDP.sedumi.c;
+% K = SDP.sedumi.K;
+% mb = K.s;
+% C = full(reshape(c, mb, mb));
 
 %% Solve using STRIDE
 % SDP.M       = 3; % upper bound on the trace of the moment matrix
@@ -110,8 +112,13 @@ C = full(reshape(c, mb, mb));
 
 %% Solve using ManiSDP
 rng(0);
+options.theta = 1e-2;
+options.delta = 6;
+options.maxinner = 20;
+options.tao = 1e-2;
 tic
-[~, ~, ~, fval, emani] = ManiSDP(At, b, c, mb);
+[~, fval, data] = ManiSDP(At, b, c, mb, options);
+emani = max([data.gap, data.pinf, data.dinf]);
 tmani = toc;
 
 %% Solve using SDPNAL+

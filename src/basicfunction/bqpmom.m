@@ -85,7 +85,7 @@ for i = 1:lsp
              col = [col; l; l; l; l];
              val = [val; 0.5; 0.5; -0.5; -0.5];
              l = l + 1;
-        end
+         end
      end
 end
 At = sparse(row,col,val,mb^2,ncons);

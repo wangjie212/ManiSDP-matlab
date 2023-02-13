@@ -46,6 +46,5 @@ sigma1 = 1e1
 sigma2 = 1e-1
 r0 = 1e-2
 nne = 4
-tau = 0.3
 maxinner = 10
 maxiter = 6
