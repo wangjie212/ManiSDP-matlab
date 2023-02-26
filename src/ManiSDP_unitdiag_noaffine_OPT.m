@@ -20,9 +20,8 @@ fprintf('ManiSDP is starting...\n');
 n = size(C,1);
 fprintf('SDP size: n = %i, m = %i\n', n, n);
 
-c = C(:);
 p = options.p0;
-egrad = zeros(p, n);
+SumYCdotY = [];
 Y = [];
 U = [];
 YC = [];
@@ -119,21 +118,18 @@ fprintf('ManiSDP: optimum = %0.8f, time = %0.2fs\n', obj, toc(timespend));
     end
     
     function [f, store] = cost(Y, store)
-        % X = Y'*Y;
-        % f = c'*X(:);
         YC = Y*C;
-        %f = sum(sum(YC.*Y));
-        f = sum(diag(YC*Y'));
+        SumYCdotY = sum(YC.*Y);
+        f = 0.5*sum(SumYCdotY);
     end
 
     function [G, store] = grad(Y, store)
-        egrad = 2*YC;
-        G = egrad - Y.*sum(Y.*egrad);
+        G = YC - Y.*SumYCdotY;
     end
 
     function [He, store] = hess(Y, U, store)
-        H = 2*U*C;
-        He = H - Y.*sum(Y.*H) - U.*sum(Y.*egrad);
+        H = U*C;
+        He = H - Y.*sum(Y.*H) - U.*SumYCdotY;
     end
 
     function M = obliquefactoryNTrans(n, m)
