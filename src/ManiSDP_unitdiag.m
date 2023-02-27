@@ -55,7 +55,7 @@ for iter = 1:options.AL_maxiter
     X = Y'*Y;
     x = X(:);
     obj = c'*x;
-    Axb = A*x - b;
+    Axb = At'*x - b;
     pinf = norm(Axb)/normb;
 %     if pinf >= gradnorm
         y = y - sigma*Axb;   
@@ -153,7 +153,7 @@ fprintf('ManiSDP: optimum = %0.8f, time = %0.2fs\n', obj, toc(timespend));
     function [f, store] = cost(Y, store)
         X = Y'*Y;
         x = X(:);
-        Axb = At'*x - b - y/sigma;
+        Axb = A*x - b - y/sigma;
         f = c'*x + 0.5*sigma*(Axb'*Axb);
     end
 
