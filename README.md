@@ -4,10 +4,12 @@ $$\inf_{X\succeq0}{\ }\langle C, X\rangle{\ }\text{s.t.}{\ }\mathcal{A}(X)=b,{\ 
 where the linear constraints $\mathcal{A}(X)=b$ are arbitrary while the linear constraints $\mathcal{B}(X)=d$ are assumed to impose certain manifold structures on the domain if present. Here, low-rank means the SDP admits a low-rank optimal solution.
 
 ## Dependencies
+- [MATLAB](https://ww2.mathworks.cn/products/matlab.html?s_tid=hp_products_matlab)
 - [Manopt](https://github.com/NicolasBoumal/manopt)
 
 ## Usage
-The optimal setting of parameters in ManiSDP is highly problem-dependent. We encourage the users to find the optimal parameters (defined in options) via preliminary experiments before running large-scale cases. So far, ManiSDP supports four types of SDPs.
+The optimal setting of parameters in ManiSDP is highly problem-dependent. We encourage the users to find the optimal parameters (defined in options) via preliminary experiments before running large-scale cases. In our experiences, the parameters (sigma0, theta, TR_maxiter, TR_maxinner, tao) have a significant influence on the performance of ManiSDP. So far, ManiSDP supports four types of SDPs.
+
 ### SDPs with only unit diagonal constraints
 $$\inf_{X\succeq0}{\ }\langle C, X\rangle{\ }\text{s.t.}{\ }X_{ii}=1,{\ }\text{for}{\ }i=1,\ldots,n.$$
 
@@ -21,7 +23,7 @@ Input
 C: cost matrix  
 options:  
 \- tol (=1e-8 by default): tolerance of residues
-\- p0 (=2 by default): initial value of the factorization size p  
+\- p0 (=40 by default): initial value of the factorization size p  
 \- AL_maxiter (=20 by default): maximum number of iterations of the augmented Lagrangian method   
 \- theta (=1e-1 by default): threshold for estimating matrix ranks  
 \- delta (=8 by default): number of negative eigenvalues used to construct a descent direction  
@@ -30,7 +32,6 @@ options:
 \- TR_maxiter (=40 by default): maximum number of iterations of the Riemannian trust-region method  
 \- TR_maxinner (=100 by default): maximum Hessian calls per trust-region iteration  
 \- line_search (=0 by default): whether (=1) or not (=0) to use line search to decide the step size for escaping from saddle points  
-
 
 Output  
 sol: optimal solution  
@@ -134,6 +135,12 @@ Output
 sol: optimal solution  
 opt: optimum  
 data: auxiliary data
+
+## Examples
+Check the folder /example.
+
+## Julia version for ManiSDP
+Coming soon.
 
 ## References
 [Jie Wang and Liangbing Hu, Solving Low-Rank Semidefinite Programs via Manifold Optimization, 2023]()  
