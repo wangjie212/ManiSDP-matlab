@@ -1,1 +1,1 @@
-Solve waveform design problems via TSPOP and Manopt
+ManiSDP aims to solve low-rank semidefinite programs via manifold optimization.

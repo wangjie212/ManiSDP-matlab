@@ -5,8 +5,8 @@
 % addpath(genpath(pgdpath));
 
 %% Generate random binary quadratic program
-rng(1);
-d       = 30; % BQP with d variables
+rng(2);
+d       = 130; % BQP with d variables
 Q       = randn(d);
 Q = (Q + Q')/2; % a random symmetric matrix
 e       = randn(d,1);
@@ -115,6 +115,9 @@ e       = randn(d,1);
 rng(0);
 clear options;
 options.tol = 1e-8;
+options.p0 = 200;
+options.delta = 12;
+options.AL_maxiter = 2000;
 options.TR_maxinner = 25;
 tic
 [~, fval, data] = ManiSDP_unitdiag(At, b, c, mb, options);
@@ -141,5 +144,4 @@ tmani = toc;
 % fprintf('SDPLR: optimum = %0.8f, eta = %0.1e, time = %0.2fs\n', vlr, elr, tlr);
 % fprintf('SDPNAL: optimum = %0.8f, eta = %0.1e, time = %0.2fs\n', objnal(1), enal, tnal);
 % fprintf('Stride: optimum = %0.8f, eta = %0.1e, time = %0.2fs\n', outPGD.pobj, epgd, time_pgd);
-% fprintf('ManiSDP0: optimum = %0.8f, eta = %0.1e, time = %0.2fs\n', fval0, emani0, tmani0);
 fprintf('ManiSDP: optimum = %0.8f, eta = %0.1e, time = %0.2fs\n', fval, emani, tmani);

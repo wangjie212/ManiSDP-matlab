@@ -19,7 +19,7 @@ if ~isfield(options,'alpha'); options.alpha = 0.04; end
 if ~isfield(options,'tolgradnorm'); options.tolgrad = 1e-8; end
 if ~isfield(options,'TR_maxinner'); options.TR_maxinner = 40; end
 if ~isfield(options,'TR_maxiter'); options.TR_maxiter = 3; end
-if ~isfield(options,'tao'); options.tao = 1e-4; end
+if ~isfield(options,'tao'); options.tao = 1/6e3; end
 if ~isfield(options,'line_search'); options.line_search = 1; end
 
 fprintf('ManiSDP is starting...\n');
@@ -170,6 +170,7 @@ fprintf('ManiSDP: optimum = %0.8f, time = %0.2fs\n', obj, toc(timespend));
         YU = U*Y';
         AyU= reshape(YU(:)'*At*A, n, n);
         H = 2*store.eS*U + 4*sigma*(AyU*Y);
+%        H = H - sum(H.*Y,'all')*Y - 2*store.z*U;
         H = H - trace(H*Y')*Y - 2*store.z*U;
     end
 end

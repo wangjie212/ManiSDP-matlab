@@ -1,50 +1,30 @@
 bqp
-sigma0 = 1e-3
-sigma1 = 1e-2
-sigma2 = 1e7
-r0 = 1e-3
-nne = 8
-maxinner = 20
-maxiter = 4
-alpha = 0.1
-pinf < gradnorm
+TR_maxinner = 25
 
 qs
-sigma0 = 1e-2
-sigma1 = 1e-1
-sigma2 = 1e7
-r0 = 1e-2
-nne = 6
-maxinner = 20
-maxiter = 4
-pinf < gradnorm/1e2
+theta = 1e-2
+delta = 6
+TR_maxinner = 20
+TR_maxiter = 4
+tao = 1e-2
 
 rs
 sigma0 = 1e1
-sigma1 = 1e2
-sigma2 = 1e7
-r0 = 1e-2
-nne = 10
-maxinner = 40
-maxiter = 3
-pinf < gradnorm/6e3
+sigma_min = 1e2
+sigma_max = 1e7
+theta = 1e-2
+delta = 10
+TR_maxinner = 40
+TR_maxiter = 3
+tao = 1e-4
 
 stls
-sigma0 = 1e-2
-sigma1 = 1e-1
-sigma2 = 1e7
-r0 = 1e-1
-nne = 8
-maxinner = 50
-maxiter = 4
-alpha = 0.2
-pinf < gradnorm/4
+line_search = 1
+tao = 1/6e3
 
 mc
-sigma0 = 1e-2
-sigma1 = 1e1
-sigma2 = 1e-1
-r0 = 1e-2
-nne = 4
-maxinner = 10
-maxiter = 6
+theta = 1e-2
+TR_maxinner = 6
+TR_maxiter = 8
+delta = 10
+tao = 1e-3

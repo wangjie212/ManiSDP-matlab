@@ -1,12 +1,12 @@
-spotpath   = '../../../Programs/spotless';
-addpath(genpath(spotpath));
-pgdpath   = '../../STRIDE';
-addpath(genpath(pgdpath));
-sdpnalpath  = '../../SDPNAL+v1.0';
+% spotpath   = '../../../Programs/spotless';
+% addpath(genpath(spotpath));
+% pgdpath   = '../../STRIDE';
+% addpath(genpath(pgdpath));
+% sdpnalpath  = '../../SDPNAL+v1.0';
 
 %% Generate random quartic program
-rng(1);
-d = 10;
+rng(3);
+d = 30;
 coe = randn(nchoosek(d+4, 4), 1);
 % x = msspoly('x', d);
 % mon = monomials(x, 0:4);
@@ -114,7 +114,9 @@ coe = randn(nchoosek(d+4, 4), 1);
 rng(0);
 options.theta = 1e-2;
 options.delta = 6;
-options.maxinner = 20;
+options.sigma0 = 1e-2;
+options.TR_maxinner = 20;
+options.TR_maxiter = 4;
 options.tao = 1e-2;
 tic
 [~, fval, data] = ManiSDP(At, b, c, mb, options);

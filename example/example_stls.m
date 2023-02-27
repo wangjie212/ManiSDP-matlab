@@ -2,6 +2,7 @@ pgdpath   = '../../STRIDE';
 addpath(genpath(pgdpath));
 sdpnalpath  = '../../SDPNAL+v1.0';
 %% construct space of n1 x n2 hankel matrices (n1 <= n2)
+
 rng(1);
 n1 = 10;
 n2 = 10;
@@ -119,6 +120,7 @@ C = full(reshape(c, mb, mb));
 rng(0);
 clear options;
 options.tol = 1e-8;
+options.line_search = 0;
 tic
 [~, fval, data] = ManiSDP(At, b, c, n, options);
 emani = max([data.gap, data.pinf, data.dinf]);
@@ -128,4 +130,4 @@ tmani = toc;
 % fprintf('SDPLR: optimum = %0.8f, eta = %0.1e, time = %0.2fs\n', vlr, elr, tlr);
 % fprintf('SDPNAL: optimum = %0.8f, eta = %0.1e, time = %0.2fs\n', objnal(1), enal, tnal);
 % fprintf('Stride: optimum = %0.8f, eta = %0.1e, time = %0.2fs\n', outPGD.pobj, epgd, time_pgd);
-% fprintf('ManiSDP: optimum = %0.8f, eta = %0.1e, time = %0.2fs\n', fval, emani, tmani);
+fprintf('ManiSDP: optimum = %0.8f, eta = %0.1e, time = %0.2fs\n', fval, emani, tmani);

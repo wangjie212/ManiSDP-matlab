@@ -2,7 +2,9 @@
 % addpath(genpath(sdpnalpath));
 % fileID = fopen('../data/bqp_results.txt', 'w');
 
-L = Laplacian(append('../data/Gset/', "G63", '.txt'));
+% set = ["G65", "G66", "G67", "G70", "G72", "G77", "G81"];
+% for k = 1:length(set)
+L = Laplacian(append('../data/Gset/', "G65", '.txt'));
 C = -1/4*sparse(L);
 c = C(:);
 
@@ -75,7 +77,6 @@ end
 rng(0);
 clear options;
 options.p0 = 40;
-options.TR_maxiter = 40;
 tic
 [~, fval, data] = ManiSDP_unitdiag_noaffine(C, options);
 emani = data.dinf;
@@ -102,3 +103,4 @@ tmani = toc;
 % fprintf('SDPNAL: optimum = %0.8f, eta = %0.1e, time = %0.2fs\n', objnal(1), enal, tnal);
 fprintf('ManiSDP: optimum = %0.8f, eta = %0.1e, time = %0.2fs\n', fval, emani, tmani);
 % fclose(fileID);
+% end

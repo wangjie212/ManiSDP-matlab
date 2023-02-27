@@ -1,6 +1,6 @@
 % Generate the second-order moment-SDP relaxation for the quartic sphere program:
 % Min  coe'*[x]_4
-% s.t. x^2 = 1.
+% s.t.    x^2 = 1.
 % Output sedumi format data.
 
 function [At, b, c, mb] = qsmom(n, coe)

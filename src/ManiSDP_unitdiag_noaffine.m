@@ -13,14 +13,13 @@ if ~isfield(options,'delta'); options.delta = 8; end
 if ~isfield(options,'alpha'); options.alpha = 0.5; end
 if ~isfield(options,'tolgradnorm'); options.tolgrad = 1e-8; end
 if ~isfield(options,'TR_maxinner'); options.TR_maxinner = 100; end
-if ~isfield(options,'TR_maxiter'); options.TR_maxiter = 20; end
+if ~isfield(options,'TR_maxiter'); options.TR_maxiter = 40; end
 if ~isfield(options,'line_search'); options.line_search = 0; end
 
 fprintf('ManiSDP is starting...\n');
 n = size(C,1);
 fprintf('SDP size: n = %i, m = %i\n', n, n);
 
-c = C(:);
 p = options.p0;
 egrad = zeros(p, n);
 Y = [];
@@ -44,6 +43,7 @@ for iter = 1:options.AL_maxiter
     gradnorm = info(end).gradnorm;
     X = Y'*Y;
     z = sum(C.*X);
+    % z = sum((Y*C).*Y);
     obj = full(sum(z));
     S = C - diag(z);
     [vS, dS] = eig(full(S), 'vector');
@@ -87,8 +87,7 @@ end
 fprintf('ManiSDP: optimum = %0.8f, time = %0.2fs\n', obj, toc(timespend));
 
     function val = co(Y)
-        X = Y'*Y;
-        val = c'*X(:);
+        val = sum((Y*C).*Y,'all');
     end
     
 %    function Y = line_search(Y, U)
@@ -119,8 +118,8 @@ fprintf('ManiSDP: optimum = %0.8f, time = %0.2fs\n', obj, toc(timespend));
     end
     
     function [f, store] = cost(Y, store)
-        X = Y'*Y;
-        f = c'*X(:);
+        % f = trace(Y*C*Y');
+        f = sum((Y*C).*Y,'all');
     end
 
     function [G, store] = grad(Y, store)
@@ -135,8 +134,9 @@ fprintf('ManiSDP: optimum = %0.8f, time = %0.2fs\n', obj, toc(timespend));
 
     function M = obliquefactoryNTrans(n, m)
         M.dim = @() (n-1)*m;
+%        M.inner = @(x, d1, d2) sum(d1.*d2,'all');
         M.inner = @(x, d1, d2) d1(:)'*d2(:);
-        M.norm = @(x, d) norm(d(:));
+        M.norm = @(x, d) norm(d,'fro');
         M.typicaldist = @() pi*sqrt(m);
         M.proj = @(X, U) U - X.*sum(X.*U);
         M.tangent = @(X, U) U - X.*sum(X.*U);

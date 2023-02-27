@@ -1,4 +1,4 @@
-rng(3);
+rng(2);
 p = 4000;
 q = 4000;
 n = p + q;
@@ -38,35 +38,21 @@ K.s = n;
 blk{1,1} = 's';
 blk{1,2} = n;
 
-%% Solve using MOSEK
-% prob       = convert_sedumi2mosek(At, b, c, K);
-% tic
-% [~,res]    = mosekopt('minimize echo(3)',prob);
-% [X,y,S,mobj] = recover_mosek_sol_blk(res, blk);
-% by = b'*y;
-% gap = abs(mobj(1)-by)/(abs(by)+abs(mobj(1))+1);
-% x = X{1}(:);
-% eta = norm(At'*x - b)/(1+norm(b));
-% [~, dS] = eig(S{1}, 'vector');
-% mS = abs(min(dS))/(1+dS(end));
-% emosek = max([eta, gap, mS]);
-% tmosek = toc;
-
 %% Solve using SDPLR
-rng(0);
-pars.printlevel = 1;
-pars.feastol = 1e-8;
-tic
-[x,y] = sdplr(At', b, c, K, pars);
-vlr = c'*x;
-S = C - reshape(At*y, n, n);
-by = b'*y;
-gap = abs(vlr-by)/(abs(by)+abs(vlr)+1);
-eta = norm(At'*x - b)/(1+norm(b));
-[~, dS] = eig(S, 'vector');
-mS = abs(min(dS))/(1+dS(end));
-elr = max([eta, gap, mS]);
-tlr = toc;
+% rng(0);
+% pars.printlevel = 1;
+% pars.feastol = 1e-8;
+% tic
+% [x,y] = sdplr(At', b, c, K, pars);
+% vlr = c'*x;
+% S = C - reshape(At*y, n, n);
+% by = b'*y;
+% gap = abs(vlr-by)/(abs(by)+abs(vlr)+1);
+% eta = norm(At'*x - b)/(1+norm(b));
+% [~, dS] = eig(S, 'vector');
+% mS = abs(min(dS))/(1+dS(end));
+% elr = max([eta, gap, mS]);
+% tlr = toc;
 
 %% Solve using SDPNAL+
 % sdpnalpath  = '../../SDPNAL+v1.0';
@@ -99,7 +85,6 @@ emani = max([data.gap, data.pinf, data.dinf]);
 tmani = toc;
 
 % norm(X{1}(1:p,p+1:n)-M)
-% fprintf('Mosek: optimum = %0.8f, eta = %0.1e, time = %0.2fs\n', mobj(1), emosek, tmosek);
-fprintf('SDPLR: optimum = %0.8f, eta = %0.1e, time = %0.2fs\n', vlr, elr, tlr);
+% fprintf('SDPLR: optimum = %0.8f, eta = %0.1e, time = %0.2fs\n', vlr, elr, tlr);
 % fprintf('SDPNAL: optimum = %0.8f, eta = %0.1e, time = %0.2fs\n', objnal(1), enal, tnal);
 fprintf('ManiSDP: optimum = %0.8f, eta = %0.1e, time = %0.2fs\n', fval, emani, tmani);

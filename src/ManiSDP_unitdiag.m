@@ -24,6 +24,7 @@ if ~isfield(options,'line_search'); options.line_search = 0; end
 
 fprintf('ManiSDP is starting...\n');
 fprintf('SDP size: n = %i, m = %i\n', n, size(b,1));
+warning('off', 'manopt:trs_tCG_cached:memory');
 
 C = reshape(c, n, n);
 A = At';
@@ -55,13 +56,12 @@ for iter = 1:options.AL_maxiter
     x = X(:);
     obj = c'*x;
     Axb = A*x - b;
-    pinf = sqrt(Axb'*Axb)/normb;
+    pinf = norm(Axb)/normb;
 %     if pinf >= gradnorm
         y = y - sigma*Axb;   
 %     end
-    yA = reshape(At*y, n, n);
-    eS = C - yA;
-    z = sum(reshape(x.*eS(:), n, n));
+    eS = C - reshape(At*y, n, n);
+    z = sum(X.*eS);
     S = eS - diag(z);
     [vS, dS] = eig(S, 'vector');
     dinf = abs(min(dS))/(1+dS(end));
@@ -158,23 +158,23 @@ fprintf('ManiSDP: optimum = %0.8f, time = %0.2fs\n', obj, toc(timespend));
     end
 
     function [G, store] = grad(Y, store)
-        yA = reshape(At*Axb, n, n);
-        eS = C + sigma*yA;
+        eS = C + sigma*reshape(At*Axb, n, n);
         eG = 2*Y*eS;
         G = eG - Y.*sum(Y.*eG);
     end
 
     function [H, store] = hess(Y, U, store)
         YU = Y'*U;
-        AyU = reshape(At*(A*YU(:)), n, n);
+        AyU = reshape(A'*(At'*YU(:)), n, n);
         eH = 2*U*eS + 4*sigma*(Y*AyU);
         H = eH - Y.*sum(Y.*eH) - U.*sum(Y.*eG);
     end
 
     function M = obliquefactoryNTrans(n, m)
         M.dim = @() (n-1)*m;
+%        M.inner = @(x, d1, d2) sum(d1.*d2,'all');
         M.inner = @(x, d1, d2) d1(:)'*d2(:);
-        M.norm = @(x, d) norm(d(:));
+        M.norm = @(x, d) norm(d, 'fro');
         M.typicaldist = @() pi*sqrt(m);
         M.proj = @(X, U) U - X.*sum(X.*U);
         M.tangent = @(X, U) U - X.*sum(X.*U);
