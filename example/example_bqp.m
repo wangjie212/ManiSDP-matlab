@@ -5,7 +5,7 @@
 % addpath(genpath(pgdpath));
 
 %% Generate random binary quadratic program
-rng(2);
+rng(1);
 d       = 60; % BQP with d variables
 Q       = randn(d);
 Q = (Q + Q')/2; % a random symmetric matrix
