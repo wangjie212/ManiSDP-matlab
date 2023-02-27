@@ -3,7 +3,7 @@
 % s.t. X >= 0,
 %      X_ii = 1, i = 1,...,n.
 
-function [X, obj, data] = ManiSDP_unitdiag_noaffine(C, options)
+function [X, obj, data] = ManiSDP_onlyunitdiag(C, options)
 
 if ~isfield(options,'p0'); options.p0 = 2; end
 if ~isfield(options,'AL_maxiter'); options.AL_maxiter = 20; end
@@ -13,7 +13,7 @@ if ~isfield(options,'delta'); options.delta = 8; end
 if ~isfield(options,'alpha'); options.alpha = 0.5; end
 if ~isfield(options,'tolgradnorm'); options.tolgrad = 1e-8; end
 if ~isfield(options,'TR_maxinner'); options.TR_maxinner = 100; end
-if ~isfield(options,'TR_maxiter'); options.TR_maxiter = 40; end
+if ~isfield(options,'TR_maxiter'); options.TR_maxiter = 20; end
 if ~isfield(options,'line_search'); options.line_search = 0; end
 
 fprintf('ManiSDP is starting...\n');
@@ -21,9 +21,10 @@ n = size(C,1);
 fprintf('SDP size: n = %i, m = %i\n', n, n);
 
 p = options.p0;
-egrad = zeros(p, n);
 Y = [];
 U = [];
+YC = [];
+eG = [];
 
 problem.cost = @cost;
 problem.grad = @grad;
@@ -118,24 +119,24 @@ fprintf('ManiSDP: optimum = %0.8f, time = %0.2fs\n', obj, toc(timespend));
     end
     
     function [f, store] = cost(Y, store)
-        % f = trace(Y*C*Y');
-        f = sum((Y*C).*Y,'all');
+        YC = Y*C;
+        eG = sum(YC.*Y);
+        f = 0.5*sum(eG);
     end
 
     function [G, store] = grad(Y, store)
-        egrad = 2*Y*C;
-        G = egrad - Y.*sum(Y.*egrad);
+        G = YC - Y.*eG;
     end
 
     function [He, store] = hess(Y, U, store)
-        H = 2*U*C;
-        He = H - Y.*sum(Y.*H) - U.*sum(Y.*egrad);
+        H = U*C;
+        He = H - Y.*sum(Y.*H) - U.*eG;
     end
 
     function M = obliquefactoryNTrans(n, m)
         M.dim = @() (n-1)*m;
-%        M.inner = @(x, d1, d2) sum(d1.*d2,'all');
-        M.inner = @(x, d1, d2) d1(:)'*d2(:);
+        M.inner = @(x, d1, d2) sum(d1.*d2,'all');
+%        M.inner = @(x, d1, d2) d1(:)'*d2(:);
         M.norm = @(x, d) norm(d,'fro');
         M.typicaldist = @() pi*sqrt(m);
         M.proj = @(X, U) U - X.*sum(X.*U);

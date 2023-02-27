@@ -4,7 +4,7 @@
 
 % set = ["G65", "G66", "G67", "G70", "G72", "G77", "G81"];
 % for k = 1:length(set)
-L = Laplacian(append('../data/Gset/', "G32", '.txt'));
+L = Laplacian(append('../data/Gset/', "G", '.txt'));
 C = -1/4*sparse(L);
 c = C(:);
 
