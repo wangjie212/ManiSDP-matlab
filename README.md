@@ -1,6 +1,6 @@
 # ManiSDP
 ManiSDP aims to solve the following low-rank semidefinite program (SDP) via manifold optimization:
-$$\inf_{X\succeq0} \, \langle C, X\rangle \text{s.t.} \mathcal{A}(X)=b,  \mathcal{B}(X)=d,$$
+$$\inf_{X\succeq0}{\ }\langle C, X\rangle \text{s.t.} \mathcal{A}(X)=b,  \mathcal{B}(X)=d,$$
 where the linear constraints $\mathcal{A}(X)=b$ are arbitrary while the linear constraints $\mathcal{B}(X)=d$ are assumed to impose certain manifold structures on the domain if present. Here, low-rank means the SDP admits a low-rank optimal solution.
 
 ## Dependencies
