@@ -1,7 +1,7 @@
 # ManiSDP
 ManiSDP aims to solve large-scale low-rank semidefinite programs via manifold optimization.
 
-$$\inf_{X\succeq0}\langle C, X\rangle\rm{s.t.}\mathcal{A}(X)=b, \mathcal{B}(X)=d$$
+$$\inf_{X\succeq0}\,\langle C, X\rangle\,\text{s.t.}\,\mathcal{A}(X)=b, \,\mathcal{B}(X)=d$$
 
 ## Dependencies
 - [Manopt](https://github.com/NicolasBoumal/manopt)
