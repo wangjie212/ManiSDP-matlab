@@ -153,7 +153,7 @@ fprintf('ManiSDP: optimum = %0.8f, time = %0.2fs\n', obj, toc(timespend));
     function [f, store] = cost(Y, store)
         X = Y'*Y;
         x = X(:);
-        Axb = A*x - b - y/sigma;
+        Axb = At'*x - b - y/sigma;
         f = c'*x + 0.5*sigma*(Axb'*Axb);
     end
 

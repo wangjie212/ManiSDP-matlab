@@ -6,7 +6,7 @@
 
 %% Generate random binary quadratic program
 rng(2);
-d       = 130; % BQP with d variables
+d       = 60; % BQP with d variables
 Q       = randn(d);
 Q = (Q + Q')/2; % a random symmetric matrix
 e       = randn(d,1);
@@ -115,8 +115,8 @@ e       = randn(d,1);
 rng(0);
 clear options;
 options.tol = 1e-8;
-options.p0 = 200;
-options.delta = 12;
+options.p0 = 2;
+options.delta = 8;
 options.AL_maxiter = 2000;
 options.TR_maxinner = 25;
 tic

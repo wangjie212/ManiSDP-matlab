@@ -1,0 +1,37 @@
+# ManiSDP
+ManiSDP aims to solve large-scale low-rank semidefinite programs via manifold optimization.
+
+## Dependencies
+- [Manopt](https://github.com/NicolasBoumal/manopt)
+
+## Usage
+### SDPs with unit diagonal
+The unconstrained polynomial optimization problem formulizes as
+$$\rm{Inf}\ \lbrace f(\mathbf{x}): \mathbf{x}\in\mathbb{R}^n \rbrace,$$
+where $f$ is a polynomial with variables $x_1,\ldots,x_n$ and of degree $d$.
+
+```matlab
+clear options;
+options.tol = 1e-8;
+[sol, obj, data] = ManiSDP_unitdiag(At, b, c, mb, options);
+```
+
+Options:  
+nb: specify the first nb variables to be binary variables (satisfying $x_i^2=1$)  
+newton: true (use the monomial basis computed by the Newton polytope method), false  
+TS (term sparsity): "block" (using the maximal chordal extension), "MD" (using approximately smallest chordal extensions), false (without term sparsity)  
+solution: true (extract an (approximate optimal) solution), false (don't extract an (approximate optimal) solution)  
+
+Output:  
+sol: optimal solution  
+obj: optima  
+blocksize: sizes of blocks  
+blocks: the block structrue  
+GramMat: Gram matrices (You need to set Gram=true)  
+flag: 0 if global optimality is certified; 1 otherwise  
+
+## References
+[Jie Wang and Liangbing Hu, Solving Low-Rank Semidefinite Programs via Manifold Optimization]()  
+
+## Contact
+[Jie Wang](https://wangjie212.github.io/jiewang/): wangjie212@amss.ac.cn  
