@@ -13,7 +13,7 @@ if ~isfield(options,'delta'); options.delta = 8; end
 if ~isfield(options,'alpha'); options.alpha = 0.5; end
 if ~isfield(options,'tolgradnorm'); options.tolgrad = 1e-8; end
 if ~isfield(options,'TR_maxinner'); options.TR_maxinner = 100; end
-if ~isfield(options,'TR_maxiter'); options.TR_maxiter = 20; end
+if ~isfield(options,'TR_maxiter'); options.TR_maxiter = 40; end
 if ~isfield(options,'line_search'); options.line_search = 0; end
 
 fprintf('ManiSDP is starting...\n');

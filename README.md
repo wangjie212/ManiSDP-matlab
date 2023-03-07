@@ -143,7 +143,7 @@ Check the folder /example.
 Coming soon.
 
 ## References
-[Jie Wang and Liangbing Hu, Solving Low-Rank Semidefinite Programs via Manifold Optimization, 2023]()  
+[Jie Wang and Liangbing Hu, Solving Low-Rank Semidefinite Programs via Manifold Optimization, 2023](http://arxiv.org/abs/2303.01722)  
 
 ## Contact
 [Jie Wang](https://wangjie212.github.io/jiewang/): wangjie212@amss.ac.cn  
