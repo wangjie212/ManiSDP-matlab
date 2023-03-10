@@ -22,7 +22,7 @@ options.tol = 1e-8;
 **Input**  
 `C`: cost matrix  
 `options`:  
-\- `tol` (=1e-8 by default): tolerance of residues
+\- `tol` (=1e-8 by default): tolerance of residues  
 \- `p0` (=40 by default): initial value of the factorization size p  
 \- `AL_maxiter` (=20 by default): maximum number of iterations of the augmented Lagrangian method   
 \- `theta` (=1e-1 by default): threshold for estimating matrix ranks  
@@ -51,7 +51,7 @@ options.tol = 1e-8;
 `At, b, c`: SeDuMi format data   
 `n`: size of the PSD matrix  
 `options`:  
-\- `tol` (=1e-8 by default): tolerance of residues
+\- `tol` (=1e-8 by default): tolerance of residues  
 \- `p0` (=2 by default): initial value of the factorization size p  
 \- `AL_maxiter` (=300 by default): maximum number of iterations of the augmented Lagrangian method  
 \- `sigma0` (=1e-3 by default): initial value of the penalty parameter  
@@ -85,7 +85,7 @@ options.tol = 1e-8;
 `At, b, c`: SeDuMi format data   
 `n`: size of the PSD matrix  
 `options`:  
-\- `tol` (=1e-8 by default): tolerance of residues
+\- `tol` (=1e-8 by default): tolerance of residues  
 \- `p0` (=1 by default): initial value of the factorization size p  
 \- `AL_maxiter` (=300 by default): maximum number of iterations of the augmented Lagrangian method  
 \- `sigma0` (=1e1 by default): initial value of the penalty parameter  
@@ -117,7 +117,7 @@ options.tol = 1e-8;
 `At, b, c`: SeDuMi format data   
 `n`: size of the PSD matrix  
 `options`:  
-\- `tol` (=1e-8 by default): tolerance of residues
+\- `tol` (=1e-8 by default): tolerance of residues  
 \- `p0` (=1 by default): initial value of the factorization size p  
 \- `AL_maxiter` (=300 by default): maximum number of iterations of the augmented Lagrangian method  
 \- `sigma0` (=1e-2 by default): initial value of the penalty parameter  
