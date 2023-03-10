@@ -1,10 +1,11 @@
 pgdpath   = '../../STRIDE';
 addpath(genpath(pgdpath));
-sdpnalpath  = '../../SDPNAL+v1.0';
+% sdpnalpath  = '../../SDPNAL+v1.0';
+
 %% construct space of n1 x n2 hankel matrices (n1 <= n2)
-rng(1);
-n1 = 10;
-n2 = 10;
+rng(3);
+n1 = 40;
+n2 = 40;
 [S,k,Scell] = hankel_struct(n1,n2);
 % generate random hankel matrix
 u1 = randn(k,1);
@@ -17,6 +18,21 @@ n = SDP.n;
 fprintf('SDP size: n = %d, m = %d.\n\n\n',n,SDP.m);
 mb = n;
 C = full(reshape(c, mb, mb));
+
+%% Solve using ManiSDP
+rng(0);
+clear options;
+options.tol = 1e-8;
+options.line_search = 0;
+tic
+[~, fval, data] = ManiSDP(At, b, c, n, options);
+emani = max([data.gap, data.pinf, data.dinf]);
+tmani = toc;
+
+% fz = [[1:length(data.fac_size)]' data.fac_size];
+% residue = [[1:length(data.seta)]' log10(data.seta)];
+% writematrix(fz, 'd://works/mypaper/manisdp/stls_fz_40.txt','Delimiter',' ');
+% writematrix(residue, 'd://works/mypaper/manisdp/stls_residue_40.txt','Delimiter',' ');
 
 %% Optimistic initialization using SLRA
 % s.m             = n1;
@@ -114,16 +130,6 @@ C = full(reshape(c, mb, mb));
 % mS = abs(min(dS))/(1+dS(end));
 % enal = max([eta, gap, mS]);
 % tnal = toc;
-
-%% Solve using ManiSDP
-rng(0);
-clear options;
-options.tol = 1e-8;
-options.line_search = 0;
-tic
-[~, fval, data] = ManiSDP(At, b, c, n, options);
-emani = max([data.gap, data.pinf, data.dinf]);
-tmani = toc;
 
 % fprintf('Mosek: optimum = %0.8f, eta = %0.1e, time = %0.2fs\n', mobj(1), emosek, tmosek);
 % fprintf('SDPLR: optimum = %0.8f, eta = %0.1e, time = %0.2fs\n', vlr, elr, tlr);

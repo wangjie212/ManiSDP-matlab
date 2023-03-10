@@ -39,6 +39,20 @@ K.s = n;
 blk{1,1} = 's';
 blk{1,2} = n;
 
+%% Solve using ManiSDP
+rng(0);
+clear options;
+options.tol = 1e-8;
+options.theta = 1e-2;
+options.TR_maxinner = 6;
+options.TR_maxiter = 8;
+options.delta = 10;
+options.tao = 1e-3;
+tic
+[~, fval, data] = ManiSDP(At, b, c, n, options);
+emani = max([data.gap, data.pinf, data.dinf]);
+tmani = toc;
+
 %% Solve using SDPLR
 % rng(0);
 % pars.printlevel = 1;
@@ -70,20 +84,6 @@ blk{1,2} = n;
 % mS = abs(min(dS))/(1+dS(end));
 % enal = max([eta, gap, mS]);
 % tnal = toc;
-
-%% Solve using ManiSDP
-rng(0);
-clear options;
-options.tol = 1e-8;
-options.theta = 1e-2;
-options.TR_maxinner = 6;
-options.TR_maxiter = 8;
-options.delta = 10;
-options.tao = 1e-3;
-tic
-[~, fval, data] = ManiSDP(At, b, c, n, options);
-emani = max([data.gap, data.pinf, data.dinf]);
-tmani = toc;
 
 % fprintf('SDPLR: optimum = %0.8f, eta = %0.1e, time = %0.2fs\n', vlr, elr, tlr);
 % fprintf('SDPNAL: optimum = %0.8f, eta = %0.1e, time = %0.2fs\n', objnal(1), enal, tnal);

@@ -32,6 +32,19 @@ e       = randn(d,1);
 [At, b, c, mb] = bqpmom(d, Q, e);
 % C = full(reshape(c, mb, mb));
 
+%% Solve using ManiSDP
+rng(0);
+clear options;
+options.tol = 1e-8;
+options.p0 = 2;
+options.delta = 8;
+options.AL_maxiter = 1000;
+options.TR_maxinner = 25;
+tic
+[~, fval, data] = ManiSDP_unitdiag(At, b, c, mb, options);
+emani = max([data.gap, data.pinf, data.dinf]);
+tmani = toc;
+
 %% Solve using STRIDE
 % SDP.M       = length(info.v); % upper bound on the trace of the moment matrix need the following for fast computation in the local search method
 % info.v      = msspoly2degcoeff(info.v);
@@ -110,22 +123,6 @@ e       = randn(d,1);
 % mS = abs(min(dS))/(1+dS(end));
 % elr = max([eta, gap, mS]);
 % tlr = toc;
-
-%% Solve using ManiSDP
-rng(0);
-clear options;
-options.tol = 1e-8;
-options.p0 = 2;
-options.delta = 8;
-options.AL_maxiter = 1000;
-options.TR_maxinner = 25;
-tic
-[~, fval, data] = ManiSDP_unitdiag(At, b, c, mb, options);
-emani = max([data.gap, data.pinf, data.dinf]);
-tmani = toc;
-
-% [[1:length(data.fac_size)]' data.fac_size]
-log10(data.seta)
 
 %% Solve using SDPNAL+
 % options.tol = 1e-8;

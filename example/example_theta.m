@@ -42,6 +42,23 @@ K.s = n;
 blk{1,1} = 's';
 blk{1,2} = n;
 
+%% Solve using ManiSDP
+rng(0);
+clear options;
+options.sigma0 = 1;
+options.tol = 1e-8;
+options.TR_maxinner = 20;
+options.TR_maxiter = 4;
+options.tao = 1e-3;
+options.theta = 1e-2;
+options.delta = 10;
+options.line_search = 1;
+options.alpha = 0.01;
+tic
+[~, fval, data] = ManiSDP_unittrace(At, b, c, n, options);
+emani = max([data.gap, data.pinf, data.dinf]);
+tmani = toc;
+
 %% Solve using MOSEK
 % prob       = convert_sedumi2mosek(At, b, c, K);
 % tic
@@ -87,24 +104,6 @@ eta = norm(At'*x - b)/(1+norm(b));
 mS = abs(min(dS))/(1+dS(end));
 enal = max([eta, gap, mS]);
 tnal = toc;
-
-%% Solve using ManiSDP
-rng(0);
-clear options;
-options.sigma0 = 1;
-options.tol = 1e-8;
-options.TR_maxinner = 20;
-options.TR_maxiter = 4;
-options.tao = 1e-3;
-options.theta = 1e-2;
-options.delta = 10;
-options.line_search = 1;
-options.alpha = 0.01;
-tic
-[~, fval, data] = ManiSDP_unittrace(At, b, c, n, options);
-emani = max([data.gap, data.pinf, data.dinf]);
-tmani = toc;
-
 
 % fprintf('Mosek: optimum = %0.8f, eta = %0.1e, time = %0.2fs\n', mobj(1), emosek, tmosek);
 % fprintf('SDPLR: optimum = %0.8f, eta = %0.1e, time = %0.2fs\n', vlr, elr, tlr);

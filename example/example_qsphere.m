@@ -6,7 +6,7 @@
 
 %% Generate random quartic program
 rng(1);
-d = 20;
+d = 60;
 coe = randn(nchoosek(d+4, 4), 1);
 % x = msspoly('x', d);
 % mon = monomials(x, 0:4);
@@ -16,6 +16,22 @@ coe = randn(nchoosek(d+4, 4), 1);
 [At, b, c, mb] = qsmom(d, coe);
 
 % writematrix(coe, '../data/qs_c_60_3.txt');
+
+%% Solve using ManiSDP
+rng(0);
+options.theta = 1e-2;
+options.delta = 6;
+options.TR_maxinner = 20;
+options.tao = 1e-2;
+tic
+[~, fval, data] = ManiSDP(At, b, c, mb, options);
+emani = max([data.gap, data.pinf, data.dinf]);
+tmani = toc;
+
+% fz = [[1:length(data.fac_size)]' data.fac_size];
+% residue = [[1:length(data.seta)]' log10(data.seta)];
+% writematrix(fz, 'd://works/mypaper/manisdp/qs_fz_60.txt','Delimiter',' ');
+% writematrix(residue, 'd://works/mypaper/manisdp/qs_residue_60.txt','Delimiter',' ');
 
 %% Relax QP into an SDP
 % problem.vars            = x;
@@ -109,17 +125,6 @@ coe = randn(nchoosek(d+4, 4), 1);
 % mS = abs(min(dS))/(1+dS(end));
 % elr = max([eta, gap, mS]);
 % tlr = toc;
-
-%% Solve using ManiSDP
-rng(0);
-options.theta = 1e-2;
-options.delta = 6;
-options.TR_maxinner = 20;
-options.tao = 1e-2;
-tic
-[~, fval, data] = ManiSDP(At, b, c, mb, options);
-emani = max([data.gap, data.pinf, data.dinf]);
-tmani = toc;
 
 %% Solve using SDPNAL+
 % options.tol = 1e-8;

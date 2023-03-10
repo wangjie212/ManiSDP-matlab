@@ -21,6 +21,15 @@ for i = 1:mb
     nAt(i*(i+1)/2, i) = 1;
 end
 
+%% Solve using ManiSDP
+rng(0);
+clear options;
+options.p0 = 40;
+tic
+[~, fval, data] = ManiSDP_onlyunitdiag(C, options);
+emani = data.dinf;
+tmani = toc;
+
 %% Solve using MOSEK
 % prob       = convert_sedumi2mosek(At, b, c, K);
 % tic
@@ -70,15 +79,6 @@ end
 % mS = abs(min(dS))/(1+dS(end));
 % elr = max([eta, gap, mS]);
 % tlr = toc;
-
-%% Solve using ManiSDP
-rng(0);
-clear options;
-options.p0 = 40;
-tic
-[~, fval, data] = ManiSDP_onlyunitdiag(C, options);
-emani = data.dinf;
-tmani = toc;
 
 %% Solve using SDPNAL+
 % options.tol = 1e-8;

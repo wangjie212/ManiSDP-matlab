@@ -25,7 +25,7 @@ Y = [];
 U = [];
 YC = [];
 eG = [];
-fac_size = [];
+% fac_size = [];
 problem.cost = @cost;
 problem.grad = @grad;
 problem.hess = @hess;
@@ -37,7 +37,7 @@ opts.tolgradnorm = options.tolgrad; % tolerance on gradient norm
 data.status = 0;
 timespend = tic;
 for iter = 1:options.AL_maxiter
-    fac_size = [fac_size; p];
+%     fac_size = [fac_size; p];
     problem.M = obliquefactoryNTrans(p, n);
     if ~isempty(U)
         Y = line_search(Y, U);
@@ -90,7 +90,7 @@ data.z = z;
 data.dinf = dinf;
 data.gradnorm = gradnorm;
 data.time = toc(timespend);
-data.fac_size = fac_size;
+% data.fac_size = fac_size;
 if data.status == 0 && dinf > options.tol
     data.status = 1;
     fprintf('Iteration maximum is reached!\n');

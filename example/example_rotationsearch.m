@@ -6,7 +6,7 @@ addpath(genpath(pgdpath));
 
 %% generate random problem
 rng(1);
-N       = 50; % number of measurements
+N       = 500; % number of measurements
 outrate = 0.5; % outlier rate
 problem.N               = N;
 problem.Covariance      = 1e-4*eye(3);
@@ -24,6 +24,20 @@ SDP = QUASAR_Problem(a,wb,betasq);
 [At,b,c,K] = SDPT3data_SEDUMIdata(SDP.blk,SDP.At,SDP.C,SDP.b); 
 mb = K.s;
 C = full(reshape(c, mb, mb));
+
+%% Solve using ManiSDP
+rng(0);
+clear options;
+options.tol = 1e-8;
+tic
+[~, fval, data] = ManiSDP_unittrace(At, b/(N+1), c, mb, options);
+emani = max([data.gap, data.pinf, data.dinf]);
+tmani = toc;
+
+% fz = [[1:length(data.fac_size)]' data.fac_size];
+% residue = [[1:length(data.seta)]' log10(data.seta)];
+% writematrix(fz, 'd://works/mypaper/manisdp/rs_fz_500.txt','Delimiter',' ');
+% writematrix(residue, 'd://works/mypaper/manisdp/rs_residue_500.txt','Delimiter',' ');
 
 %% Solve using STRIDE
 % options.pgdStepSize     = 10; % step size, default 10
@@ -100,15 +114,6 @@ C = full(reshape(c, mb, mb));
 % mS = abs(min(dS))/(1+dS(end));
 % enal = max([eta, gap, mS]);
 % tnal = toc;
-
-%% Solve using ManiSDP
-rng(0);
-clear options;
-options.tol = 1e-8;
-tic
-[~, fval, data] = ManiSDP_unittrace(At, b/(N+1), c, mb, options);
-emani = max([data.gap, data.pinf, data.dinf]);
-tmani = toc;
 
 % fprintf('Mosek: optimum = %0.8f, eta = %0.1e, time = %0.2fs\n', mobj(1), emosek, tmosek);
 % fprintf('SDPLR: optimum = %0.8f, eta = %0.1e, time = %0.2fs\n', vlr, elr, tlr);
