@@ -37,6 +37,7 @@ normb = 1 + norm(b);
 Y = [];
 U = [];
 fac_size = [];
+seta = [];
 problem.cost = @cost;
 problem.grad = @grad;
 problem.hess = @hess;
@@ -76,6 +77,7 @@ for iter = 1:options.AL_maxiter
     fprintf('Iter %d, obj:%0.8f, gap:%0.1e, pinf:%0.1e, dinf:%0.1e, gradnorm:%0.1e, r:%d, p:%d, sigma:%0.3f, time:%0.2fs\n', ...
              iter,    obj,       gap,       pinf,       dinf,       gradnorm,       r,    p,    sigma,       toc(timespend));
     eta = max([gap, pinf, dinf]);
+    seta = [seta; eta];
     if eta < options.tol
         fprintf('Optimality is reached!\n');
         break;
@@ -123,6 +125,7 @@ data.dinf = dinf;
 data.gradnorm = gradnorm;
 data.time = toc(timespend);
 data.fac_size = fac_size;
+data.seta = seta;
 if data.status == 0 && eta > options.tol
     data.status = 1;
     fprintf('Iteration maximum is reached!\n');

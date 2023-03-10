@@ -6,7 +6,7 @@
 
 %% Generate random binary quadratic program
 rng(1);
-d       = 30; % BQP with d variables
+d       = 60; % BQP with d variables
 Q       = randn(d);
 Q = (Q + Q')/2; % a random symmetric matrix
 e       = randn(d,1);
@@ -125,6 +125,7 @@ emani = max([data.gap, data.pinf, data.dinf]);
 tmani = toc;
 
 % [[1:length(data.fac_size)]' data.fac_size]
+log10(data.seta)
 
 %% Solve using SDPNAL+
 % options.tol = 1e-8;
