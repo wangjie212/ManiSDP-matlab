@@ -2,7 +2,6 @@ pgdpath   = '../../STRIDE';
 addpath(genpath(pgdpath));
 sdpnalpath  = '../../SDPNAL+v1.0';
 %% construct space of n1 x n2 hankel matrices (n1 <= n2)
-
 rng(1);
 n1 = 10;
 n2 = 10;
@@ -40,7 +39,7 @@ C = full(reshape(c, mb, mb));
 % xtld            = kron([uslra;1],zslra);
 % X0              = {xtld * xtld'};
 
-%% STRIDE
+%% Solve using STRIDE
 % pgdopts.pgdStepSize     = 10;
 % pgdopts.maxiterSGS      = 300;
 % pgdopts.maxiterLBFGS    = 1000;
@@ -101,7 +100,7 @@ C = full(reshape(c, mb, mb));
 % elr = max([eta, gap, mS]);
 % tlr = toc;
 
-% %% Solve using SDPNAL+
+%% Solve using SDPNAL+
 % options.tol = 1e-8;
 % addpath(genpath(sdpnalpath));
 % rng(0);

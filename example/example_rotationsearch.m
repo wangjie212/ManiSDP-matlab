@@ -1,11 +1,11 @@
-spotpath   = '../../../Programs/spotless';
-addpath(genpath(spotpath));
+% spotpath   = '../../../Programs/spotless';
+% addpath(genpath(spotpath));
 pgdpath   = '../../STRIDE';
 addpath(genpath(pgdpath));
-sdpnalpath  = '../../SDPNAL+v1.0';
+% sdpnalpath  = '../../SDPNAL+v1.0';
 
 %% generate random problem
-rng(3);
+rng(1);
 N       = 50; % number of measurements
 outrate = 0.5; % outlier rate
 problem.N               = N;

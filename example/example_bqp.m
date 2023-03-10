@@ -5,8 +5,8 @@
 % addpath(genpath(pgdpath));
 
 %% Generate random binary quadratic program
-rng(2);
-d       = 130; % BQP with d variables
+rng(1);
+d       = 30; % BQP with d variables
 Q       = randn(d);
 Q = (Q + Q')/2; % a random symmetric matrix
 e       = randn(d,1);
@@ -14,8 +14,8 @@ e       = randn(d,1);
 % f       = x'*Q*x + x'*e; % objective function of the BQP
 % h       = x.^2 - 1; % equality constraints of the BQP (binary variables)
 
-% writematrix(Q, '../data/bqp_Q_60_1.txt');
-% writematrix(e, '../data/bqp_e_60_1.txt');
+% writematrix(Q, '../data/bqp_Q_60_3.txt');
+% writematrix(e, '../data/bqp_e_60_3.txt');
 
 %% Relax BQP into an SDP
 % problem.vars            = x;
@@ -115,14 +115,16 @@ e       = randn(d,1);
 rng(0);
 clear options;
 options.tol = 1e-8;
-options.p0 = 200;
-options.delta = 12;
-options.AL_maxiter = 2000;
+options.p0 = 2;
+options.delta = 8;
+options.AL_maxiter = 1000;
 options.TR_maxinner = 25;
 tic
 [~, fval, data] = ManiSDP_unitdiag(At, b, c, mb, options);
 emani = max([data.gap, data.pinf, data.dinf]);
 tmani = toc;
+
+% [[1:length(data.fac_size)]' data.fac_size]
 
 %% Solve using SDPNAL+
 % options.tol = 1e-8;
@@ -139,7 +141,6 @@ tmani = toc;
 % enal = max([eta, gap, mS]);
 % tnal = toc;
 
-% fprintf('SDP size: matrix = %i, numeq = %i\n', mb, size(b,1));
 % fprintf('Mosek: optimum = %0.8f, eta = %0.1e, time = %0.2fs\n', mobj(1), emosek, tmosek);
 % fprintf('SDPLR: optimum = %0.8f, eta = %0.1e, time = %0.2fs\n', vlr, elr, tlr);
 % fprintf('SDPNAL: optimum = %0.8f, eta = %0.1e, time = %0.2fs\n', objnal(1), enal, tnal);

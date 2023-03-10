@@ -1,10 +1,8 @@
 % sdpnalpath = '../../SDPNAL+v1.0';
 % addpath(genpath(sdpnalpath));
-% fileID = fopen('../data/bqp_results.txt', 'w');
 
 % set = ["G65", "G66", "G67", "G70", "G72", "G77", "G81"];
-% for k = 1:length(set)
-L = Laplacian(append('../data/Gset/', "G61", '.txt'));
+L = Laplacian(append('../data/Gset/', "G32", '.txt'));
 C = -1/4*sparse(L);
 c = C(:);
 
@@ -97,10 +95,7 @@ tmani = toc;
 % enal = max([eta, gap, mS]);
 % tnal = toc;
 
-% fprintf(fileID, 'Mosek: optimum = %0.8f, eta = %0.1e, time = %0.2fs\n', mobj(1), emosek, tmosek);
 % fprintf('Mosek: optimum = %0.8f, eta = %0.1e, time = %0.2fs\n', mobj(1), emosek, tmosek);
 % fprintf('SDPLR: optimum = %0.8f, eta = %0.1e, time = %0.2fs\n', vlr, elr, tlr);
 % fprintf('SDPNAL: optimum = %0.8f, eta = %0.1e, time = %0.2fs\n', objnal(1), enal, tnal);
 fprintf('ManiSDP: optimum = %0.8f, eta = %0.1e, time = %0.2fs\n', fval, emani, tmani);
-% fclose(fileID);
-% end

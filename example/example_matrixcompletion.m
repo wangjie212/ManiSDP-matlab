@@ -1,4 +1,5 @@
-rng(2);
+%% Generate random matrix completion problems
+rng(1);
 p = 4000;
 q = 4000;
 n = p + q;
@@ -84,7 +85,6 @@ tic
 emani = max([data.gap, data.pinf, data.dinf]);
 tmani = toc;
 
-% norm(X{1}(1:p,p+1:n)-M)
 % fprintf('SDPLR: optimum = %0.8f, eta = %0.1e, time = %0.2fs\n', vlr, elr, tlr);
 % fprintf('SDPNAL: optimum = %0.8f, eta = %0.1e, time = %0.2fs\n', objnal(1), enal, tnal);
 fprintf('ManiSDP: optimum = %0.8f, eta = %0.1e, time = %0.2fs\n', fval, emani, tmani);

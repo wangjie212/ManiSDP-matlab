@@ -36,6 +36,7 @@ y = zeros(length(b), 1);
 normb = 1 + norm(b);
 Y = [];
 U = [];
+fac_size = [];
 problem.cost = @cost;
 problem.grad = @grad;
 problem.hess = @hess;
@@ -44,8 +45,10 @@ opts.maxinner = options.TR_maxinner;     % maximum Hessian calls per iteration
 opts.maxiter = options.TR_maxiter;
 opts.tolgradnorm = options.tolgrad;
 
+data.status = 0;
 timespend = tic;
 for iter = 1:options.AL_maxiter
+    fac_size = [fac_size; p];
     problem.M = obliquefactoryNTrans(p, n);
     if ~isempty(U)
         Y = line_search(Y, U);
@@ -71,12 +74,22 @@ for iter = 1:options.AL_maxiter
     e = diag(D);
     r = sum(e > options.theta*e(1));
     fprintf('Iter %d, obj:%0.8f, gap:%0.1e, pinf:%0.1e, dinf:%0.1e, gradnorm:%0.1e, r:%d, p:%d, sigma:%0.3f, time:%0.2fs\n', ...
-             iter,    obj,       gap,       pinf,       dinf,       gradnorm,       r,    p,    sigma,       toc(timespend));   
+             iter,    obj,       gap,       pinf,       dinf,       gradnorm,       r,    p,    sigma,       toc(timespend));
     eta = max([gap, pinf, dinf]);
     if eta < options.tol
-        data.status = 0;
         fprintf('Optimality is reached!\n');
         break;
+    end
+    if mod(iter, 10) == 0
+        if iter > 20 && gap > gap0 && pinf > pinf0 && dinf > dinf0
+            data.status = 2;
+            fprintf('Slow progress!\n');
+            break;
+        else
+            gap0 = gap;
+            pinf0 = pinf;
+            dinf0 = dinf;
+        end
     end
     if r <= p - 1         
         Y = V(:,1:r)'.*e(1:r);
@@ -109,7 +122,8 @@ data.pinf = pinf;
 data.dinf = dinf;
 data.gradnorm = gradnorm;
 data.time = toc(timespend);
-if eta >= options.tol
+data.fac_size = fac_size;
+if data.status == 0 && eta > options.tol
     data.status = 1;
     fprintf('Iteration maximum is reached!\n');
 end
