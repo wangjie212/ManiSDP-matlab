@@ -1,7 +1,7 @@
 %% Generate random matrix completion problems
 rng(1);
-p = 4000;
-q = 4000;
+p = 500;
+q = 500;
 n = p + q;
 m = 400*n;
 k = 10;

@@ -1,14 +1,18 @@
 # ManiSDP
 ManiSDP aims to solve the following low-rank semidefinite program (SDP) via manifold optimization:
 $$\inf_{X\succeq0}{\ }\langle C, X\rangle{\ }\text{s.t.}{\ }\mathcal{A}(X)=b,{\ }\mathcal{B}(X)=d,$$
-where the linear constraints $\mathcal{A}(X)=b$ are arbitrary while the linear constraints $\mathcal{B}(X)=d$ are assumed to impose certain manifold structures on the domain if present. Here, low-rank means the SDP admits a low-rank optimal solution.
+where the linear constraints $\mathcal{A}(X)=b$ are arbitrary while the linear constraints $\mathcal{B}(X)=d$, if present, are assumed to define certain manifold structure. Here, low-rank means the SDP admits a low-rank optimal solution.
 
 ## Dependencies
 - [MATLAB](https://ww2.mathworks.cn/products/matlab.html?s_tid=hp_products_matlab)
 - [Manopt](https://github.com/NicolasBoumal/manopt)
 
 ## Usage
-The optimal setting of parameters in ManiSDP is highly problem-dependent. We encourage the users to find the optimal parameters (defined in options) via preliminary experiments before running large-scale cases. In our experiences, the parameters (sigma0, theta, TR_maxiter, TR_maxinner, tao) have a significant influence on the performance of ManiSDP. So far, ManiSDP supports four types of SDPs.
+**Note:** The optimal setting of parameters in ManiSDP is highly problem-dependent. We encourage the users to find the optimal parameters (defined in `options`) via preliminary experiments before running large-scale cases. In our experiences, the parameters (`sigma0`, `theta`, `TR_maxiter`, `TR_maxinner`, `tao`) have a significant influence on the performance of ManiSDP.  
+
+ManiSDP accepts [SeDuMi](https://sedumi.ie.lehigh.edu/) format data.  
+
+So far, ManiSDP supports four types of SDPs.
 
 ### SDPs with only unit diagonal constraints
 $$\inf_{X\succeq0}{\ }\langle C, X\rangle{\ }\text{s.t.}{\ }X_{ii}=1,{\ }\text{for}{\ }i=1,\ldots,n.$$
@@ -137,7 +141,34 @@ options.tol = 1e-8;
 `data`: auxiliary data
 
 ## Examples
-Check the folder /example.
+Check the folder `/example`.  
+
+Note that to run `example_stls.m`, one has to first add the folder `NearestRankDeficient` in [CertifiablyRobustPerception](https://github.com/MIT-SPARK/CertifiablyRobustPerception); to run `example_rotationsearch.m`, one has to first add the folder `RotationSearch` in [CertifiablyRobustPerception](https://github.com/MIT-SPARK/CertifiablyRobustPerception).
+
+### Solving moment relxations for polynomial optimization problems
+$$\inf_{x\in\mathbb{R}^q}{\ }f(x){\ }\text{s.t.}{\ }h_i(x)=0,{\ }i=1,\ldots,l.$$
+
+First define your polynomial optimization problem using [SPOTLESS](https://github.com/spot-toolbox/spotless) as follows:
+```matlab
+q = 10;
+x = msspoly('x', q);
+f = x'*randn(q, 1);
+h = x.^2 - 1;
+problem.vars = x;
+problem.objective = f;
+problem.equality = h;
+kappa = 2; % relaxation order
+[SDP,info] = dense_sdp_relax(problem, kappa);
+[sol, opt, data] = ManiSDP(At, b, c, n, options);
+```
+
+Then generate the moment relxation and solve it with ManiSDP:
+```matlab
+kappa = 2; % relaxation order
+[SDP,info] = dense_sdp_relax(problem, kappa);
+options.tol = 1e-8;
+[sol, opt, data] = ManiSDP(SDP.sedumi.At, SDP.sedumi.b, SDP.sedumi.c, SDP.sedumi.K.s, options);
+```
 
 ## Julia version for ManiSDP
 Coming soon.

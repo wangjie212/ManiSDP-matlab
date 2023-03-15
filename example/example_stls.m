@@ -1,11 +1,11 @@
-pgdpath   = '../../STRIDE';
-addpath(genpath(pgdpath));
+% pgdpath   = '../../STRIDE';
+% addpath(genpath(pgdpath));
 % sdpnalpath  = '../../SDPNAL+v1.0';
 
 %% construct space of n1 x n2 hankel matrices (n1 <= n2)
-rng(3);
-n1 = 40;
-n2 = 40;
+rng(1);
+n1 = 10;
+n2 = 10;
 [S,k,Scell] = hankel_struct(n1,n2);
 % generate random hankel matrix
 u1 = randn(k,1);

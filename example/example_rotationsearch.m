@@ -1,12 +1,12 @@
 % spotpath   = '../../../Programs/spotless';
 % addpath(genpath(spotpath));
-pgdpath   = '../../STRIDE';
-addpath(genpath(pgdpath));
+% pgdpath   = '../../STRIDE';
+% addpath(genpath(pgdpath));
 % sdpnalpath  = '../../SDPNAL+v1.0';
 
 %% generate random problem
 rng(1);
-N       = 500; % number of measurements
+N       = 50; % number of measurements
 outrate = 0.5; % outlier rate
 problem.N               = N;
 problem.Covariance      = 1e-4*eye(3);

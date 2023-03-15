@@ -177,14 +177,15 @@ fprintf('ManiSDP: optimum = %0.8f, time = %0.2fs\n', obj, toc(timespend));
     function [G, store] = grad(Y, store)
         eS = C + sigma*reshape(At*Axb, n, n);
         eG = 2*Y*eS;
-        G = eG - Y.*sum(Y.*eG);
+        store.YeG = sum(Y.*eG);
+        G = eG - Y.*store.YeG;
     end
 
     function [H, store] = hess(Y, U, store)
         YU = Y'*U;
         AyU = reshape(A'*(At'*YU(:)), n, n);
         eH = 2*U*eS + 4*sigma*(Y*AyU);
-        H = eH - Y.*sum(Y.*eH) - U.*sum(Y.*eG);
+        H = eH - Y.*sum(Y.*eH) - U.*store.YeG;
     end
 
     function M = obliquefactoryNTrans(n, m)
