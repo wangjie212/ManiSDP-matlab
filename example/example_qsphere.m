@@ -6,7 +6,7 @@
 
 %% Generate random quartic program
 rng(1);
-d = 10;
+d = 20;
 coe = randn(nchoosek(d+4, 4), 1);
 % x = msspoly('x', d);
 % mon = monomials(x, 0:4);
