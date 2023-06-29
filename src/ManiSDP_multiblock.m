@@ -1,29 +1,31 @@
 % This function solves general linear SDPs.
 %  Min  <C, X>
-%  s.t. A(X) = b
-%       X >= 0.
+%  s.t. A(X) = b,
+%       X in S_+^{n_1×...×n_t}
 
-function [X, obj, data] = ManiSDP(At, b, c, n, options)
+function [X, obj, data] = ManiSDP_multiblock(At, b, c, K, options)
 
-if ~isfield(options,'p0'); options.p0 = 1; end
-if ~isfield(options,'AL_maxiter'); options.AL_maxiter = 300; end
+n = K.s;
+nb = length(n);
+if ~isfield(options,'p0'); options.p0 = ones(nb,1); end
+if ~isfield(options,'AL_maxiter'); options.AL_maxiter = 100; end
 if ~isfield(options,'gama'); options.gama = 2; end
 if ~isfield(options,'sigma0'); options.sigma0 = 1e-2; end
-if ~isfield(options,'sigma_min'); options.sigma_min = 1e-1; end
+if ~isfield(options,'sigma_min'); options.sigma_min = 1e-2; end
 if ~isfield(options,'sigma_max'); options.sigma_max = 1e7; end
 if ~isfield(options,'tol'); options.tol = 1e-8; end
-if ~isfield(options,'theta'); options.theta = 1e-1; end
-if ~isfield(options,'delta'); options.delta = 8; end
-if ~isfield(options,'alpha'); options.alpha = 0.2; end
+if ~isfield(options,'theta'); options.theta = 1e-2; end
+if ~isfield(options,'delta'); options.delta = 6; end
+if ~isfield(options,'alpha'); options.alpha = 0.06; end
 if ~isfield(options,'tolgradnorm'); options.tolgrad = 1e-8; end
-if ~isfield(options,'TR_maxinner'); options.TR_maxinner = 50; end
-if ~isfield(options,'TR_maxiter'); options.TR_maxiter = 4; end
-if ~isfield(options,'tao'); options.tao = 0.25; end
-if ~isfield(options,'line_search'); options.line_search = 1; end
+if ~isfield(options,'TR_maxinner'); options.TR_maxinner = 20; end
+if ~isfield(options,'TR_maxiter'); options.TR_maxiter = 2; end
+if ~isfield(options,'tao'); options.tao = 0.01; end
+if ~isfield(options,'line_search'); options.line_search = 0; end
 if ~isfield(options,'solver'); options.solver = 0; end
 
 fprintf('ManiSDP is starting...\n');
-fprintf('SDP size: n = %i, m = %i\n', n, size(b,1));
+fprintf('SDP size: n = %i, m = %i\n', max(n), size(b,1));
 
 A = At';
 p = options.p0;
@@ -31,6 +33,8 @@ sigma = options.sigma0;
 gama = options.gama;
 y = zeros(length(b),1);
 normb = 1 + norm(b);
+x = zeros(sum(n.^2), 1);
+YU = zeros(sum(n.^2), 1);
 Y = [];
 U = [];
 % fac_size = [];
@@ -44,10 +48,14 @@ opts.maxiter = options.TR_maxiter;
 opts.tolgradnorm = options.tolgrad;
 
 data.status = 0;
+for i = 1:nb
+    M.(['M' num2str(i)]) = euclideanfactory(n(i), p(i));
+end
+elems = fieldnames(M);
 timespend = tic;
 for iter = 1:options.AL_maxiter
 %     fac_size = [fac_size; p];
-    problem.M = euclideanfactory(n, p);
+    problem.M = productmanifold(M);
     if ~isempty(U)
         Y = line_search(Y, U);
     end
@@ -68,26 +76,30 @@ for iter = 1:options.AL_maxiter
         return;
     end
     gradnorm = info(end).gradnorm;
-    X = Y*Y';
-    x = X(:);
+    ind = 1;
+    for i = 1:nb
+        X{i} = Y.(elems{i})*Y.(elems{i})';
+        x(ind:ind+n(i)^2-1) = X{i}(:);
+        ind = ind + n(i)^2;
+    end
     obj = c'*x;
     Axb = A*x - b;
     pinf = norm(Axb)/normb;
     y = y - sigma*Axb;
-    S = reshape(c - At*y, n, n);
-    [vS, dS] = eig(S, 'vector');
-    dinf = max(0, -dS(1))/(1+dS(end));
+    cy = c - At*y;
+    dinfs = zeros(nb, 1);
+    ind = 1;
+    for i = 1:nb
+        S{i} = reshape(cy(ind:ind+n(i)^2-1), n(i), n(i));
+        ind = ind + n(i)^2;
+        [vS{i}, dS{i}] = eig(S{i}, 'vector');
+        dinfs(i) = max(0, -dS{i}(1))/(1+abs(dS{i}(end)));
+    end
+    dinf = max(dinfs);
     by = b'*y;
     gap = abs(obj-by)/(abs(by)+abs(obj)+1);
-    [V, D, ~] = svd(Y);
-    if size(D, 2) > 1
-        e = diag(D);
-    else
-        e = D(1);
-    end
-    r = sum(e > options.theta*e(1));
-    fprintf('Iter %d, obj:%0.8f, gap:%0.1e, pinf:%0.1e, dinf:%0.1e, gradnorm:%0.1e, r:%d, p:%d, sigma:%0.3f, time:%0.2fs\n', ...
-             iter,    obj,       gap,       pinf,       dinf,   gradnorm,    r,    p,    sigma,   toc(timespend));
+    fprintf('Iter %d, obj:%0.8f, gap:%0.1e, pinf:%0.1e, dinf:%0.1e, gradnorm:%0.1e, sigma:%0.3f, time:%0.2fs\n', ...
+             iter,    obj,       gap,       pinf,       dinf,   gradnorm,    sigma,   toc(timespend));
     eta = max([pinf, gap, dinf]);
 %     seta = [seta; eta];
     if eta < options.tol
@@ -105,21 +117,29 @@ for iter = 1:options.AL_maxiter
             dinf0 = dinf;
         end
     end
-    if r <= p - 1         
-        Y = V(:,1:r)*diag(e(1:r));
-        p = r;
+    for i = 1:nb
+        [V, D, ~] = svd(Y.(elems{i}));
+        if size(D, 2) > 1
+            e = diag(D);
+        else
+            e = D(1);
+        end
+        r = sum(e > options.theta*e(1)); 
+        if r <= p(i) - 1         
+             Y.(elems{i}) = V(:,1:r)*diag(e(1:r));
+             p(i) = r;
+        end
+        nne = min(sum(dS{i} < 0), options.delta);
+        if options.line_search == 1
+            U.(elems{i}) = [zeros(n(i), p(i)) vS{i}(:,1:nne)];
+        end
+        p(i) = p(i) + nne;
+        if options.line_search == 1
+            Y.(elems{i}) = [Y.(elems{i}) zeros(n(i), nne)];
+        else
+            Y.(elems{i}) = [Y.(elems{i}) options.alpha*vS{i}(:,1:nne)];
+        end
     end
-    nne = min(sum(dS < 0), options.delta);
-    if options.line_search == 1
-        U = [zeros(n, p) vS(:,1:nne)];
-    end
-    p = p + nne;
-    if options.line_search == 1
-        Y = [Y zeros(n, nne)];
-    else
-        Y = [Y options.alpha*vS(:,1:nne)];
-    end
-    
     if pinf < options.tao*gradnorm
           sigma = max(sigma/gama, options.sigma_min);
     else
@@ -185,28 +205,50 @@ fprintf('ManiSDP: optimum = %0.8f, time = %0.2fs\n', obj, toc(timespend));
     end
 
    function val = co(Y)
-        X = Y*Y';
-        x = X(:);
+        ind = 1;
+        for i = 1:nb
+            X{i} = Y.(elems{i})*Y.(elems{i})';
+            x(ind:ind+n(i)^2-1) = X{i}(:);
+            ind = ind + n(i)^2;
+        end
         Axb = A*x - b - y/sigma;
         val = c'*x + sigma/2*(Axb'*Axb);
    end
 
    function [f, store] = cost(Y, store)
-        X = Y*Y';
-        x = X(:);
+        ind = 1;
+        for i = 1:nb
+            X{i} = Y.(elems{i})*Y.(elems{i})';
+            x(ind:ind+n(i)^2-1) = X{i}(:);
+            ind = ind + n(i)^2;
+        end
         Axb = A*x - b - y/sigma;
         f = c'*x + sigma/2*(Axb'*Axb);
     end
     
     function [G, store] = grad(Y, store)
-        S = reshape(c+sigma*At*Axb, n, n);
-        G = 2*S*Y;
+        tt = c + sigma*At*Axb;
+        ind = 1;
+        for i = 1:nb
+            S{i} = reshape(tt(ind:ind+n(i)^2-1), n(i), n(i));
+            G.(elems{i}) = 2*S{i}*Y.(elems{i});
+            ind = ind + n(i)^2;
+        end
     end
 
     function [H, store] = hess(Y, U, store)
-        YU = U*Y';
-%        AyU = reshape(YU(:)'*At*A, n, n);
-        AyU = reshape(A'*(At'*YU(:)), n, n);
-        H = 2*S*U + 4*sigma*(AyU*Y);
+        ind = 1;
+        for i = 1:nb
+            T = U.(elems{i})*Y.(elems{i})';
+            YU(ind:ind+n(i)^2-1) = T(:);
+            ind = ind + n(i)^2;
+            H.(elems{i}) = 2*S{i}*U.(elems{i});
+        end
+        AyU = YU'*At*A;
+        ind = 1;
+        for i = 1:nb
+             H.(elems{i}) = H.(elems{i}) + 4*sigma*reshape(AyU(ind:ind+n(i)^2-1), n(i), n(i))*Y.(elems{i});
+             ind = ind + n(i)^2;
+        end
     end
 end

@@ -6,26 +6,24 @@
 
 %% Generate random quartic program
 rng(1);
-d = 10;
-coe = randn(nchoosek(d+4, 4), 1);
-% x = msspoly('x', d);
-% mon = monomials(x, 0:4);
-% coe = randn(length(mon), 1);
-% f = coe'*mon;
-% h = sum(x.^2) - 1;
-[At, b, c, mb] = qsmom(d, coe);
-
-% writematrix(coe, '../data/qs_c_60_3.txt');
+n = 18;
+I{1} = [1;2;3;4;5;6;7;8;9;10];
+I{2} = [9;10;11;12;13;14;15;16;17;18];
+t = length(I);
+sp = [];
+for i = 1:t
+    sp = [sp get_basis(n, 4, I{i})];
+end
+sp = unique(sp', 'rows');
+coe = randn(size(sp, 1), 1);
+[At, b, c, K] = qsmom_sparse(n, I, coe);
 
 %% Solve using ManiSDP
 rng(0);
 clear options;
-options.theta = 1e-2;
-options.delta = 6;
-options.TR_maxinner = 20;
-options.tao = 1e-2;
+options.tol = 1e-8;
 tic
-[~, fval, data] = ManiSDP(At, b, c, mb, options);
+[~, fval, data] = ManiSDP_multiblock(At, b, c, K, options);
 emani = max([data.gap, data.pinf, data.dinf]);
 tmani = toc;
 

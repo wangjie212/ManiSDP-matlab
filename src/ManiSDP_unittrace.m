@@ -25,7 +25,6 @@ if ~isfield(options,'line_search'); options.line_search = 1; end
 fprintf('ManiSDP is starting...\n');
 fprintf('SDP size: n = %i, m = %i\n', n, size(b,1));
 
-C = reshape(c, n, n);
 A = At';
 p = options.p0;
 sigma = options.sigma0;
@@ -60,11 +59,11 @@ for iter = 1:options.AL_maxiter
     Axb = A*x - b;
     pinf = norm(Axb)/normb;
     y = y - sigma*Axb;
-    eS = C - reshape(y'*A, n, n);
+    eS = reshape(c - At*y, n, n);
     z = sum(eS.*X,'all');
     S = eS - z*eye(n);
     [vS, dS] = eig(S, 'vector');
-    dinf = abs(min(dS))/(1+dS(end));
+    dinf = max(0, -dS(1))/(1+dS(end));
     by = b'*y + z;
     gap = abs(obj-by)/(abs(by)+abs(obj)+1);
     [V, D, ~] = svd(Y);
@@ -172,7 +171,7 @@ fprintf('ManiSDP: optimum = %0.8f, time = %0.2fs\n', obj, toc(timespend));
         x = X(:);
         Axb = A*x - b - y/sigma;
         f = c'*x + sigma/2*(Axb'*Axb);
-        eS = C + sigma*reshape(Axb'*A, n, n);
+        eS = reshape(c+sigma*At*Axb, n, n);
         store.z = sum(X.*eS,'all');
         store.G = 2*eS*Y - 2*store.z*Y;
         store.eS = eS;

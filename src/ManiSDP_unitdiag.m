@@ -26,7 +26,6 @@ fprintf('ManiSDP is starting...\n');
 fprintf('SDP size: n = %i, m = %i\n', n, size(b,1));
 warning('off', 'manopt:trs_tCG_cached:memory');
 
-C = reshape(c, n, n);
 A = At';
 p = options.p0;
 sigma = options.sigma0;
@@ -64,11 +63,11 @@ for iter = 1:options.AL_maxiter
 %     if pinf >= gradnorm
         y = y - sigma*Axb;   
 %     end
-    eS = C - reshape(At*y, n, n);
+    eS = reshape(c - At*y, n, n);
     z = sum(X.*eS);
     S = eS - diag(z);
     [vS, dS] = eig(S, 'vector');
-    dinf = abs(min(dS))/(1+dS(end));
+    dinf = max(0, -dS(1))/(1+dS(end));
     by = b'*y + sum(z);
     gap = abs(obj-by)/(abs(by)+abs(obj)+1);
     [~, D, V] = svd(Y);
@@ -175,7 +174,7 @@ fprintf('ManiSDP: optimum = %0.8f, time = %0.2fs\n', obj, toc(timespend));
     end
 
     function [G, store] = grad(Y, store)
-        eS = C + sigma*reshape(At*Axb, n, n);
+        eS = reshape(c+sigma*At*Axb, n, n);
         eG = 2*Y*eS;
         store.YeG = sum(Y.*eG);
         G = eG - Y.*store.YeG;
