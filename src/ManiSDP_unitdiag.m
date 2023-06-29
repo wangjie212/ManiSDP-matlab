@@ -66,6 +66,7 @@ for iter = 1:options.AL_maxiter
     eS = reshape(c - At*y, n, n);
     z = sum(X.*eS);
     S = eS - diag(z);
+    S = 0.5*(S+S');
     [vS, dS] = eig(S, 'vector');
     dinf = max(0, -dS(1))/(1+dS(end));
     by = b'*y + sum(z);

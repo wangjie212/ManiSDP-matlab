@@ -75,6 +75,7 @@ for iter = 1:options.AL_maxiter
     pinf = norm(Axb)/normb;
     y = y - sigma*Axb;
     S = reshape(c - At*y, n, n);
+    S = 0.5*(S+S');
     [vS, dS] = eig(S, 'vector');
     dinf = max(0, -dS(1))/(1+dS(end));
     by = b'*y;
