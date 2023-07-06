@@ -1,53 +1,44 @@
 % spotpath   = '../../../Programs/spotless';
 % addpath(genpath(spotpath));
 % pgdpath   = '../../STRIDE';
-% addpath(genpath(pgdpath));
 % sdpnalpath  = '../../SDPNAL+v1.0';
+% addpath(genpath(pgdpath));
 
-%% Generate random quartic program
+%% Generate random sparse binary quadratic program
 rng(1);
 clear I;
-t = 4;
-n = 10 + 8*(t-1);
+t = 4; % number of cliques
+n = 10 + 8*(t-1); % BQP with n variables
 for i = 1:t
     I{i} = 8*(i-1)+1:8*i+2;
 end
 sp = [];
 for i = 1:t
-    sp = [sp get_basis(n, 4, I{i})];
+    temp = get_basis(n, 4, I{i});
+    ind = true(size(temp, 2), 1);
+    for j = 1:size(temp, 2)
+        if sum(temp(:,j) > 2) > 0 || sum(mod(temp(:,j),2)) == 0
+           ind(j) = false;
+        end
+    end
+    sp = [sp temp(:,ind)];
 end
 sp = unique(sp', 'rows');
 coe = randn(size(sp, 1), 1);
-[At, b, c, K] = qsmom_sparse(n, I, coe);
+[At, b, c, K] = bqpmom_sparse(n, I, coe);
+% C = full(reshape(c, mb, mb));
 
 %% Solve using ManiSDP
 rng(0);
 clear options;
 options.tol = 1e-8;
 tic
-[~, fval, data] = ManiSDP_multiblock(At, b, c, K, options);
+[~, fval, data] = ManiSDP_unitdiag_multiblock(At, b, c, K, options);
 emani = max([data.gap, data.pinf, data.dinf]);
 tmani = toc;
 
-% fz = [[1:length(data.fac_size)]' data.fac_size];
-% residue = [[1:length(data.seta)]' log10(data.seta)];
-% writematrix(fz, 'd://works/mypaper/manisdp/qs_fz_60.txt','Delimiter',' ');
-% writematrix(residue, 'd://works/mypaper/manisdp/qs_residue_60.txt','Delimiter',' ');
-
-%% Relax QP into an SDP
-% problem.vars            = x;
-% problem.objective       = f;
-% problem.equality        = h; 
-% kappa                   = 2; % relaxation order
-% [SDP,info]              = dense_sdp_relax(problem,kappa);
-% At = SDP.sedumi.At;
-% b = SDP.sedumi.b;
-% c = SDP.sedumi.c;
-% K = SDP.sedumi.K;
-% mb = K.s;
-% C = full(reshape(c, mb, mb));
-
 %% Solve using MOSEK
+% [At,b,c,K] = SDPT3data_SEDUMIdata(SDP.blk,tAt,tC,tb); 
 % prob       = convert_sedumi2mosek(At, b, c, K);
 % tic
 % [~,res]    = mosekopt('minimize echo(3)',prob);
@@ -59,28 +50,27 @@ tmani = toc;
 % [~, dS] = eig(S{1}, 'vector');
 % mS = abs(min(dS))/(1+dS(end));
 % emosek = max([eta, gap, mS]);
-% tmosek = toc;
+tmosek = toc;
 
 %% Solve using COPT
-% warning('off');
 % tic
 % X0 = sdpvar(mb, mb, 'hermitian', 'real');
 % F = [X0 >= 0, At'*X0(:) == b];
 % obj = c'*X0(:);
-% opts = sdpsettings('verbose', 1, 'solver', 'copt');
+% opts = sdpsettings('verbose', 1, 'solver', 'sdplr');
 % sol = optimize(F, obj, opts);
-% vcopt = value(obj);
 % X = value(X0);
 % S = dual(F(1));
 % y = dual(F(2));
-% by = - b'*y;
-% gap = abs(vcopt-by)/(abs(by)+abs(vcopt)+1);
+% by = -b'*y;
+% vlr = value(obj);
+% gap = abs(vlr-by)/(abs(by)+abs(vlr)+1);
 % x = X(:);
 % eta = norm(At'*x - b)/(1+norm(b));
 % [~, dS] = eig(S, 'vector');
 % mS = abs(min(dS))/(1+dS(end));
-% ecopt = max([eta, gap, mS]);
-% tcopt = toc;
+% elr = max([eta, gap, mS]);
+% tlr = toc;
 
 %% Solve using SDPLR
 % rng(0);
