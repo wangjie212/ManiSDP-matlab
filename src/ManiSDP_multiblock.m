@@ -98,8 +98,8 @@ for iter = 1:options.AL_maxiter
     dinf = max(dinfs);
     by = b'*y;
     gap = abs(obj-by)/(abs(by)+abs(obj)+1);
-    fprintf('Iter %d, obj:%0.8f, gap:%0.1e, pinf:%0.1e, dinf:%0.1e, gradnorm:%0.1e, sigma:%0.3f, time:%0.2fs\n', ...
-             iter,    obj,       gap,       pinf,       dinf,   gradnorm,    sigma,   toc(timespend));
+    fprintf('Iter %d, obj:%0.8f, gap:%0.1e, pinf:%0.1e, dinf:%0.1e, gradnorm:%0.1e, p_max:%d, sigma:%0.3f, time:%0.2fs\n', ...
+             iter,    obj,       gap,       pinf,       dinf,   gradnorm,  max(p),  sigma,   toc(timespend));
     eta = max([pinf, gap, dinf]);
 %     seta = [seta; eta];
     if eta < options.tol

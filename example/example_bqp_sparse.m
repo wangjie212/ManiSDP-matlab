@@ -7,7 +7,7 @@
 %% Generate random sparse binary quadratic program
 rng(1);
 clear I;
-t = 4; % number of cliques
+t = 1; % number of cliques
 n = 10 + 8*(t-1); % BQP with n variables
 for i = 1:t
     I{i} = 8*(i-1)+1:8*i+2;
@@ -16,11 +16,7 @@ sp = [];
 for i = 1:t
     temp = get_basis(n, 4, I{i});
     ind = true(size(temp, 2), 1);
-    for j = 1:size(temp, 2)
-        if sum(temp(:,j) > 2) > 0 || sum(mod(temp(:,j),2)) == 0
-           ind(j) = false;
-        end
-    end
+    ind(sum(temp>1)> 0) = false;
     sp = [sp temp(:,ind)];
 end
 sp = unique(sp', 'rows');

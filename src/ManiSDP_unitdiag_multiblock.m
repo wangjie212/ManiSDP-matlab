@@ -9,10 +9,10 @@ function [X, obj, data] = ManiSDP_unitdiag_multiblock(At, b, c, K, options)
 n = K.s;
 nb = length(n);
 if ~isfield(options,'p0'); options.p0 = ones(nb,1); end
-if ~isfield(options,'AL_maxiter'); options.AL_maxiter = 100; end
+if ~isfield(options,'AL_maxiter'); options.AL_maxiter = 300; end
 if ~isfield(options,'gama'); options.gama = 2; end
 if ~isfield(options,'sigma0'); options.sigma0 = 1e-3; end
-if ~isfield(options,'sigma_min'); options.sigma_min = 1e-2; end
+if ~isfield(options,'sigma_min'); options.sigma_min = 1e-3; end
 if ~isfield(options,'sigma_max'); options.sigma_max = 1e7; end
 if ~isfield(options,'tol'); options.tol = 1e-8; end
 if ~isfield(options,'theta'); options.theta = 1e-3; end
@@ -90,8 +90,8 @@ for iter = 1:options.AL_maxiter
     end
     dinf = max(dinfs);
     gap = abs(obj-by)/(abs(by)+abs(obj)+1);
-    fprintf('Iter %d, obj:%0.8f, gap:%0.1e, pinf:%0.1e, dinf:%0.1e, gradnorm:%0.1e, sigma:%0.3f, time:%0.2fs\n', ...
-             iter,    obj,       gap,       pinf,       dinf,       gradnorm,       sigma,       toc(timespend));
+    fprintf('Iter %d, obj:%0.8f, gap:%0.1e, pinf:%0.1e, dinf:%0.1e, gradnorm:%0.1e, p_max:%d, sigma:%0.3f, time:%0.2fs\n', ...
+             iter,    obj,       gap,       pinf,       dinf,       gradnorm,   max(p),    sigma,       toc(timespend));
     eta = max([gap, pinf, dinf]);
 %     seta = [seta; eta];
     if eta < options.tol

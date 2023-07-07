@@ -118,9 +118,12 @@ for i = 1:lsp
 end
 At = sparse(row,col,val,sum(mb.^2),ncons);
 
+ind = true(size(sp, 2), 1);
+ind(sum(sp>1)> 0) = false;
+nsp = sp(:,ind);
 c = zeros(sum(mb.^2), 1);
-for i = 1:lsp
-    ind = nbfind(sp, lsp, sp(:,i), n);
+for i = 1:size(nsp, 2)
+    ind = nbfind(sp, lsp, nsp(:,i), n);
     c(loa{ind}) = coe(i)/length(loa{ind})*ones(length(loa{ind}),1);
 end    
 K.s = mb;
