@@ -119,8 +119,11 @@ end
 At = sparse(row,col,val,sum(mb.^2),ncons);
 
 ind = true(size(sp, 2), 1);
-ind(sum(sp>1)> 0) = false;
+ind(sum(sp)>2) = false;
 nsp = sp(:,ind);
+ind = true(size(nsp, 2), 1);
+ind(sum(nsp>1)> 0) = false;
+nsp = nsp(:,ind);
 c = zeros(sum(mb.^2), 1);
 for i = 1:size(nsp, 2)
     ind = nbfind(sp, lsp, nsp(:,i), n);

@@ -12,7 +12,7 @@ if ~isfield(options,'p0'); options.p0 = ones(nb,1); end
 if ~isfield(options,'AL_maxiter'); options.AL_maxiter = 300; end
 if ~isfield(options,'gama'); options.gama = 2; end
 if ~isfield(options,'sigma0'); options.sigma0 = 1e-3; end
-if ~isfield(options,'sigma_min'); options.sigma_min = 1e-3; end
+if ~isfield(options,'sigma_min'); options.sigma_min = 1e-2; end
 if ~isfield(options,'sigma_max'); options.sigma_max = 1e7; end
 if ~isfield(options,'tol'); options.tol = 1e-8; end
 if ~isfield(options,'theta'); options.theta = 1e-3; end
@@ -38,6 +38,10 @@ x = zeros(sum(n.^2), 1);
 YU = zeros(sum(n.^2), 1);
 Y = [];
 U = [];
+X = cell(nb, 1);
+S = cell(nb, 1);
+eS = cell(nb, 1);
+eH = cell(nb, 1);
 % fac_size = [];
 % seta = [];
 problem.cost = @cost;
@@ -128,11 +132,11 @@ for iter = 1:options.AL_maxiter
             Y.(elems{i}) = [Y.(elems{i}); options.alpha*vS{i}(:,1:nne)'];
             Y.(elems{i}) = Y.(elems{i})./sqrt(sum(Y.(elems{i}).^2));
         end
-        if pinf < options.tao*gradnorm
-            sigma = max(sigma/gama, options.sigma_min);
-        else
-            sigma = min(sigma*gama, options.sigma_max);
-        end
+    end
+    if pinf < options.tao*gradnorm
+        sigma = max(sigma/gama, options.sigma_min);
+    else
+        sigma = min(sigma*gama, options.sigma_max);
     end
 %    tolgrad = pinf/2;
 end

@@ -1,26 +1,20 @@
-% spotpath   = '../../../Programs/spotless';
-% addpath(genpath(spotpath));
-% pgdpath   = '../../STRIDE';
-% sdpnalpath  = '../../SDPNAL+v1.0';
-% addpath(genpath(pgdpath));
-
 %% Generate random sparse binary quadratic program
 rng(1);
 clear I;
-t = 1; % number of cliques
+t = 10; % number of cliques
 n = 10 + 8*(t-1); % BQP with n variables
 for i = 1:t
     I{i} = 8*(i-1)+1:8*i+2;
 end
 sp = [];
 for i = 1:t
-    temp = get_basis(n, 4, I{i});
+    temp = get_basis(n, 2, I{i});
     ind = true(size(temp, 2), 1);
     ind(sum(temp>1)> 0) = false;
     sp = [sp temp(:,ind)];
 end
 sp = unique(sp', 'rows');
-coe = randn(size(sp, 1), 1);
+coe = randn(size(sp, 1)-1, 1);
 [At, b, c, K] = bqpmom_sparse(n, I, coe);
 % C = full(reshape(c, mb, mb));
 
@@ -85,6 +79,7 @@ tmosek = toc;
 % tlr = toc;
 
 %% Solve using SDPNAL+
+% sdpnalpath  = '../../SDPNAL+v1.0';
 % options.tol = 1e-8;
 % addpath(genpath(sdpnalpath));
 % rng(0);
