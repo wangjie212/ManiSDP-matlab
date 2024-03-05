@@ -7,7 +7,7 @@
 function [X, obj, data] = ManiSDP_unittrace(At, b, c, n, options)
 
 if ~isfield(options,'p0'); options.p0 = 1; end
-if ~isfield(options,'AL_maxiter'); options.AL_maxiter = 300; end
+if ~isfield(options,'AL_maxiter'); options.AL_maxiter = 1000; end
 if ~isfield(options,'gama'); options.gama = 2; end
 if ~isfield(options,'sigma0'); options.sigma0 = 1e1; end
 if ~isfield(options,'sigma_min'); options.sigma_min = 1e2; end
@@ -15,7 +15,7 @@ if ~isfield(options,'sigma_max'); options.sigma_max = 1e7; end
 if ~isfield(options,'tol'); options.tol = 1e-8; end
 if ~isfield(options,'theta'); options.theta = 1e-2; end
 if ~isfield(options,'delta'); options.delta = 10; end
-if ~isfield(options,'alpha'); options.alpha = 0.04; end
+if ~isfield(options,'alpha'); options.alpha = 0.1; end
 if ~isfield(options,'tolgradnorm'); options.tolgrad = 1e-8; end
 if ~isfield(options,'TR_maxinner'); options.TR_maxinner = 40; end
 if ~isfield(options,'TR_maxiter'); options.TR_maxiter = 3; end
@@ -31,7 +31,11 @@ sigma = options.sigma0;
 gama = options.gama;
 y = zeros(length(b),1);
 normb = 1 + norm(b);
-Y = [];
+if isfield(options, 'Y0') 
+    Y = options.Y0; 
+else
+    Y = [];
+end
 U = [];
 % fac_size = [];
 % seta = [];
@@ -60,7 +64,7 @@ for iter = 1:options.AL_maxiter
     pinf = norm(Axb)/normb;
     y = y - sigma*Axb;
     eS = reshape(c - At*y, n, n);
-    z = sum(eS.*X,'all');
+    z = sum(eS.*X, 'all');
     S = eS - z*eye(n);
     S = 0.5*(S+S');
     [vS, dS] = eig(S, 'vector');
@@ -173,7 +177,7 @@ fprintf('ManiSDP: optimum = %0.8f, time = %0.2fs\n', obj, toc(timespend));
         Axb = A*x - b - y/sigma;
         f = c'*x + sigma/2*(Axb'*Axb);
         eS = reshape(c+sigma*At*Axb, n, n);
-        store.z = sum(X.*eS,'all');
+        store.z = sum(X.*eS, 'all');
         store.G = 2*eS*Y - 2*store.z*Y;
         store.eS = eS;
     end

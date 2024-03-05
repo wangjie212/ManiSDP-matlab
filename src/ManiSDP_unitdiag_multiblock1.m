@@ -1,20 +1,24 @@
 % This function solves linear SDPs with unital diagonal.
 % Min  <C, X>
 % s.t. A(X) = b,
-%      X >= 0,
+%      X in S_+^{n_1×...×n_t}
 %      X_ii = 1, i = 1,...,n.
 
-function [X, obj, data] = ManiSDP_unitdiag(At, b, c, n, options)
+function [X, obj, data] = ManiSDP_unitdiag_multiblock1(At, b, c, K, options)
 
-if ~isfield(options,'p0'); options.p0 = 2; end
-if ~isfield(options,'AL_maxiter'); options.AL_maxiter = 1000; end
+minp = 2;
+K.s = [ones(1,K.l) K.s];
+n = K.s;
+nb = length(n);
+if ~isfield(options,'p0'); options.p0 = ones(nb,1); end
+if ~isfield(options,'AL_maxiter'); options.AL_maxiter = 300; end
 if ~isfield(options,'gama'); options.gama = 2; end
 if ~isfield(options,'sigma0'); options.sigma0 = 1e-3; end
 if ~isfield(options,'sigma_min'); options.sigma_min = 1e-2; end
 if ~isfield(options,'sigma_max'); options.sigma_max = 1e7; end
 if ~isfield(options,'tol'); options.tol = 1e-8; end
 if ~isfield(options,'theta'); options.theta = 1e-3; end
-if ~isfield(options,'delta'); options.delta = 8; end
+if ~isfield(options,'delta'); options.delta = 1; end
 if ~isfield(options,'alpha'); options.alpha = 0.1; end
 if ~isfield(options,'tolgradnorm'); options.tolgrad = 1e-8; end
 if ~isfield(options,'TR_maxinner'); options.TR_maxinner = 20; end
@@ -23,18 +27,28 @@ if ~isfield(options,'tao'); options.tao = 1; end
 if ~isfield(options,'line_search'); options.line_search = 0; end
 
 fprintf('ManiSDP is starting...\n');
-fprintf('SDP size: n = %i, m = %i\n', n, size(b,1));
+fprintf('SDP size: n = %i, m = %i\n', max(n), size(b,1));
 warning('off', 'manopt:trs_tCG_cached:memory');
 
 A = At';
-p = options.p0;
+p = n;
+for i = 1:nb
+    if n(i) >= minp
+        p(i) = options.p0(i);
+    end
+end
 sigma = options.sigma0;
 gama = options.gama;
-eG = zeros(p, n);
 y = zeros(length(b), 1);
 normb = 1 + norm(b);
+x = zeros(sum(n.^2), 1);
+YU = zeros(sum(n.^2), 1);
 Y = [];
 U = [];
+X = cell(nb, 1);
+S = cell(nb, 1);
+eS = cell(nb, 1);
+eH = cell(nb, 1);
 % fac_size = [];
 % seta = [];
 problem.cost = @cost;
@@ -46,36 +60,49 @@ opts.maxiter = options.TR_maxiter;
 opts.tolgradnorm = options.tolgrad;
 
 data.status = 0;
+for i = 1:nb
+    M.(['M' num2str(i)]) = obliquefactoryNTrans(p(i), n(i));
+end
+elems = fieldnames(M);
 timespend = tic;
 for iter = 1:options.AL_maxiter
 %     fac_size = [fac_size; p];
-    problem.M = obliquefactoryNTrans(p, n);
+    problem.M = productmanifold(M);
     if ~isempty(U)
         Y = line_search(Y, U);
     end
     [Y, ~, info] = trustregions(problem, Y, opts);
     gradnorm = info(end).gradnorm;
-    X = Y'*Y;
-    x = X(:);
+    ind = 1;
+    for i = 1:nb
+        X{i} = Y.(elems{i})'*Y.(elems{i});
+        x(ind:ind+n(i)^2-1) = X{i}(:);
+        ind = ind + n(i)^2;
+    end
     obj = c'*x;
     Axb = A*x - b;
     pinf = norm(Axb)/normb;
 %     if pinf >= gradnorm
-    y = y - sigma*Axb;
-%    end
-    eS = reshape(c - At*y, n, n);
-    z = sum(X.*eS);
-    S = eS - diag(z);
-    S = 0.5*(S+S');
-    [vS, dS] = eig(S, 'vector');
-    dinf = max(0, -dS(1))/(1+dS(end));
-    by = b'*y + sum(z);
+        y = y - sigma*Axb;   
+%     end
+    cy = c - At*y;
+    by = b'*y;
+    dinfs = zeros(nb, 1);
+    ind = 1;
+    for i = 1:nb
+        eS{i} = reshape(cy(ind:ind+n(i)^2-1), n(i), n(i));
+        z = sum(X{i}.*eS{i});
+        by = by + sum(z);
+        S{i} = eS{i} - diag(z);
+        S{i} = 0.5*(S{i}+S{i}');
+        ind = ind + n(i)^2;
+        [vS{i}, dS{i}] = eig(S{i}, 'vector');
+        dinfs(i) = max(0, -dS{i}(1))/(1+abs(dS{i}(end)));
+    end
+    dinf = max(dinfs);
     gap = abs(obj-by)/(abs(by)+abs(obj)+1);
-    [~, D, V] = svd(Y);
-    e = diag(D);
-    r = sum(e > options.theta*e(1));
-    fprintf('Iter %d, obj:%0.8f, gap:%0.1e, pinf:%0.1e, dinf:%0.1e, gradnorm:%0.1e, r:%d, p:%d, sigma:%0.3f, time:%0.2fs\n', ...
-             iter,    obj,       gap,       pinf,       dinf,       gradnorm,       r,    p,    sigma,       toc(timespend));
+    fprintf('Iter %d, obj:%0.8f, gap:%0.1e, pinf:%0.1e, dinf:%0.1e, gradnorm:%0.1e, p_max:%d, sigma:%0.3f, time:%0.2fs\n', ...
+             iter,    obj,       gap,       pinf,       dinf,       gradnorm,   max(p),    sigma,       toc(timespend));
     eta = max([gap, pinf, dinf]);
 %     seta = [seta; eta];
     if eta < options.tol
@@ -93,25 +120,32 @@ for iter = 1:options.AL_maxiter
             dinf0 = dinf;
         end
     end
-    if r <= p - 1         
-        Y = V(:,1:r)'.*e(1:r);
-        p = r;
-    end
-   nne = max(min(sum(dS < 0), options.delta), 1);
-    if options.line_search == 1
-       U = [zeros(p, n); vS(:,1:nne)'];
-    end
-    p = p + nne;
-    if options.line_search == 1
-       Y = [Y; zeros(nne,n)];
-    else
-       Y = [Y; options.alpha*vS(:,1:nne)'];
-       Y = Y./sqrt(sum(Y.^2));
+    for i = 1:nb
+        if n(i) >= minp
+        [~, D, V] = svd(Y.(elems{i}));
+        e = diag(D);
+        r = sum(e > options.theta*e(1));
+        if r <= p(i) - 1         
+           Y.(elems{i}) = V(:,1:r)'.*e(1:r);
+           p(i) = r;
+        end
+        nne = max(min(sum(dS{i} < 0), options.delta), 1);
+        if options.line_search == 1
+            U.(elems{i}) = [zeros(p(i), n(i)); vS{i}(:,1:nne)'];
+        end
+        p(i) = p(i) + nne;
+        if options.line_search == 1
+            Y.(elems{i}) = [Y.(elems{i}); zeros(nne,n(i))];
+        else
+            Y.(elems{i}) = [Y.(elems{i}); options.alpha*vS{i}(:,1:nne)'];
+            Y.(elems{i}) = Y.(elems{i})./sqrt(sum(Y.(elems{i}).^2));
+        end
+        end
     end
     if pinf < options.tao*gradnorm
-          sigma = max(sigma/gama, options.sigma_min);
+        sigma = max(sigma/gama, options.sigma_min);
     else
-          sigma = min(sigma*gama, options.sigma_max);
+        sigma = min(sigma*gama, options.sigma_max);
     end
 %    tolgrad = pinf/2;
 end
@@ -167,24 +201,43 @@ fprintf('ManiSDP: optimum = %0.8f, time = %0.2fs\n', obj, toc(timespend));
     end
 
     function [f, store] = cost(Y, store)
-        X = Y'*Y;
-        x = X(:);
+        ind = 1;
+        for i = 1:nb
+            X{i} = Y.(elems{i})'*Y.(elems{i});
+            x(ind:ind+n(i)^2-1) = X{i}(:);
+            ind = ind + n(i)^2;
+        end
         Axb = A*x - b - y/sigma;
         f = c'*x + 0.5*sigma*(Axb'*Axb);
     end
 
     function [G, store] = grad(Y, store)
-        eS = reshape(c+sigma*At*Axb, n, n);
-        eG = 2*Y*eS;
-        store.YeG = sum(Y.*eG);
-        G = eG - Y.*store.YeG;
+        tt = c + sigma*At*Axb;
+        ind = 1;
+        for i = 1:nb
+            eS{i} = reshape(tt(ind:ind+n(i)^2-1), n(i), n(i));
+            eG = 2*Y.(elems{i})*eS{i};
+            store.YeG{i} = sum(Y.(elems{i}).*eG);
+            G.(elems{i}) = eG - Y.(elems{i}).*store.YeG{i};
+            ind = ind + n(i)^2;
+        end
     end
 
     function [H, store] = hess(Y, U, store)
-        YU = Y'*U;
-        AyU = reshape(A'*(At'*YU(:)), n, n);
-        eH = 2*U*eS + 8*sigma*(Y*AyU);
-        H = eH - Y.*sum(Y.*eH) - U.*store.YeG;
+        ind = 1;
+        for i = 1:nb
+            T = Y.(elems{i})'*U.(elems{i});
+            YU(ind:ind+n(i)^2-1) = T(:);
+            ind = ind + n(i)^2;
+            eH{i} = 2*U.(elems{i})*eS{i};
+        end
+        AyU = YU'*At*A;
+        ind = 1;
+        for i = 1:nb
+             eH{i} = eH{i} + 4*sigma*Y.(elems{i})*reshape(AyU(ind:ind+n(i)^2-1), n(i), n(i));
+             H.(elems{i}) = eH{i} - Y.(elems{i}).*sum(Y.(elems{i}).*eH{i}) - U.(elems{i}).*store.YeG{i};
+             ind = ind + n(i)^2;
+        end
     end
 
     function M = obliquefactoryNTrans(n, m)
@@ -192,13 +245,12 @@ fprintf('ManiSDP: optimum = %0.8f, time = %0.2fs\n', obj, toc(timespend));
 %        M.inner = @(x, d1, d2) sum(d1.*d2,'all');
         M.inner = @(x, d1, d2) d1(:)'*d2(:);
         M.norm = @(x, d) norm(d, 'fro');
-%        M.norm = @(x, d) norm(d);
         M.typicaldist = @() pi*sqrt(m);
         M.proj = @(X, U) U - X.*sum(X.*U);
         M.tangent = @(X, U) U - X.*sum(X.*U);
 
         M.retr = @retraction;
-        function y = retraction(x, d)            
+        function y = retraction(x, d, t)            
             xtd = x + d;
             y = xtd./sqrt(sum(xtd.^2));
         end

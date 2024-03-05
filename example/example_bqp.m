@@ -1,21 +1,20 @@
-% spotpath   = '../../../Programs/spotless';
-% addpath(genpath(spotpath));
-% pgdpath   = '../../STRIDE';
+clear; clc;
+% addpath(genpath('..'));
+% addpath(genpath('../../mosek'));
+% addpath(genpath('../../SDPLR'));
+% addpath(genpath('../../spotless'));
+% addpath(genpath('../../STRIDE'));
 % sdpnalpath  = '../../SDPNAL+v1.0';
-% addpath(genpath(pgdpath));
 
 %% Generate random binary quadratic program
 rng(1);
-d       = 2; % BQP with d variables
+d       = 20; % BQP with d variables
 Q       = randn(d);
 Q = (Q + Q')/2; % a random symmetric matrix
 e       = randn(d,1);
 % x       = msspoly('x',d); % symbolic decision variables using SPOTLESS
 % f       = x'*Q*x + x'*e; % objective function of the BQP
 % h       = x.^2 - 1; % equality constraints of the BQP (binary variables)
-
-% writematrix(Q, '../data/bqp_Q_60_3.txt');
-% writematrix(e, '../data/bqp_e_60_3.txt');
 
 %% Relax BQP into an SDP
 % problem.vars            = x;
@@ -36,9 +35,6 @@ e       = randn(d,1);
 rng(0);
 clear options;
 options.tol = 1e-8;
-options.p0 = 2;
-options.delta = 8;
-options.AL_maxiter = 1000;
 options.TR_maxinner = 25;
 tic
 [~, fval, data] = ManiSDP_unitdiag(At, b, c, mb, options);
@@ -87,26 +83,6 @@ tmani = toc;
 % mS = abs(min(dS))/(1+dS(end));
 % emosek = max([eta, gap, mS]);
 % tmosek = toc;
-
-%% Solve using COPT
-% tic
-% X0 = sdpvar(mb, mb, 'hermitian', 'real');
-% F = [X0 >= 0, At'*X0(:) == b];
-% obj = c'*X0(:);
-% opts = sdpsettings('verbose', 1, 'solver', 'sdplr');
-% sol = optimize(F, obj, opts);
-% X = value(X0);
-% S = dual(F(1));
-% y = dual(F(2));
-% by = -b'*y;
-% vlr = value(obj);
-% gap = abs(vlr-by)/(abs(by)+abs(vlr)+1);
-% x = X(:);
-% eta = norm(At'*x - b)/(1+norm(b));
-% [~, dS] = eig(S, 'vector');
-% mS = abs(min(dS))/(1+dS(end));
-% elr = max([eta, gap, mS]);
-% tlr = toc;
 
 %% Solve using SDPLR
 % rng(0);

@@ -1,30 +1,56 @@
+mc
+sigma0 = 1e-2
+sigma_min = 1e-1
+theta = 1e-2
+delta = 10
+alpha = 0.1
+TR_maxinner = 6
+TR_maxiter = 8
+tao = 1e-3
+line_search = 0
+
 bqp
-TR_maxinner = 25
+sigma0 = 1e-3
+sigma_min = 1e-2
+theta = 1e-3
+delta = 8
+alpha = 0.1
+TR_maxinner = 20 (d<=10)
+TR_maxinner = 25 (d>10)
+TR_maxiter = 4
+tao = 1
+line_search = 0
 
 qs
+sigma0 = 1 (d<=50)
+sigma0 = 1e-2 (d>50)
+sigma_min = 1e-1
 theta = 1e-2
 delta = 6
+alpha = 0.1;
 TR_maxinner = 20
 TR_maxiter = 4
 tao = 1e-2
+line_search = 1
 
 rs
 sigma0 = 1e1
 sigma_min = 1e2
-sigma_max = 1e7
 theta = 1e-2
 delta = 10
+alpha = 0.1
 TR_maxinner = 40
 TR_maxiter = 3
-tao = 1e-4
+tao = 1/6e3
+line_search = 1
 
 stls
-line_search = 1
-tao = 1/6e3
-
-mc
-theta = 1e-2
-TR_maxinner = 6
-TR_maxiter = 8
-delta = 10
-tao = 1e-3
+sigma0 = 1e-2
+sigma_min = 1e-1
+theta = 1e-1
+delta = 8
+alpha = 0.2
+TR_maxinner = 50
+TR_maxiter = 4
+tao = 0.25
+line_search = 0

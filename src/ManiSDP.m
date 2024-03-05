@@ -6,7 +6,7 @@
 function [X, obj, data] = ManiSDP(At, b, c, n, options)
 
 if ~isfield(options,'p0'); options.p0 = 1; end
-if ~isfield(options,'AL_maxiter'); options.AL_maxiter = 300; end
+if ~isfield(options,'AL_maxiter'); options.AL_maxiter = 1000; end
 if ~isfield(options,'gama'); options.gama = 2; end
 if ~isfield(options,'sigma0'); options.sigma0 = 1e-2; end
 if ~isfield(options,'sigma_min'); options.sigma_min = 1e-1; end
@@ -14,12 +14,12 @@ if ~isfield(options,'sigma_max'); options.sigma_max = 1e7; end
 if ~isfield(options,'tol'); options.tol = 1e-8; end
 if ~isfield(options,'theta'); options.theta = 1e-1; end
 if ~isfield(options,'delta'); options.delta = 8; end
-if ~isfield(options,'alpha'); options.alpha = 0.2; end
+if ~isfield(options,'alpha'); options.alpha = 0.1; end
 if ~isfield(options,'tolgradnorm'); options.tolgrad = 1e-8; end
-if ~isfield(options,'TR_maxinner'); options.TR_maxinner = 50; end
+if ~isfield(options,'TR_maxinner'); options.TR_maxinner = 20; end
 if ~isfield(options,'TR_maxiter'); options.TR_maxiter = 4; end
 if ~isfield(options,'tao'); options.tao = 0.25; end
-if ~isfield(options,'line_search'); options.line_search = 1; end
+if ~isfield(options,'line_search'); options.line_search = 0; end
 if ~isfield(options,'solver'); options.solver = 0; end
 
 fprintf('ManiSDP is starting...\n');
@@ -31,7 +31,11 @@ sigma = options.sigma0;
 gama = options.gama;
 y = zeros(length(b),1);
 normb = 1 + norm(b);
-Y = [];
+if isfield(options, 'Y0') 
+    Y = options.Y0; 
+else
+    Y = [];
+end
 U = [];
 % fac_size = [];
 % seta = [];

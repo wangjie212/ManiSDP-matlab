@@ -222,10 +222,10 @@ fprintf('ManiSDP: optimum = %0.8f, time = %0.2fs\n', obj, toc(timespend));
             ind = ind + n(i)^2;
             eH{i} = 2*U.(elems{i})*eS{i};
         end
-        AyU = YU'*At*A;
+        AyU = (YU'*At)*A;
         ind = 1;
         for i = 1:nb
-             eH{i} = eH{i} + 4*sigma*Y.(elems{i})*reshape(AyU(ind:ind+n(i)^2-1), n(i), n(i));
+             eH{i} = eH{i} + 8*sigma*Y.(elems{i})*reshape(AyU(ind:ind+n(i)^2-1), n(i), n(i));
              H.(elems{i}) = eH{i} - Y.(elems{i}).*sum(Y.(elems{i}).*eH{i}) - U.(elems{i}).*store.YeG{i};
              ind = ind + n(i)^2;
         end

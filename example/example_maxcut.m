@@ -1,7 +1,12 @@
-% sdpnalpath = '../../SDPNAL+v1.0';
-% addpath(genpath(sdpnalpath));
+clear; clc;
+% addpath(genpath('..'));
+% addpath(genpath('../../mosek'));
+% addpath(genpath('../../SDPLR'));
+% addpath(genpath('../../spotless'));
+% addpath(genpath('../../STRIDE'));
+% sdpnalpath  = '../../SDPNAL+v1.0';
 
-% set = ["G65", "G66", "G67", "G70", "G72", "G77", "G81"];
+%% Generate the max-cut problem
 L = Laplacian(append('../data/Gset/', "G32", '.txt'));
 C = -1/4*sparse(L);
 c = C(:);
@@ -43,26 +48,6 @@ tmani = toc;
 % mS = abs(min(dS))/(1+dS(end));
 % emosek = max([eta, gap, mS]);
 % tmosek = toc;
-
-%% Solve using COPT
-% tic
-% X0 = sdpvar(mb, mb, 'hermitian', 'real');
-% F = [X0 >= 0, At'*X0(:) == b];
-% obj = c'*X0(:);
-% opts = sdpsettings('verbose', 1, 'solver', 'sdplr');
-% sol = optimize(F, obj, opts);
-% X = value(X0);
-% S = dual(F(1));
-% y = dual(F(2));
-% by = -b'*y;
-% vlr = value(obj);
-% gap = abs(vlr-by)/(abs(by)+abs(vlr)+1);
-% x = X(:);
-% eta = norm(At'*x - b)/(1+norm(b));
-% [~, dS] = eig(S, 'vector');
-% mS = abs(min(dS))/(1+dS(end));
-% elr = max([eta, gap, mS]);
-% tlr = toc;
 
 %% Solve using SDPLR
 % rng(0);

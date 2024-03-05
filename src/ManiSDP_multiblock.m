@@ -9,18 +9,18 @@ n = K.s;
 nb = length(n);
 if ~isfield(options,'p0'); options.p0 = ones(nb,1); end
 if ~isfield(options,'AL_maxiter'); options.AL_maxiter = 100; end
-if ~isfield(options,'gama'); options.gama = 2; end
+if ~isfield(options,'gama'); options.gama = 3; end
 if ~isfield(options,'sigma0'); options.sigma0 = 1e-2; end
 if ~isfield(options,'sigma_min'); options.sigma_min = 1e-2; end
 if ~isfield(options,'sigma_max'); options.sigma_max = 1e7; end
 if ~isfield(options,'tol'); options.tol = 1e-8; end
 if ~isfield(options,'theta'); options.theta = 1e-2; end
 if ~isfield(options,'delta'); options.delta = 6; end
-if ~isfield(options,'alpha'); options.alpha = 0.06; end
+if ~isfield(options,'alpha'); options.alpha = 0.1; end
 if ~isfield(options,'tolgradnorm'); options.tolgrad = 1e-8; end
-if ~isfield(options,'TR_maxinner'); options.TR_maxinner = 40; end
+if ~isfield(options,'TR_maxinner'); options.TR_maxinner = 20; end
 if ~isfield(options,'TR_maxiter'); options.TR_maxiter = 4; end
-if ~isfield(options,'tao'); options.tao = 0.01; end
+if ~isfield(options,'tao'); options.tao = 0.1; end
 if ~isfield(options,'line_search'); options.line_search = 0; end
 if ~isfield(options,'solver'); options.solver = 0; end
 
@@ -92,6 +92,7 @@ for iter = 1:options.AL_maxiter
     for i = 1:nb
         S{i} = reshape(cy(ind:ind+n(i)^2-1), n(i), n(i));
         ind = ind + n(i)^2;
+        S{i} = 0.5*(S{i}+S{i}');
         [vS{i}, dS{i}] = eig(S{i}, 'vector');
         dinfs(i) = max(0, -dS{i}(1))/(1+abs(dS{i}(end)));
     end
@@ -244,7 +245,7 @@ fprintf('ManiSDP: optimum = %0.8f, time = %0.2fs\n', obj, toc(timespend));
             ind = ind + n(i)^2;
             H.(elems{i}) = 2*S{i}*U.(elems{i});
         end
-        AyU = YU'*At*A;
+        AyU = (YU'*At)*A;
         ind = 1;
         for i = 1:nb
              H.(elems{i}) = H.(elems{i}) + 4*sigma*reshape(AyU(ind:ind+n(i)^2-1), n(i), n(i))*Y.(elems{i});

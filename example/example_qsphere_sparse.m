@@ -7,7 +7,7 @@
 %% Generate random quartic program
 rng(1);
 clear I;
-t = 4;
+t = 5;
 n = 10 + 8*(t-1);
 for i = 1:t
     I{i} = 8*(i-1)+1:8*i+2;

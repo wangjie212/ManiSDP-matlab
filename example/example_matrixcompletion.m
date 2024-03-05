@@ -1,7 +1,14 @@
+clear; clc;
+% addpath(genpath('..'));
+% addpath(genpath('../../mosek'));
+% addpath(genpath('../../SDPLR'));
+% addpath(genpath('../../spotless'));
+% addpath(genpath('../../STRIDE'));
+
 %% Generate random matrix completion problems
 rng(1);
-p = 500;
-q = 500;
+p = 1000;
+q = 1000;
 n = p + q;
 m = 400*n;
 k = 10;
@@ -48,6 +55,7 @@ options.TR_maxinner = 6;
 options.TR_maxiter = 8;
 options.delta = 10;
 options.tao = 1e-3;
+options.alpha = 0.1;
 tic
 [~, fval, data] = ManiSDP(At, b, c, n, options);
 emani = max([data.gap, data.pinf, data.dinf]);

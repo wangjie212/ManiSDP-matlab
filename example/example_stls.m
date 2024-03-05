@@ -1,5 +1,9 @@
-% pgdpath   = '../../STRIDE';
-% addpath(genpath(pgdpath));
+clear; clc;
+% addpath(genpath('..'));
+% addpath(genpath('../../mosek'));
+% addpath(genpath('../../SDPLR'));
+% addpath(genpath('../../spotless'));
+addpath(genpath('../../STRIDE'));
 % sdpnalpath  = '../../SDPNAL+v1.0';
 
 %% construct space of n1 x n2 hankel matrices (n1 <= n2)
@@ -15,7 +19,6 @@ U1 = applyAffineMapCell(Scell,u1);
 SDP     = nearest_hankel_sdp(S,u1);
 [At,b,c,K] = SDPT3data_SEDUMIdata(SDP.blk,SDP.At,SDP.C,SDP.b); 
 n = SDP.n;
-fprintf('SDP size: n = %d, m = %d.\n\n\n',n,SDP.m);
 mb = n;
 C = full(reshape(c, mb, mb));
 
@@ -23,7 +26,9 @@ C = full(reshape(c, mb, mb));
 rng(0);
 clear options;
 options.tol = 1e-8;
-options.line_search = 0;
+options.alpha = 0.2;
+TR_maxinner = 50;
+% options.Y0 = xtld;
 tic
 [~, fval, data] = ManiSDP(At, b, c, n, options);
 emani = max([data.gap, data.pinf, data.dinf]);
@@ -51,7 +56,7 @@ tmani = toc;
 % Uslra           = applyAffineMapCell(Scell,uslra);
 % ztUnorm         = norm(zslra'*Uslra); % measure of rank deficientness
 % fprintf('SLRA: norm(zt*U) = %3.2e.\n',ztUnorm);
-% % lift to SDP solution
+% lift to SDP solution
 % xtld            = kron([uslra;1],zslra);
 % X0              = {xtld * xtld'};
 

@@ -1,10 +1,12 @@
-% spotpath   = '../../../Programs/spotless';
-% addpath(genpath(spotpath));
-% pgdpath   = '../../STRIDE';
-% addpath(genpath(pgdpath));
+clear; clc;
+% addpath(genpath('..'));
+% addpath(genpath('../../mosek'));
+% addpath(genpath('../../SDPLR'));
+% addpath(genpath('../../spotless'));
+addpath(genpath('../../STRIDE'));
 % sdpnalpath  = '../../SDPNAL+v1.0';
 
-%% generate random problem
+%% generate random rotation search problems
 rng(1);
 N       = 50; % number of measurements
 outrate = 0.5; % outlier rate
@@ -29,6 +31,7 @@ C = full(reshape(c, mb, mb));
 rng(0);
 clear options;
 options.tol = 1e-8;
+% options.Y0 = v_gnc/sqrt(N+1);
 tic
 [~, fval, data] = ManiSDP_unittrace(At, b/(N+1), c, mb, options);
 emani = max([data.gap, data.pinf, data.dinf]);
