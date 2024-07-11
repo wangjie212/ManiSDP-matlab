@@ -1,4 +1,4 @@
-clear; clc;
+% clear; clc;
 % addpath(genpath('..'));
 % addpath(genpath('../../mosek'));
 % addpath(genpath('../../SDPLR'));
@@ -8,7 +8,7 @@ clear; clc;
 
 %% Generate random binary quadratic program
 rng(1);
-d       = 20; % BQP with d variables
+d       = 30; % BQP with d variables
 Q       = randn(d);
 Q = (Q + Q')/2; % a random symmetric matrix
 e       = randn(d,1);

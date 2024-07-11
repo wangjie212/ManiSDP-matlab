@@ -7,7 +7,7 @@
 %% Generate random quartic program
 rng(1);
 clear I;
-t = 5;
+t = 3;
 n = 10 + 8*(t-1);
 for i = 1:t
     I{i} = 8*(i-1)+1:8*i+2;
@@ -19,11 +19,19 @@ end
 sp = unique(sp', 'rows');
 coe = randn(size(sp, 1), 1);
 [At, b, c, K] = qsmom_sparse(n, I, coe);
+K.nob = 0;
 
 %% Solve using ManiSDP
 rng(0);
 clear options;
-options.tol = 1e-8;
+options.p0 = ones(t,1);
+options.gama = 2;
+options.alpha = 0.01;
+options.sigma0 = 1e-1;
+options.theta = 1e-2;
+options.delta = 6;
+options.tao = 1e-2;
+options.line_search = 1;
 tic
 [~, fval, data] = ManiSDP_multiblock(At, b, c, K, options);
 emani = max([data.gap, data.pinf, data.dinf]);

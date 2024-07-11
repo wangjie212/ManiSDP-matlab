@@ -1,10 +1,10 @@
 %% Generate random sparse binary quadratic program
 rng(1);
 clear I;
-t = 10; % number of cliques
-n = 10 + 8*(t-1); % BQP with n variables
+t = 2; % number of cliques
+n = 20 + 8*(t-1); % BQP with n variables
 for i = 1:t
-    I{i} = 8*(i-1)+1:8*i+2;
+    I{i} = 8*(i-1)+1:8*i+12;
 end
 sp = [];
 for i = 1:t
@@ -15,32 +15,44 @@ for i = 1:t
 end
 sp = unique(sp', 'rows');
 coe = randn(size(sp, 1)-1, 1);
+
+%% generate moment SDP
 [At, b, c, K] = bqpmom_sparse(n, I, coe);
-% C = full(reshape(c, mb, mb));
+K.nob = length(K.s);
 
 %% Solve using ManiSDP
 rng(0);
 clear options;
 options.tol = 1e-8;
+options.line_search = 1;
 tic
-[~, fval, data] = ManiSDP_unitdiag_multiblock(At, b, c, K, options);
+[~, fval, data] = ManiSDP_multiblock(At, b, c, K, options);
 emani = max([data.gap, data.pinf, data.dinf]);
 tmani = toc;
 
 %% Solve using MOSEK
-% [At,b,c,K] = SDPT3data_SEDUMIdata(SDP.blk,tAt,tC,tb); 
+% for i = 1:t
+%     blk{i,1} = 's';
+%     blk{i,2} = K.s(i);
+% end
 % prob       = convert_sedumi2mosek(At, b, c, K);
 % tic
 % [~,res]    = mosekopt('minimize echo(3)',prob);
-% [X,y,S,mobj] = recover_mosek_sol_blk(res, SDP.blk);
+% [X,y,S,mobj] = recover_mosek_sol_blk(res, blk);
 % by = b'*y;
 % gap = abs(mobj(1)-by)/(abs(by)+abs(mobj(1))+1);
-% x = X{1}(:);
+% x = zeros(sum(K.s.^2), 1);
+% mS = zeros(t, 1);
+% ind = 1;
+% for i = 1:t
+%     x(ind:ind+K.s(i)^2-1) = X{i}(:);
+%     ind = ind + K.s(i)^2;
+%     [~, dS] = eig(S{i}, 'vector');
+%     mS(i) = max(0, -dS(1))/(1+abs(dS(end)));
+% end
 % eta = norm(At'*x - b)/(1+norm(b));
-% [~, dS] = eig(S{1}, 'vector');
-% mS = abs(min(dS))/(1+dS(end));
-% emosek = max([eta, gap, mS]);
-tmosek = toc;
+% emosek = max([eta, gap, max(mS)]);
+% tmosek = toc;
 
 %% Solve using COPT
 % tic

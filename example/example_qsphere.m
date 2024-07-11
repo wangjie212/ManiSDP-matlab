@@ -1,4 +1,4 @@
-clear; clc;
+% clear; clc;
 % addpath(genpath('..'));
 % addpath(genpath('../../mosek'));
 % addpath(genpath('../../SDPLR'));
@@ -8,7 +8,7 @@ clear; clc;
 
 %% Generate random quartic program
 rng(1);
-d = 10;
+d = 30;
 coe = randn(nchoosek(d+4, 4), 1);
 % x = msspoly('x', d);
 % mon = monomials(x, 0:4);
@@ -33,7 +33,7 @@ coe = randn(nchoosek(d+4, 4), 1);
 %% Solve using ManiSDP
 rng(0);
 clear options;
-options.theta = 1e-2;
+options.theta = 1e-1;
 options.delta = 6;
 options.sigma0 = 1; % (d <= 50)
 % options.sigma0 = 1e-2; % (d > 50)
