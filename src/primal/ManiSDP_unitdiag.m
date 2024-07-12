@@ -73,7 +73,7 @@ for iter = 1:options.AL_maxiter
     gap = abs(obj-by)/(abs(by)+abs(obj)+1);
     [~, D, V] = svd(Y);
     e = diag(D);
-    r = sum(e > options.theta*e(1));
+    r = sum(e >= options.theta*e(1));
     fprintf('Iter %d, obj:%0.8f, gap:%0.1e, pinf:%0.1e, dinf:%0.1e, gradnorm:%0.1e, r:%d, p:%d, sigma:%0.3f, time:%0.2fs\n', ...
              iter,    obj,       gap,       pinf,       dinf,       gradnorm,       r,    p,    sigma,       toc(timespend));
     eta = max([gap, pinf, dinf]);
@@ -183,7 +183,7 @@ fprintf('ManiSDP: optimum = %0.8f, time = %0.2fs\n', obj, toc(timespend));
     function [H, store] = hess(Y, U, store)
         YU = Y'*U;
         AyU = reshape(A'*(At'*YU(:)), n, n);
-        eH = 2*U*eS + 8*sigma*(Y*AyU);
+        eH = 2*U*eS + 4*sigma*(Y*AyU);
         H = eH - Y.*sum(Y.*eH) - U.*store.YeG;
     end
 

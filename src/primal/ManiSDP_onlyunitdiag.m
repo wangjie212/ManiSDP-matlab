@@ -53,7 +53,7 @@ for iter = 1:options.AL_maxiter
     dinf = max(0, -dS(1))/(1+dS(end));
     [~, D, V] = svd(Y);
     e = diag(D);
-    r = sum(e > options.theta*e(1));
+    r = sum(e >= options.theta*e(1));
     fprintf('Iter %d, obj:%0.8f, dinf:%0.1e, r:%d, p:%d, time:%0.2fs\n', ...
              iter,    obj,       dinf,       r,    p,    toc(timespend));
     if dinf < options.tol
@@ -101,19 +101,6 @@ fprintf('ManiSDP: optimum = %0.8f, time = %0.2fs\n', obj, toc(timespend));
     function val = co(Y)
         val = sum((Y*C).*Y,'all');
     end
-    
-%    function Y = line_search(Y, U)
-%         alpha = [0.02;0.04;0.06;0.08;0.1;0.2];
-%         val = zeros(length(alpha),1);
-%         for i = 1:length(alpha)
-%             nY = Y + alpha(i)*U;
-%             nY = nY./sqrt(sum(nY.^2));
-%             val(i) = co(nY);
-%         end
-%         [~,I] = min(val);
-%         Y = Y + alpha(I)*U;
-%         Y = Y./sqrt(sum(Y.^2));
-%    end
 
     function nY = line_search(Y, U)
          alpha = 0.5;
@@ -139,9 +126,9 @@ fprintf('ManiSDP: optimum = %0.8f, time = %0.2fs\n', obj, toc(timespend));
         G = YC - Y.*eG;
     end
 
-    function [He, store] = hess(Y, U, store)
-        H = U*C;
-        He = H - Y.*sum(Y.*H) - U.*eG;
+    function [H, store] = hess(Y, U, store)
+        eH = U*C;
+        H = eH - Y.*sum(Y.*eH) - U.*eG;
     end
 
     function M = obliquefactoryNTrans(n, m)

@@ -8,7 +8,7 @@
 
 %% Generate random binary quadratic program
 rng(1);
-d       = 30; % BQP with d variables
+d       = 10; % BQP with d variables
 Q       = randn(d);
 Q = (Q + Q')/2; % a random symmetric matrix
 e       = randn(d,1);
@@ -29,6 +29,7 @@ e       = randn(d,1);
 % mb = K.s;
 
 [At, b, c, mb] = bqpmom(d, Q, e);
+% K.s = mb;
 % C = full(reshape(c, mb, mb));
 
 %% Solve using ManiSDP
@@ -72,9 +73,12 @@ tmani = toc;
 %% Solve using MOSEK
 % [At,b,c,K] = SDPT3data_SEDUMIdata(SDP.blk,tAt,tC,tb); 
 % prob       = convert_sedumi2mosek(At, b, c, K);
+% blk = cell(1,2);
+% blk{1,1} = 's';
+% blk{1,2} = mb;
 % tic
 % [~,res]    = mosekopt('minimize echo(3)',prob);
-% [X,y,S,mobj] = recover_mosek_sol_blk(res, SDP.blk);
+% [X,y,S,mobj] = recover_mosek_sol_blk(res, blk);
 % by = b'*y;
 % gap = abs(mobj(1)-by)/(abs(by)+abs(mobj(1))+1);
 % x = X{1}(:);

@@ -7,7 +7,7 @@
 %% Generate random quartic program
 rng(1);
 clear I;
-t = 3;
+t = 4;
 n = 10 + 8*(t-1);
 for i = 1:t
     I{i} = 8*(i-1)+1:8*i+2;
@@ -27,11 +27,11 @@ clear options;
 options.p0 = ones(t,1);
 options.gama = 2;
 options.alpha = 0.01;
-options.sigma0 = 1e-1;
+options.sigma0 = 1;
 options.theta = 1e-2;
 options.delta = 6;
 options.tao = 1e-2;
-options.line_search = 1;
+options.line_search = 0;
 tic
 [~, fval, data] = ManiSDP_multiblock(At, b, c, K, options);
 emani = max([data.gap, data.pinf, data.dinf]);

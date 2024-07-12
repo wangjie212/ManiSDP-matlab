@@ -1,10 +1,10 @@
 %% Generate random sparse binary quadratic program
 rng(1);
 clear I;
-t = 2; % number of cliques
-n = 20 + 8*(t-1); % BQP with n variables
+t = 10; % number of cliques
+n = 10 + 8*(t-1); % BQP with n variables
 for i = 1:t
-    I{i} = 8*(i-1)+1:8*i+12;
+    I{i} = 8*(i-1)+1:8*i+2;
 end
 sp = [];
 for i = 1:t
@@ -31,6 +31,7 @@ emani = max([data.gap, data.pinf, data.dinf]);
 tmani = toc;
 
 %% Solve using MOSEK
+% blk = cell(t,2);
 % for i = 1:t
 %     blk{i,1} = 's';
 %     blk{i,2} = K.s(i);
@@ -53,26 +54,6 @@ tmani = toc;
 % eta = norm(At'*x - b)/(1+norm(b));
 % emosek = max([eta, gap, max(mS)]);
 % tmosek = toc;
-
-%% Solve using COPT
-% tic
-% X0 = sdpvar(mb, mb, 'hermitian', 'real');
-% F = [X0 >= 0, At'*X0(:) == b];
-% obj = c'*X0(:);
-% opts = sdpsettings('verbose', 1, 'solver', 'sdplr');
-% sol = optimize(F, obj, opts);
-% X = value(X0);
-% S = dual(F(1));
-% y = dual(F(2));
-% by = -b'*y;
-% vlr = value(obj);
-% gap = abs(vlr-by)/(abs(by)+abs(vlr)+1);
-% x = X(:);
-% eta = norm(At'*x - b)/(1+norm(b));
-% [~, dS] = eig(S, 'vector');
-% mS = abs(min(dS))/(1+dS(end));
-% elr = max([eta, gap, mS]);
-% tlr = toc;
 
 %% Solve using SDPLR
 % rng(0);

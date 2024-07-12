@@ -1,7 +1,7 @@
 %% Generate random sparse quartic program on a sphere
 rng(1);
 clear I;
-t = 2;
+t = 4;
 n = 10 + 8*(t-1);
 for i = 1:t
     I{i} = 8*(i-1)+1:8*i+2;
@@ -37,12 +37,13 @@ rng(0);
 clear options;
 options.dAAt = dAAt;
 options.tol = 1e-8;
-options.gama = 3;
-options.alpha = 0.02;
-options.sigma0 = 1e-1;
+options.gama = 2;
+options.alpha = 0.01;
+options.sigma0 = 1e-2;
 options.theta = 1e-2;
 options.delta = 6;
-options.tao = 0.5;
+options.tao = 0.02;
+options.line_search = 0;
 maxb = max(abs(b));
 tic
 [~, fval, data] = ManiDSDP_multiblock(A, b/maxb, c, K, options);

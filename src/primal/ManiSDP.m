@@ -55,22 +55,7 @@ for iter = 1:options.AL_maxiter
     if ~isempty(U)
         Y = line_search(Y, U);
     end
-    if options.solver == 0
-        [Y, ~, info] = trustregions(problem, Y, opts);
-    elseif options.solver == 1
-        [Y, ~, info] = arc(problem, Y, opts);
-    elseif options.solver == 2
-        [Y, ~, info] = steepestdescent(problem, Y, opts);
-    elseif options.solver == 3
-        [Y, ~, info] = conjugategradient(problem, Y, opts);
-    elseif options.solver == 4
-        [Y, ~, info] = barzilaiborwein(problem, Y, opts);
-    elseif options.solver == 5
-        [Y, ~, info] = rlbfgs(problem, Y, opts);
-    else
-        fprintf('Solver is not supported!\n');
-        return;
-    end
+    [Y, ~, info] = trustregions(problem, Y, opts);
     gradnorm = info(end).gradnorm;
     X = Y*Y';
     x = X(:);
@@ -90,7 +75,7 @@ for iter = 1:options.AL_maxiter
     else
         e = D(1);
     end
-    r = sum(e > options.theta*e(1));
+    r = sum(e >= options.theta*e(1));
     fprintf('Iter %d, obj:%0.8f, gap:%0.1e, pinf:%0.1e, dinf:%0.1e, gradnorm:%0.1e, r:%d, p:%d, sigma:%0.3f, time:%0.2fs\n', ...
              iter,    obj,       gap,       pinf,       dinf,   gradnorm,    r,    p,    sigma,   toc(timespend));
     eta = max([pinf, gap, dinf]);
@@ -146,35 +131,6 @@ if data.status == 0 && eta > options.tol
 end
 
 fprintf('ManiSDP: optimum = %0.8f, time = %0.2fs\n', obj, toc(timespend));
-
-%         function Y = line_search(Y, U, t)
-%             X = Y*Y';
-%             D = U*U';
-%             YU = Y*U' + U*Y';
-%             q0 = A*X(:) - b;
-%             q1 = A*YU(:);
-%             q2 = A*D(:);
-%             aa = sigma/2*norm(q2)^2;
-%             bb = sigma*q1'*q2;
-%             cc = c'*D(:) - (y - sigma*q0)'*q2 + sigma/2*norm(q1)^2;
-%             dd = c'*YU(:) - (y - sigma*q0)'*q1;
-%             alpha_min = 0.02;
-%             alpha_max = 0.5;
-%             sol = vpasolve(4*aa*t^3 + 3*bb*t^2 + 2*cc*t + dd == 0, t, [alpha_min alpha_max]);
-%             alpha = [alpha_min;eval(sol);alpha_max];
-%             [~,I] = min(aa*alpha.^4 + bb*alpha.^3 + cc*alpha.^2 + dd*alpha);
-%             Y = Y + alpha(I)*U;
-%         end
-
-%         function Y = line_search(Y, U)
-%              alpha = [0.02;0.04;0.06;0.08;0.1;0.2];
-%              val = zeros(length(alpha),1);
-%              for i = 1:length(alpha)
-%                 val(i) = co(Y + alpha(i)*U);
-%              end
-%              [~,I] = min(val);
-%              Y = Y + alpha(I)*U;
-%         end
 
     function nY = line_search(Y, U)
          alpha = 0.2;

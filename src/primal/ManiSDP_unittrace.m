@@ -77,7 +77,7 @@ for iter = 1:options.AL_maxiter
     else
         e = D(1);
     end
-    r = sum(e > options.theta*e(1));
+    r = sum(e >= options.theta*e(1));
     fprintf('Iter %d, obj:%0.8f, gap:%0.1e, pinf:%0.1e, dinf:%0.1e, gradnorm:%0.1e, r:%d, p:%d, sigma:%0.3f, time:%0.2fs\n', ...
              iter,    obj,       gap,       pinf,       dinf,       gradnorm,    r,    p,    sigma,   toc(timespend));
     eta = max([pinf, gap, dinf]);

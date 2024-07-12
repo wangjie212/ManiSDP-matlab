@@ -117,12 +117,14 @@ for iter = 1:options.AL_maxiter
     end
     for i = 1:nb
         if n(i) >= options.min_facsize
-            [~, D, V] = svd(Y{i});
-            e = diag(D);
-            r = sum(e > options.theta*e(1));
-            if r <= p(i) - 1         
-               Y{i} = V(:,1:r)'.*e(1:r);
-               p(i) = r;
+            if p(i) > 1
+                [~, D, V] = svd(Y{i});
+                e = diag(D);
+                r = sum(e >= options.theta*e(1));
+                if r <= p(i) - 1
+                   Y{i} = V(:,1:r)'.*e(1:r);
+                   p(i) = r;
+                end
             end
             if i <= K.nob
                nne = max(min(sum(dS{i} < 0), options.delta), 1);
@@ -170,7 +172,7 @@ end
 fprintf('ManiSDP: optimum = %0.8f, time = %0.2fs\n', obj, toc(timespend));
 
 %     function Y = line_search(Y, U)
-%         alpha = [0.0001;0.0002;0.0003;0.0004;0.0005];
+%         alpha = [0.01;0.02;0.03;0.04;0.05];
 %         val = zeros(length(alpha),1);
 %         nY = cell(nb, 1);
 %         for k = 1:length(alpha)
@@ -243,8 +245,8 @@ fprintf('ManiSDP: optimum = %0.8f, time = %0.2fs\n', obj, toc(timespend));
         for i = 1:nb
             S{i} = reshape(tt(ind:ind+n(i)^2-1), n(i), n(i));
             G{i} = 2*Y{i}*S{i};
-            store.eG{i} = sum(Y{i}.*G{i});
             if i <= K.nob
+                store.eG{i} = sum(Y{i}.*G{i});
                 G{i} = G{i} - Y{i}.*store.eG{i};
             end
             ind = ind + n(i)^2;
@@ -262,7 +264,7 @@ fprintf('ManiSDP: optimum = %0.8f, time = %0.2fs\n', obj, toc(timespend));
         AyU = (YU'*At)*A;
         ind = 1;
         for i = 1:nb
-             H{i} = H{i} + 8*sigma*Y{i}*reshape(AyU(ind:ind+n(i)^2-1), n(i), n(i));
+             H{i} = H{i} + 4*sigma*Y{i}*reshape(AyU(ind:ind+n(i)^2-1), n(i), n(i));
              if i <= K.nob
                  H{i} = H{i} - Y{i}.*sum(Y{i}.*H{i}) - U{i}.*store.eG{i};
              end
