@@ -7,7 +7,7 @@
 function [X, obj, data] = ManiDSDP(A, b, c, K, options)
 
 if ~isfield(options,'p0'); options.p0 = 1; end
-if ~isfield(options,'AL_maxiter'); options.AL_maxiter = 300; end
+if ~isfield(options,'AL_maxiter'); options.AL_maxiter = 1000; end
 if ~isfield(options,'gama'); options.gama = 2; end
 if ~isfield(options,'sigma0'); options.sigma0 = 1e-2; end
 if ~isfield(options,'sigma_min'); options.sigma_min = 1e-1; end
