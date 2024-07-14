@@ -15,7 +15,6 @@ coe = randn(size(sp, 1), 1);
 
 %% generate SOS SDP
 [A, b, c, K, dAAt] = qssos_sparse(n, I, coe);
-K.t = zeros(1, length(K.s));
 K.nob = 0;
 
 %% Solve using MOSEK

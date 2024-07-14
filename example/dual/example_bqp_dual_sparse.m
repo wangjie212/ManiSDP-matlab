@@ -1,16 +1,16 @@
 %% Generate random sparse binary quadratic program
 rng(1);
 clear I;
-t = 2; % number of cliques
-n = 20 + 8*(t-1); % BQP with n variables
+t = 10; % number of cliques
+n = 10 + 8*(t-1); % BQP with n variables
 for i = 1:t
-    I{i} = 8*(i-1)+1:8*i+12;
+    I{i} = 8*(i-1)+1:8*i+2;
 end
 sp = [];
 for i = 1:t
     temp = get_basis(n, 4, I{i});
     ind = true(size(temp, 2), 1);
-    ind(sum(temp>1)> 0) = false;
+    ind(sum(temp>1) > 0) = false;
     sp = [sp temp(:,ind)];
 end
 sp = unique(sp', 'rows');
@@ -24,7 +24,7 @@ coe(ind) = randn(sum(ind), 1);
 
 %% generate SOS SDP
 [A, b, c, K, dAAt] = bqpsos_sparse(n, I, coe);
-K.nob = length(K.s);
+K.nob = length(K.s); % This parameter indicates the first K.nob PSD cones have unit diagonals.
 
 %% Solve using MOSEK
 % prob       = convert_sedumi2mosek(A', b, c, K);

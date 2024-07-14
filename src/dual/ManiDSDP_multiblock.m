@@ -16,7 +16,7 @@ if ~isfield(options,'sigma0'); options.sigma0 = 1e-1; end
 if ~isfield(options,'sigma_min'); options.sigma_min = 1e-2; end
 if ~isfield(options,'sigma_max'); options.sigma_max = 1e7; end
 if ~isfield(options,'tol'); options.tol = 1e-8; end
-if ~isfield(options,'theta'); options.theta = 1e-1; end
+if ~isfield(options,'theta'); options.theta = 1e-2; end
 if ~isfield(options,'delta'); options.delta = 8; end
 if ~isfield(options,'alpha'); options.alpha = 0.2; end
 if ~isfield(options,'tolgradnorm'); options.tolgrad = 1e-8; end
@@ -212,7 +212,7 @@ fprintf('ManiDSDP: optimum = %0.8f, time = %0.2fs\n', obj, toc(timespend));
 
 
     function nY = line_search(Y, U)
-         alpha = 0.2;
+         alpha = 1;
          cost0 = co(Y);
          nY = cell(nb, 1);
          for i = 1:nb

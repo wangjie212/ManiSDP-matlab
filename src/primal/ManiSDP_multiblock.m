@@ -9,20 +9,20 @@ function [X, obj, data] = ManiSDP_multiblock(At, b, c, K, options)
 n = K.s;
 nb = length(n);
 if ~isfield(options,'min_facsize'); options.min_facsize = 2; end
-if ~isfield(options,'p0'); options.p0 = 2*ones(nb,1); end
+if ~isfield(options,'p0'); options.p0 = ones(nb,1); end
 if ~isfield(options,'AL_maxiter'); options.AL_maxiter = 1000; end
 if ~isfield(options,'gama'); options.gama = 3; end
-if ~isfield(options,'sigma0'); options.sigma0 = 1e2; end
+if ~isfield(options,'sigma0'); options.sigma0 = 1e-1; end
 if ~isfield(options,'sigma_min'); options.sigma_min = 1e-2; end
 if ~isfield(options,'sigma_max'); options.sigma_max = 1e7; end
 if ~isfield(options,'tol'); options.tol = 1e-8; end
-if ~isfield(options,'theta'); options.theta = 1e-1; end
+if ~isfield(options,'theta'); options.theta = 1e-2; end
 if ~isfield(options,'delta'); options.delta = 8; end
 if ~isfield(options,'alpha'); options.alpha = 0.1; end
 if ~isfield(options,'tolgradnorm'); options.tolgrad = 1e-8; end
 if ~isfield(options,'TR_maxinner'); options.TR_maxinner = 20; end
 if ~isfield(options,'TR_maxiter'); options.TR_maxiter = 4; end
-if ~isfield(options,'tao'); options.tao = 10; end
+if ~isfield(options,'tao'); options.tao = 5; end
 if ~isfield(options,'line_search'); options.line_search = 0; end
 
 fprintf('ManiSDP is starting...\n');
@@ -206,7 +206,7 @@ fprintf('ManiSDP: optimum = %0.8f, time = %0.2fs\n', obj, toc(timespend));
 
 
     function nY = line_search(Y, U)
-         alpha = 0.5;
+         alpha = 1;
          cost0 = co(Y);
          nY = cell(nb, 1);
          for i = 1:nb

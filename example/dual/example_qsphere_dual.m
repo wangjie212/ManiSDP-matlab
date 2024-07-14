@@ -1,6 +1,6 @@
 %% Generate random quartic program on a sphere
 rng(1);
-d = 30;
+d = 10;
 coe = randn(nchoosek(d+4, 4), 1);
 
 %% generate SOS SDP
