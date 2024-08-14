@@ -140,10 +140,16 @@ options.tol = 1e-8;
 `opt`: optimum  
 `data`: auxiliary data
 
-## Examples
-Check the folder `/example`.  
+### SDPs with multi-blocks
+ManiSDP supports SDPs with multi-blocks:
+$$\inf_{X}{\ }\langle C, X\rangle{\ }\text{s.t.}{\ }\mathcal{A}(X)=b, {\ }X \in \mathbb{S}_+^{n_1\times\cdots\times n_t}, {\ }\mathrm{diag}(X_i) = 1, {\ }i = 1,\ldots,K.nob.$$
 
-Note that to run `example_stls.m`, one has to first add the folder `NearestRankDeficient` in [CertifiablyRobustPerception](https://github.com/MIT-SPARK/CertifiablyRobustPerception); to run `example_rotationsearch.m`, one has to first add the folder `RotationSearch` in [CertifiablyRobustPerception](https://github.com/MIT-SPARK/CertifiablyRobustPerception).
+```matlab
+clear options;
+options.tol = 1e-4;
+K.nob = 10; % indicate the first K.nob blocks are unit-diagonal
+[sol, opt, data] = ManiSDP_multiblock(At, b, c, K, options);
+```
 
 ### Solving moment relxations for polynomial optimization problems
 $$\inf_{x\in\mathbb{R}^q}{\ }f(x){\ }\text{s.t.}{\ }h_i(x)=0,{\ }i=1,\ldots,l.$$
@@ -170,7 +176,12 @@ options.tol = 1e-8;
 [sol, opt, data] = ManiSDP(SDP.sedumi.At, SDP.sedumi.b, SDP.sedumi.c, SDP.sedumi.K.s, options);
 ```
 
-## Julia version for ManiSDP
+## Examples
+Check the folder `/example`.  
+
+Note that to run `example_stls.m`, one has to first add the folder `NearestRankDeficient` in [CertifiablyRobustPerception](https://github.com/MIT-SPARK/CertifiablyRobustPerception); to run `example_rotationsearch.m`, one has to first add the folder `RotationSearch` in [CertifiablyRobustPerception](https://github.com/MIT-SPARK/CertifiablyRobustPerception).
+
+## The Julia version for ManiSDP
 Coming soon.
 
 ## References

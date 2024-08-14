@@ -1,7 +1,8 @@
-% Solve the standard linear multi-block SDP problem via the augmented Lagrangian method based on manifold optimization:
+% This function solves SDPs with multi-blocks using the dual approach, where the first K.nob blocks are unit-diagonal:
 %    sup  <C, X> + <c, x>
 %    s.t. A(X) + B(x) = b
 %         X in S_+^{n_1×...×n_t}
+%         diag(X_i) = 1, i = 1,...,K.nob
 %         x in R^l
 
 function [X, obj, data] = ManiDSDP_multiblock(A, b, c, K, options)
@@ -129,8 +130,8 @@ for iter = 1:options.AL_maxiter
         fprintf('Optimality is reached!\n');
         break;
     end
-    if mod(iter, 10) == 0
-        if iter > 20 && gap > gap0 && pinf > pinf0 && dinf > dinf0
+    if mod(iter, 20) == 0
+        if iter > 50 && gap > gap0 && pinf > pinf0 && dinf > dinf0
             data.status = 2;
             fprintf('Slow progress!\n');
             break;

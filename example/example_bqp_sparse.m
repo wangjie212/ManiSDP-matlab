@@ -2,7 +2,7 @@ clear; clc;
 %% Generate random sparse binary quadratic program
 rng(1);
 clear I;
-t = 2; % number of cliques
+t = 100; % number of cliques
 n = 10 + 8*(t-1); % BQP with n variables
 for i = 1:t
     I{i} = 8*(i-1)+1:8*i+2;

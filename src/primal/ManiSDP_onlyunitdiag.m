@@ -60,8 +60,8 @@ for iter = 1:options.AL_maxiter
         fprintf('Optimality is reached!\n');
         break;
     end
-    if mod(iter, 10) == 0
-        if iter > 20 && dinf > dinf0
+    if mod(iter, 20) == 0
+        if iter > 50 && dinf > dinf0
             data.status = 2;
             fprintf('Slow progress!\n');
             break;

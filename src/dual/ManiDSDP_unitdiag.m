@@ -1,8 +1,9 @@
-% Solve the standard linear SDP problem via the augmented Lagrangian method based on manifold optimization:
-%    min  b'*y
-%    s.t. A'*y = s - c
-%         S >= 0
-%         S(i,i) = 1, i = 1, 2,..., n
+% This function solves SDPs with unit-diagonal using the dual approach:
+%    sup  <C, X> + <c, x>
+%    s.t. A(X) + B(x) = b
+%         X in S_+^{n}
+%         diag(X) = 1
+%         x in R^l
 
 function [X, obj, data] = ManiDSDP_unitdiag(A, b, c, K, options)
 
@@ -91,8 +92,8 @@ for iter = 1:options.AL_maxiter
         fprintf('Optimality is reached!\n');
         break;
     end
-    if mod(iter, 10) == 0
-        if iter > 20 && gap > gap0 && pinf > pinf0 && dinf > dinf0
+    if mod(iter, 20) == 0
+        if iter > 50 && gap > gap0 && pinf > pinf0 && dinf > dinf0
             data.status = 2;
             fprintf('Slow progress!\n');
             break;

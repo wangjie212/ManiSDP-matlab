@@ -8,7 +8,7 @@
 
 %% Generate random binary quadratic program
 rng(1);
-d       = 10; % BQP with d variables
+d       = 40; % BQP with d variables
 Q       = randn(d);
 Q = (Q + Q')/2; % a random symmetric matrix
 e       = randn(d,1);
@@ -36,7 +36,8 @@ e       = randn(d,1);
 rng(0);
 clear options;
 options.tol = 1e-8;
-options.TR_maxinner = 25;
+options.TR_maxinner = 20;
+options.line_search = 1;
 tic
 [~, fval, data] = ManiSDP_unitdiag(At, b, c, mb, options);
 emani = max([data.gap, data.pinf, data.dinf]);
