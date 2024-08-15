@@ -142,6 +142,7 @@ options.tol = 1e-8;
 
 ### SDPs with multi-blocks
 ManiSDP supports SDPs with multi-blocks:
+
 $$\inf_{X}{\ }\langle C, X\rangle{\ }\text{s.t.}{\ }\mathcal{A}(X)=b, {\ }X \in \mathbb{S}_+^{n_1\times\cdots\times n_t}, {\ }\mathrm{diag}(X_i) = 1, {\ }i = 1,\ldots,K.nob.$$
 
 ```matlab
