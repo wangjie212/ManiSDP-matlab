@@ -182,6 +182,9 @@ Check the folder `/example`.
 
 Note that to run `example_stls.m`, one has to first add the folder `NearestRankDeficient` in [CertifiablyRobustPerception](https://github.com/MIT-SPARK/CertifiablyRobustPerception); to run `example_rotationsearch.m`, one has to first add the folder `RotationSearch` in [CertifiablyRobustPerception](https://github.com/MIT-SPARK/CertifiablyRobustPerception).
 
+## The Python version for ManiSDP
+- [ManiSDP-Python](https://github.com/husisy/ManiSDP-matlab/tree/zc-dev)
+
 ## The Julia version for ManiSDP
 Coming soon.
 

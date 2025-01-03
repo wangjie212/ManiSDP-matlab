@@ -78,20 +78,20 @@ tmani = toc;
 % tlr = toc;
 
 %% Solve using SDPNAL+
-% sdpnalpath  = '../../SDPNAL+v1.0';
-% options.tol = 1e-8;
-% addpath(genpath(sdpnalpath));
-% rng(0);
-% tic
-% [objnal,X,~,y,S] = sdpnalplus(blk, {nAt}, {C}, b, [], [], [], [], [], options);
-% by = b'*y;
-% gap = abs(objnal(1)-by)/(abs(by)+abs(objnal(1))+1);
-% x = X{1}(:);
-% eta = norm(At'*x - b)/(1+norm(b));
-% [~, dS] = eig(S{1}, 'vector');
-% mS = abs(min(dS))/(1+dS(end));
-% enal = max([eta, gap, mS]);
-% tnal = toc;
+sdpnalpath  = '../../SDPNAL+v1.0';
+options.tol = 1e-8;
+addpath(genpath(sdpnalpath));
+rng(0);
+tic
+[objnal,X,~,y,S] = sdpnalplus(blk, {nAt}, {C}, b, [], [], [], [], [], options);
+by = b'*y;
+gap = abs(objnal(1)-by)/(abs(by)+abs(objnal(1))+1);
+x = X{1}(:);
+eta = norm(At'*x - b)/(1+norm(b));
+[~, dS] = eig(S{1}, 'vector');
+mS = abs(min(dS))/(1+dS(end));
+enal = max([eta, gap, mS]);
+tnal = toc;
 
 % fprintf('SDPLR: optimum = %0.8f, eta = %0.1e, time = %0.2fs\n', vlr, elr, tlr);
 % fprintf('SDPNAL: optimum = %0.8f, eta = %0.1e, time = %0.2fs\n', objnal(1), enal, tnal);

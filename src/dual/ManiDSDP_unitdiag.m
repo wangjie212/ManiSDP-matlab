@@ -7,7 +7,7 @@
 
 function [X, obj, data] = ManiDSDP_unitdiag(A, b, c, K, options)
 
-if ~isfield(options,'p0'); options.p0 = 2; end
+if ~isfield(options,'p0'); options.p0 = ceil(log(length(b))); end
 if ~isfield(options,'AL_maxiter'); options.AL_maxiter = 1000; end
 if ~isfield(options,'gama'); options.gama = 2; end
 if ~isfield(options,'sigma0'); options.sigma0 = 1e-3; end

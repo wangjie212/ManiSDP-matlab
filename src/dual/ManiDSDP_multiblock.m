@@ -12,7 +12,7 @@ nb = length(n);
 if ~isfield(options,'min_facsize'); options.min_facsize = 2; end
 if ~isfield(options,'p0'); options.p0 = ones(nb,1); end
 if ~isfield(options,'AL_maxiter'); options.AL_maxiter = 1000; end
-if ~isfield(options,'gama'); options.gama = 3; end
+if ~isfield(options,'gama'); options.gama = 2; end
 if ~isfield(options,'sigma0'); options.sigma0 = 1e-1; end
 if ~isfield(options,'sigma_min'); options.sigma_min = 1e-2; end
 if ~isfield(options,'sigma_max'); options.sigma_max = 1e7; end
@@ -130,7 +130,7 @@ for iter = 1:options.AL_maxiter
         fprintf('Optimality is reached!\n');
         break;
     end
-    if mod(iter, 20) == 0
+    if mod(iter, 50) == 0
         if iter > 50 && gap > gap0 && pinf > pinf0 && dinf > dinf0
             data.status = 2;
             fprintf('Slow progress!\n');

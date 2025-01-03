@@ -1,4 +1,5 @@
 rng(1);
+n = 1000;
 m = 10*n;
 Omega = randi([1 n], m, 2);
 Omega = Omega(Omega(:,1) < Omega(:,2),:);
@@ -45,33 +46,33 @@ blk{1,2} = n;
 %% Solve using ManiSDP
 rng(0);
 clear options;
-options.sigma0 = 1;
-options.tol = 1e-8;
+options.sigma0 = 1e-1;
+options.tol = 1e-6;
 options.TR_maxinner = 20;
 options.TR_maxiter = 4;
 options.tao = 1e-3;
-options.theta = 1e-2;
-options.delta = 10;
-options.line_search = 1;
-options.alpha = 0.01;
+options.theta = 1e-3;
+options.delta = 8;
+options.line_search = 0;
+options.alpha = 0.001;
 tic
 [~, fval, data] = ManiSDP_unittrace(At, b, c, n, options);
 emani = max([data.gap, data.pinf, data.dinf]);
 tmani = toc;
 
 %% Solve using MOSEK
-% prob       = convert_sedumi2mosek(At, b, c, K);
-% tic
-% [~,res]    = mosekopt('minimize echo(3)',prob);
-% [X,y,S,mobj] = recover_mosek_sol_blk(res, blk);
-% by = b'*y;
-% gap = abs(mobj(1)-by)/(abs(by)+abs(mobj(1))+1);
-% x = X{1}(:);
-% eta = norm(At'*x - b)/(1+norm(b));
-% [~, dS] = eig(S{1}, 'vector');
-% mS = abs(min(dS))/(1+dS(end));
-% emosek = max([eta, gap, mS]);
-% tmosek = toc;
+prob       = convert_sedumi2mosek(At, b, c, K);
+tic
+[~,res]    = mosekopt('minimize echo(3)',prob);
+[X,y,S,mobj] = recover_mosek_sol_blk(res, K);
+by = b'*y;
+gap = abs(mobj(1)-by)/(abs(by)+abs(mobj(1))+1);
+x = X{1}(:);
+eta = norm(At'*x - b)/(1+norm(b));
+[~, dS] = eig(S{1}, 'vector');
+mS = abs(min(dS))/(1+dS(end));
+emosek = max([eta, gap, mS]);
+tmosek = toc;
 
 %% Solve using SDPLR
 % rng(0);
@@ -90,22 +91,22 @@ tmani = toc;
 % tlr = toc;
 
 %% Solve using SDPNAL+
-sdpnalpath  = '../../SDPNAL+v1.0';
-options.tol = 1e-8;
-addpath(genpath(sdpnalpath));
-rng(0);
-tic
-[objnal,X,~,y,S] = sdpnalplus(blk, {nAt}, {C}, b, [], [], [], [], [], options);
-by = b'*y;
-gap = abs(objnal(1)-by)/(abs(by)+abs(objnal(1))+1);
-x = X{1}(:);
-eta = norm(At'*x - b)/(1+norm(b));
-[~, dS] = eig(S{1}, 'vector');
-mS = abs(min(dS))/(1+dS(end));
-enal = max([eta, gap, mS]);
-tnal = toc;
+% sdpnalpath  = '../../SDPNAL+v1.0';
+% addpath(genpath(sdpnalpath));
+% rng(0);
+% options.tol = 1e-8;
+% tic
+% [objnal,X,~,y,S] = sdpnalplus(blk, {nAt}, {C}, b, [], [], [], [], [], options);
+% by = b'*y;
+% gap = abs(objnal(1)-by)/(abs(by)+abs(objnal(1))+1);
+% x = X{1}(:);
+% eta = norm(At'*x - b)/(1+norm(b));
+% [~, dS] = eig(S{1}, 'vector');
+% mS = abs(min(dS))/(1+dS(end));
+% enal = max([eta, gap, mS]);
+% tnal = toc;
 
-% fprintf('Mosek: optimum = %0.8f, eta = %0.1e, time = %0.2fs\n', mobj(1), emosek, tmosek);
+fprintf('Mosek: optimum = %0.8f, eta = %0.1e, time = %0.2fs\n', mobj(1), emosek, tmosek);
 % fprintf('SDPLR: optimum = %0.8f, eta = %0.1e, time = %0.2fs\n', vlr, elr, tlr);
-fprintf('SDPNAL: optimum = %0.8f, eta = %0.1e, time = %0.2fs\n', objnal(1), enal, tnal);
+% fprintf('SDPNAL: optimum = %0.8f, eta = %0.1e, time = %0.2fs\n', objnal(1), enal, tnal);
 fprintf('ManiSDP: optimum = %0.8f, eta = %0.1e, time = %0.2fs\n', fval, emani, tmani);

@@ -13,23 +13,9 @@ end
 sp = unique(sp', 'rows');
 coe = randn(size(sp, 1), 1);
 
-%% generate SOS SDP
+%% generate SOS-SDP
 [A, b, c, K, dAAt] = qssos_sparse(n, I, coe);
 K.nob = 0;
-
-%% Solve using MOSEK
-% prob       = convert_sedumi2mosek(A', b, c, K);
-% tic
-% [~,res]    = mosekopt('minimize echo(3)',prob);
-% [X,y,S,mobj] = recover_mosek_sol_blk(res, SDP.blk);
-% by = b'*y;
-% gap = abs(mobj(1)-by)/(abs(by)+abs(mobj(1))+1);
-% x = X{1}(:);
-% eta = norm(At'*x - b)/(1+norm(b));
-% [~, dS] = eig(S{1}, 'vector');
-% mS = abs(min(dS))/(1+dS(end));
-% emosek = max([eta, gap, mS]);
-% tmosek = toc;
 
 %% Solve with ManiDSDP
 rng(0);

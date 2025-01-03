@@ -2,9 +2,9 @@
 rng(1);
 clear I;
 t = 10; % number of cliques
-n = 10 + 8*(t-1); % BQP with n variables
+n = 20 + 18*(t-1); % BQP with n variables
 for i = 1:t
-    I{i} = 8*(i-1)+1:8*i+2;
+    I{i} = 18*(i-1)+1:18*i+2;
 end
 sp = [];
 for i = 1:t
@@ -22,23 +22,9 @@ ind(sum(sp)>2) = false;
 ind(1) = false;
 coe(ind) = randn(sum(ind), 1);
 
-%% generate SOS SDP
+%% generate SOS-SDP
 [A, b, c, K, dAAt] = bqpsos_sparse(n, I, coe);
 K.nob = length(K.s); % This parameter indicates the first K.nob PSD cones have unit diagonals.
-
-%% Solve using MOSEK
-% prob       = convert_sedumi2mosek(A', b, c, K);
-% tic
-% [~,res]    = mosekopt('minimize echo(3)',prob);
-% [X,y,S,mobj] = recover_mosek_sol_blk(res, SDP.blk);
-% by = b'*y;
-% gap = abs(mobj(1)-by)/(abs(by)+abs(mobj(1))+1);
-% x = X{1}(:);
-% eta = norm(At'*x - b)/(1+norm(b));
-% [~, dS] = eig(S{1}, 'vector');
-% mS = abs(min(dS))/(1+dS(end));
-% emosek = max([eta, gap, mS]);
-% tmosek = toc;
 
 %% Solve with ManiDSDP
 rng(0);

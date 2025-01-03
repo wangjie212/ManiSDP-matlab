@@ -1,9 +1,9 @@
 %% Generate random quartic program on a sphere
 rng(1);
-d = 10;
+d = 30;
 coe = randn(nchoosek(d+4, 4), 1);
 
-%% generate SOS SDP
+%% generate SOS-SDP
 [A, b, c, K, dAAt] = qssos(d, coe);
 
 %% Solve with ManiDSDP
@@ -11,6 +11,7 @@ rng(0);
 clear options;
 options.dAAt = dAAt;
 options.tol = 1e-8;
+options.delta = 6;
 maxb = max(abs(b));
 tic
 [~, fval, data] = ManiDSDP(A, b/maxb, c, K, options);

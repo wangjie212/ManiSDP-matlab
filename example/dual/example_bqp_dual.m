@@ -1,10 +1,10 @@
 %% Generate random binary quadratic program
 rng(1)
-d = 10; % BQP with d variables
+d = 30; % BQP with d variables
 Q = randn(d,d); Q = (Q + Q')/2; % a random symmetric matrix
 e = randn(d,1);
 
-%% generate SOS SDP
+%% generate SOS-SDP
 [A, b, dAAt, mb] = bqpsos(Q, e, d);
 
 %% Solve with ManiDSDP
