@@ -315,7 +315,7 @@ Coming soon.
 
 ## References
 [1] [Jie Wang and Liangbing Hu, Solving Low-Rank Semidefinite Programs via Manifold Optimization, 2025](https://link.springer.com/article/10.1007/s10915-025-02952-8)  
-[2] [Jie Wang, Liangbing Hu, Bican Xia, A Dual Riemannian ADMM Algorithm for Low-Rank SDPs with Unit Diagonal, 2025](http://arxiv.org/abs/2512.04406)
+[2] [Jie Wang, Liangbing Hu, and Bican Xia, A Dual Riemannian ADMM Algorithm for Low-Rank SDPs with Unit Diagonal, 2025](http://arxiv.org/abs/2512.04406)
 
 ## Contact
 [Jie Wang](https://wangjie212.github.io/jiewang/): wangjie212@amss.ac.cn  
