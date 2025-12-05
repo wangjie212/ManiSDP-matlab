@@ -1,6 +1,8 @@
 # ManiSDP
 ManiSDP (v0.3.0) aims to solve the following low-rank semidefinite program (SDP) via manifold optimization:
+
 $$\inf_{X\succeq0}\langle C, X\rangle{\ }{\ }\text{s.t.}{\ }{\ }\mathcal{A}(X)=b,{\ }\mathcal{B}(X)=d,$$
+
 where the linear constraints $\mathcal{A}(X)=b$ are arbitrary while the linear constraints $\mathcal{B}(X)=d$, if present, are assumed to define certain manifold structure. Here, low-rank means the SDP admits a low-rank optimal solution.
 
 ## Dependencies
@@ -176,7 +178,9 @@ K.nob = 10; % indicate that the first K.nob blocks are unit-diagonal
 
 ### Solving second-order moment relaxations of binary quadratic programs
 The second-order moment relaxation of the binary quadratic program
+
 $$\inf_{x\in\mathbb{R}^q}x^{\intercal}Qx + e^{\intercal}x{\ }{\ }\mathrm{s.t.}{\ }{\ }x_i^2=1,i=1,\ldots,q$$
+
 can be solved as follows.
 
 ```matlab
@@ -188,7 +192,7 @@ options.tol = 1e-8;
 ### Solving moment relxations for polynomial optimization problems
 $$\inf_{x\in\mathbb{R}^q}f(x){\ }{\ }\text{s.t.}{\ }{\ }h_i(x)=0,{\ }i=1,\ldots,l.$$
 
-First define your polynomial optimization problem using [SPOTLESS](https://github.com/spot-toolbox/spotless) as follows:
+First, define your polynomial optimization problem using [SPOTLESS](https://github.com/spot-toolbox/spotless) as follows:
 ```matlab
 q = 10;
 x = msspoly('x', q);
@@ -202,7 +206,7 @@ kappa = 2; % relaxation order
 [sol, opt, data] = ManiSDP(At, b, c, n, options);
 ```
 
-Then generate the moment relxation and solve it with ManiSDP:
+Then, generate the moment relxation and solve it with ManiSDP:
 ```matlab
 kappa = 2; % relaxation order
 [SDP,info] = dense_sdp_relax(problem, kappa);
@@ -212,7 +216,9 @@ options.tol = 1e-8;
 
 ## Solving low-rank SDPs with unit diagonal constraints in the dual form
 ManiSDP also supports solving the following low-rank SDP using a dual Riemannian ADMM algorithm:
-$$\inf_{y\in\mathbb{R}^m}b^{\intercal}y{\ }{\ }\text{s.t.}{\ }{\ }S=\mathcal{A}^*(y)+C\succeq0,\mathrm{diag}(S)=1,$$
+
+$$\inf_{y\in\mathbb{R}^m}b^{\intercal}y{\ }{\ }\text{s.t.}{\ }{\ }S=\mathcal{A}^{*}(y)+C\succeq0,\mathrm{diag}(S)=1,$$
+
 where the linear operator $\mathcal{A}\mathcal{A}^*$ is assumed to be invertible. Here, low-rank means the SDP admits a low-rank optimal solution $S^{\star}$. In particular, SOS relaxations of binary quadratic programs are SDPs of the above form.
 
 ```matlab
@@ -308,7 +314,7 @@ Coming soon.
 
 ## References
 [1] [Jie Wang and Liangbing Hu, Solving Low-Rank Semidefinite Programs via Manifold Optimization, 2025](https://link.springer.com/article/10.1007/s10915-025-02952-8)  
-[2] [Jie Wang, Liangbing Hu, Bican Xia, A Dual Riemannian ADMM Algorithm for Low-Rank SDPs with Unit Diagonal](http://arxiv.org/abs/2512.04406)
+[2] [Jie Wang, Liangbing Hu, Bican Xia, A Dual Riemannian ADMM Algorithm for Low-Rank SDPs with Unit Diagonal, 2025](http://arxiv.org/abs/2512.04406)
 
 ## Contact
 [Jie Wang](https://wangjie212.github.io/jiewang/): wangjie212@amss.ac.cn  
