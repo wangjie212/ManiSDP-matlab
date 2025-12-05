@@ -252,7 +252,9 @@ options.tol = 1e-8;
 
 ### Solving second-order SOS relaxations of binary quadratic programs
 The second-order SOS relaxation of the binary quadratic program
+
 $$\inf_{x\in\mathbb{R}^q}x^{\intercal}Qx + e^{\intercal}x{\ }{\ }\mathrm{s.t.}{\ }{\ }x_i^2=1,i=1,\ldots,q$$
+
 can be solved as follows.
 
 ```matlab
@@ -270,7 +272,6 @@ options.line_search = 1;
 ```
 
 ### Extension to the multi-block case
-$$\inf_{y\in\mathbb{R}^m}b^{\intercal}y{\ }{\ }\text{s.t.}{\ }{\ }S=\mathcal{A}^*(y)+C\succeq0,\mathrm{diag}(S)=1,$$
 
 ```matlab
 clear options;
