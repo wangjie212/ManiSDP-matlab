@@ -1,10 +1,11 @@
-% This function solves general linear SDPs.
+% This function solves SDPs using the primal approach:
 %  Min  <C, X>
 %  s.t. A(X) = b
-%       X >= 0.
+%       X >= 0
 
-function [X, obj, data] = ManiSDP(At, b, c, n, options)
+function [X, obj, data] = ManiSDP(At, b, c, K, options)
 
+n = K.s;
 if ~isfield(options,'p0'); options.p0 = 1; end
 if ~isfield(options,'AL_maxiter'); options.AL_maxiter = 1000; end
 if ~isfield(options,'gama'); options.gama = 2; end
@@ -12,14 +13,15 @@ if ~isfield(options,'sigma0'); options.sigma0 = 1e-2; end
 if ~isfield(options,'sigma_min'); options.sigma_min = 1e-1; end
 if ~isfield(options,'sigma_max'); options.sigma_max = 1e7; end
 if ~isfield(options,'tol'); options.tol = 1e-8; end
-if ~isfield(options,'theta'); options.theta = 1e-1; end
+if ~isfield(options,'theta'); options.theta = 1e-2; end
 if ~isfield(options,'delta'); options.delta = 8; end
 if ~isfield(options,'alpha'); options.alpha = 0.1; end
-if ~isfield(options,'tolgradnorm'); options.tolgrad = 1e-8; end
-if ~isfield(options,'TR_maxinner'); options.TR_maxinner = 30; end
+if ~isfield(options,'tolgradnorm'); options.tolgradnorm = 1e-8; end
+if ~isfield(options,'TR_maxinner'); options.TR_maxinner = 20; end
 if ~isfield(options,'TR_maxiter'); options.TR_maxiter = 4; end
-if ~isfield(options,'tao'); options.tao = 0.25; end
-if ~isfield(options,'line_search'); options.line_search = 0; end
+if ~isfield(options,'tau1'); options.tau1 = 1e-2; end
+if ~isfield(options,'tau2'); options.tau2 = 1e-1; end
+if ~isfield(options,'line_search'); options.line_search = 1; end
 if ~isfield(options,'solver'); options.solver = 0; end
 
 fprintf('ManiSDP is starting...\n');
@@ -37,20 +39,17 @@ else
     Y = [];
 end
 U = [];
-% fac_size = [];
-% seta = [];
 problem.cost = @cost;
 problem.grad = @grad;
 problem.hess = @hess;
 opts.verbosity = 0;     % Set to 0 for no output, 2 for normal output
 opts.maxinner = options.TR_maxinner;     % maximum Hessian calls per iteration
 opts.maxiter = options.TR_maxiter;
-opts.tolgradnorm = options.tolgrad;
+opts.tolgradnorm = options.tolgradnorm;
 
 data.status = 0;
 timespend = tic;
 for iter = 1:options.AL_maxiter
-%     fac_size = [fac_size; p];
     problem.M = euclideanfactory(n, p);
     if ~isempty(U)
         Y = line_search(Y, U);
@@ -59,12 +58,11 @@ for iter = 1:options.AL_maxiter
     gradnorm = info(end).gradnorm;
     X = Y*Y';
     x = X(:);
-    obj = c'*x;
     Axb = A*x - b;
     pinf = norm(Axb)/normb;
     y = y - sigma*Axb;
+    obj = c'*x;
     S = reshape(c - At*y, n, n);
-    S = 0.5*(S+S');
     [vS, dS] = eig(S, 'vector');
     dinf = max(0, -dS(1))/(1+dS(end));
     by = b'*y;
@@ -79,7 +77,6 @@ for iter = 1:options.AL_maxiter
     fprintf('Iter %d, obj:%0.8f, gap:%0.1e, pinf:%0.1e, dinf:%0.1e, gradnorm:%0.1e, r:%d, p:%d, sigma:%0.3f, time:%0.2fs\n', ...
              iter,    obj,       gap,       pinf,       dinf,   gradnorm,    r,    p,    sigma,   toc(timespend));
     eta = max([pinf, gap, dinf]);
-%     seta = [seta; eta];
     if eta < options.tol
         fprintf('Optimality is reached!\n');
         break;
@@ -109,22 +106,20 @@ for iter = 1:options.AL_maxiter
     else
         Y = [Y options.alpha*vS(:,1:nne)];
     end
-    if pinf < options.tao*gradnorm
+    if pinf < options.tau1*gradnorm
           sigma = max(sigma/gama, options.sigma_min);
-    else
+    elseif pinf > options.tau2*gradnorm
           sigma = min(sigma*gama, options.sigma_max);
     end
-%    tolgrad = pinf;
 end
-data.S = S;
+data.X = X;
 data.y = y;
+data.S = S;
 data.gap = gap;
 data.pinf = pinf;
 data.dinf = dinf;
 data.gradnorm = gradnorm;
 data.time = toc(timespend);
-% data.fac_size = fac_size;
-% data.seta = seta;
 if data.status == 0 && eta > options.tol
     data.status = 1;
     fprintf('Iteration maximum is reached!\n');
@@ -133,7 +128,7 @@ end
 fprintf('ManiSDP: optimum = %0.8f, time = %0.2fs\n', obj, toc(timespend));
 
     function nY = line_search(Y, U)
-         alpha = 0.2;
+         alpha = 1;
          cost0 = co(Y);
          i = 1;
          nY = Y + alpha*U;

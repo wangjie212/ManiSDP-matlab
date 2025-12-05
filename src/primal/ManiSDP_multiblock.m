@@ -13,16 +13,17 @@ if ~isfield(options,'p0'); options.p0 = ones(nb,1); end
 if ~isfield(options,'AL_maxiter'); options.AL_maxiter = 1000; end
 if ~isfield(options,'gama'); options.gama = 2; end
 if ~isfield(options,'sigma0'); options.sigma0 = 1e-1; end
-if ~isfield(options,'sigma_min'); options.sigma_min = 1e-1; end
+if ~isfield(options,'sigma_min'); options.sigma_min = 1e-2; end
 if ~isfield(options,'sigma_max'); options.sigma_max = 1e7; end
 if ~isfield(options,'tol'); options.tol = 1e-8; end
 if ~isfield(options,'theta'); options.theta = 1e-2; end
 if ~isfield(options,'delta'); options.delta = 8; end
 if ~isfield(options,'alpha'); options.alpha = 0.1; end
-if ~isfield(options,'tolgradnorm'); options.tolgrad = 1e-8; end
+if ~isfield(options,'tolgradnorm'); options.tolgradnorm = 1e-8; end
 if ~isfield(options,'TR_maxinner'); options.TR_maxinner = 20; end
 if ~isfield(options,'TR_maxiter'); options.TR_maxiter = 4; end
-if ~isfield(options,'tao'); options.tao = 10; end
+if ~isfield(options,'tau1'); options.tau1 = 1e1; end
+if ~isfield(options,'tau2'); options.tau2 = 1e1; end
 if ~isfield(options,'line_search'); options.line_search = 0; end
 
 fprintf('ManiSDP is starting...\n');
@@ -46,20 +47,17 @@ Y = [];
 U = [];
 X = cell(nb, 1);
 S = cell(nb, 1);
-% fac_size = [];
-% seta = [];
 problem.cost = @cost;
 problem.grad = @grad;
 problem.hess = @hess;
 opts.verbosity = 0;     % Set to 0 for no output, 2 for normal output
 opts.maxinner = options.TR_maxinner;     % maximum Hessian calls per iteration
 opts.maxiter = options.TR_maxiter;
-opts.tolgradnorm = options.tolgrad;
+opts.tolgradnorm = options.tolgradnorm;
 
 data.status = 0;
 timespend = tic;
 for iter = 1:options.AL_maxiter
-%     fac_size = [fac_size; p];
     problem.M = multiblockmanifold(p, n, K.nob);
     if ~isempty(U)
         Y = line_search(Y, U);
@@ -75,9 +73,7 @@ for iter = 1:options.AL_maxiter
     obj = c'*x;
     Axb = A*x - b;
     pinf = norm(Axb)/normb;
-%     if pinf >= gradnorm
-        y = y - sigma*Axb;   
-%     end
+    y = y - sigma*Axb;   
     cy = c - At*y;
     by = b'*y;
     dinfs = zeros(nb, 1);
@@ -89,7 +85,6 @@ for iter = 1:options.AL_maxiter
             by = by + sum(z);
             S{i} = S{i} - diag(z);
         end
-        S{i} = 0.5*(S{i}+S{i}');
         ind = ind + n(i)^2;
         [vS{i}, dS{i}] = eig(S{i}, 'vector');
         dinfs(i) = max(0, -dS{i}(1))/(1+abs(dS{i}(end)));
@@ -99,13 +94,12 @@ for iter = 1:options.AL_maxiter
     fprintf('Iter %d, obj:%0.8f, gap:%0.1e, pinf:%0.1e, dinf:%0.1e, gradnorm:%0.1e, p_max:%d, sigma:%0.3f, time:%0.2fs\n', ...
              iter,    obj,       gap,       pinf,       dinf,       gradnorm,   max(p),    sigma,       toc(timespend));
     eta = max([gap, pinf, dinf]);
-%     seta = [seta; eta];
     if eta < options.tol
         fprintf('Optimality is reached!\n');
         break;
     end
-    if mod(iter, 20) == 0
-        if iter > 50 && gap > gap0 && pinf > pinf0 && dinf > dinf0
+    if mod(iter, 50) == 0
+        if iter > 100 && gap > gap0 && pinf > pinf0 && dinf > dinf0
             data.status = 2;
             fprintf('Slow progress!\n');
             break;
@@ -119,10 +113,17 @@ for iter = 1:options.AL_maxiter
         if n(i) >= options.min_facsize
             if p(i) > 1
                 [~, D, V] = svd(Y{i});
-                e = diag(D);
+                if size(D, 1) > 1
+                   e = diag(D);
+                else
+                   e = D(1);
+                end
                 r = sum(e >= options.theta*e(1));
-                if r <= p(i) - 1
-                   Y{i} = V(:,1:r)'.*e(1:r);
+                if r == 0
+                   r = 1;
+                end
+                if r < p(i)
+                   Y{i} = diag(e(1:r))*V(:,1:r)';
                    p(i) = r;
                 end
             end
@@ -148,50 +149,26 @@ for iter = 1:options.AL_maxiter
             end
         end
     end
-    if pinf < options.tao*gradnorm
-        sigma = max(sigma/gama, options.sigma_min);
-    else
-        sigma = min(sigma*gama, options.sigma_max);
+    if pinf < options.tau1*gradnorm
+          sigma = max(sigma/gama, options.sigma_min);
+    elseif pinf > options.tau2*gradnorm
+          sigma = min(sigma*gama, options.sigma_max);
     end
-%    tolgrad = pinf/2;
 end
-data.S = S;
+data.X = X;
 data.y = y;
+data.S = S;
 data.gap = gap;
 data.pinf = pinf;
 data.dinf = dinf;
 data.gradnorm = gradnorm;
 data.time = toc(timespend);
-% data.fac_size = fac_size;
-% data.seta = seta;
 if data.status == 0 && eta > options.tol
     data.status = 1;
     fprintf('Iteration maximum is reached!\n');
 end
 
 fprintf('ManiSDP: optimum = %0.8f, time = %0.2fs\n', obj, toc(timespend));
-
-%     function Y = line_search(Y, U)
-%         alpha = [0.01;0.02;0.03;0.04;0.05];
-%         val = zeros(length(alpha),1);
-%         nY = cell(nb, 1);
-%         for k = 1:length(alpha)
-%             for i = 1:nb
-%                 nY{i} = [Y{i}; alpha(k)*U{i}];
-%                 if i <= K.nob
-%                     nY{i} = nY{i}./sqrt(sum(nY{i}.^2));
-%                 end
-%             end
-%             val(k) = co(nY);
-%         end
-%         [~, I] = min(val);
-%         for i = 1:nb
-%             Y{i} = [Y{i}; alpha(I)*U{i}];
-%             if i <= K.nob
-%                 Y{i} = Y{i}./sqrt(sum(Y{i}.^2));
-%             end
-%         end
-%     end
         
     function val = co(Y)
         ind = 1;
@@ -203,7 +180,6 @@ fprintf('ManiSDP: optimum = %0.8f, time = %0.2fs\n', obj, toc(timespend));
         Axb = A*x - b - y/sigma;
         val = c'*x + 0.5*sigma*(Axb'*Axb);
     end
-
 
     function nY = line_search(Y, U)
          alpha = 1;

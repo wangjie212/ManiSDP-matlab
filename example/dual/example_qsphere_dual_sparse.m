@@ -27,7 +27,7 @@ options.alpha = 0.01;
 options.sigma0 = 1e-2;
 options.theta = 1e-2;
 options.delta = 6;
-options.tao = 0.02;
+options.tau = 0.02;
 options.line_search = 0;
 maxb = max(abs(b));
 tic

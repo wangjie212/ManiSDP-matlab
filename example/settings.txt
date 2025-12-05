@@ -6,7 +6,7 @@ delta = 10
 alpha = 0.1
 TR_maxinner = 6
 TR_maxiter = 8
-tao = 1e-3
+tau = 1e-3
 line_search = 0
 
 bqp
@@ -18,7 +18,7 @@ alpha = 0.1
 TR_maxinner = 20 (d<=10)
 TR_maxinner = 25 (d>10)
 TR_maxiter = 4
-tao = 1
+tau = 1
 line_search = 0
 
 qs
@@ -27,10 +27,9 @@ sigma0 = 1e-2 (d>50)
 sigma_min = 1e-1
 theta = 1e-2
 delta = 6
-alpha = 0.1
 TR_maxinner = 20
 TR_maxiter = 4
-tao = 1e-2
+tau = 1e-2
 line_search = 1
 
 rs
@@ -38,10 +37,9 @@ sigma0 = 1e1
 sigma_min = 1e2
 theta = 1e-2
 delta = 10
-alpha = 0.1
 TR_maxinner = 40
 TR_maxiter = 3
-tao = 1/6e3
+tau = 1/6e3
 line_search = 1
 
 stls
@@ -52,5 +50,5 @@ delta = 8
 alpha = 0.2
 TR_maxinner = 50
 TR_maxiter = 4
-tao = 0.25
+tau = 0.25
 line_search = 0

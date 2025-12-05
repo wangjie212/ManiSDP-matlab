@@ -68,7 +68,7 @@ nvar = sum(mb.^2 + mb) + 1;
 A = sparse(row,col,val,lsp,nvar);
 b = coe;
 K.f = sum(mb) + 1;
-K.s = mb;
+K.s = mb';
 c = zeros(nvar, 1);
 c(1) = 1;
 end

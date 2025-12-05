@@ -129,5 +129,5 @@ for i = 1:size(nsp, 2)
     ind = nbfind(sp, lsp, nsp(:,i), n);
     c(loa{ind}) = coe(i)/length(loa{ind})*ones(length(loa{ind}),1);
 end    
-K.s = mb;
+K.s = mb';
 end

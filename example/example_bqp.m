@@ -7,12 +7,12 @@
 % sdpnalpath  = '../../SDPNAL+v1.0';
 
 %% Generate random binary quadratic program
-rng(1);
-d       = 40; % BQP with d variables
+rng(2);
+d       = 30; % BQP with d variables
 Q       = randn(d);
 Q = (Q + Q')/2; % a random symmetric matrix
 e       = randn(d,1);
-% x       = msspoly('x',d); % symbolic decision variables using SPOTLESS
+% x       = msspoly('x',d); % symbolic decision variables with SPOTLESS
 % f       = x'*Q*x + x'*e; % objective function of the BQP
 % h       = x.^2 - 1; % equality constraints of the BQP (binary variables)
 
@@ -28,22 +28,21 @@ e       = randn(d,1);
 % K = SDP.sedumi.K;
 % mb = K.s;
 
-[At, b, c, mb] = bqpmom(d, Q, e);
+[At, b, c, K] = bqpmom(d, Q, e);
 % K.s = mb;
 % C = full(reshape(c, mb, mb));
 
-%% Solve using ManiSDP
+%% Solve with ManiSDP
 rng(0);
 clear options;
 options.tol = 1e-8;
-options.TR_maxinner = 20;
-options.line_search = 1;
+maxc = max(abs(c));
 tic
-[~, fval, data] = ManiSDP_unitdiag(At, b, c, mb, options);
+[~, fval, data] = ManiSDP_unitdiag(At, b, c/maxc, K, options);
 emani = max([data.gap, data.pinf, data.dinf]);
 tmani = toc;
 
-%% Solve using STRIDE
+%% Solve with STRIDE
 % SDP.M       = length(info.v); % upper bound on the trace of the moment matrix need the following for fast computation in the local search method
 % info.v      = msspoly2degcoeff(info.v);
 % info.f      = msspoly2degcoeff(info.f);
@@ -71,7 +70,7 @@ tmani = toc;
 % epgd = max([gap, eta, mS]);
 % time_pgd = toc;
 
-%% Solve using MOSEK
+%% Solve with MOSEK
 % [At,b,c,K] = SDPT3data_SEDUMIdata(SDP.blk,tAt,tC,tb); 
 % prob       = convert_sedumi2mosek(At, b, c, K);
 % blk = cell(1,2);
@@ -89,7 +88,7 @@ tmani = toc;
 % emosek = max([eta, gap, mS]);
 % tmosek = toc;
 
-%% Solve using SDPLR
+%% Solve with SDPLR
 % rng(0);
 % pars.printlevel = 1;
 % pars.feastol = 1e-8;
@@ -105,7 +104,7 @@ tmani = toc;
 % elr = max([eta, gap, mS]);
 % tlr = toc;
 
-%% Solve using SDPNAL+
+%% Solve with SDPNAL+
 % options.tol = 1e-8;
 % addpath(genpath(sdpnalpath));
 % rng(0);

@@ -19,7 +19,7 @@
   function [blk,Avec,C,b,perm] = read_sedumi(fname,b,c,K,smallblkdim)
 
   if (nargin < 5) 
-     smallblkdim = 50; 
+     smallblkdim = 1; 
   end
 
   A = 0;

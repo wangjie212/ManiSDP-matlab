@@ -8,14 +8,26 @@
 
 %% Generate random quartic program
 rng(1);
-d = 30;
+d = 20;
 coe = randn(nchoosek(d+4, 4), 1);
 % x = msspoly('x', d);
 % mon = monomials(x, 0:4);
 % coe = randn(length(mon), 1);
 % f = coe'*mon;
 % h = sum(x.^2) - 1;
-[At, b, c, mb] = qsmom(d, coe);
+[At, b, c, K] = qsmom(d, coe);
+
+%% Solve with ManiSDP
+rng(0);
+clear options;
+options.tol = 1e-8;
+options.theta = 1e-2;
+options.tau1 = 0.02;
+tic
+[~, fval, data] = ManiSDP(At, b, c, K, options);
+emani = max([data.gap, data.pinf, data.dinf]);
+tmani = toc;
+
 
 %% Relax QP into an SDP
 % problem.vars            = x;
@@ -30,26 +42,7 @@ coe = randn(nchoosek(d+4, 4), 1);
 % mb = K.s;
 % C = full(reshape(c, mb, mb));
 
-%% Solve using ManiSDP
-rng(0);
-clear options;
-options.theta = 1e-2;
-options.delta = 6;
-options.sigma0 = 1; % (d <= 50)
-% options.sigma0 = 1e-2; % (d > 50)
-options.tao = 1e-2;
-options.line_search = 1;
-tic
-[~, fval, data] = ManiSDP(At, b, c, mb, options);
-emani = max([data.gap, data.pinf, data.dinf]);
-tmani = toc;
-
-% fz = [[1:length(data.fac_size)]' data.fac_size];
-% residue = [[1:length(data.seta)]' log10(data.seta)];
-% writematrix(fz, 'd://works/mypaper/manisdp/qs_fz_60.txt','Delimiter',' ');
-% writematrix(residue, 'd://works/mypaper/manisdp/qs_residue_60.txt','Delimiter',' ');
-
-%% Solve using STRIDE
+%% Solve with STRIDE
 % SDP.M       = 3; % upper bound on the trace of the moment matrix
 % info.v      = msspoly2degcoeff(info.v);
 % info.f      = msspoly2degcoeff(info.f);
@@ -78,7 +71,7 @@ tmani = toc;
 % epgd = max([gap, eta, mS]);
 % time_pgd = toc;
 
-%% Solve using MOSEK
+%% Solve with MOSEK
 % prob       = convert_sedumi2mosek(At, b, c, K);
 % tic
 % [~,res]    = mosekopt('minimize echo(3)',prob);
@@ -92,7 +85,7 @@ tmani = toc;
 % emosek = max([eta, gap, mS]);
 % tmosek = toc;
 
-%% Solve using SDPLR
+%% Solve with SDPLR
 % rng(0);
 % pars.printlevel = 1;
 % pars.feastol = 1e-8;
@@ -108,7 +101,7 @@ tmani = toc;
 % elr = max([eta, gap, mS]);
 % tlr = toc;
 
-%% Solve using SDPNAL+
+%% Solve with SDPNAL+
 % options.tol = 1e-8;
 % addpath(genpath(sdpnalpath));
 % rng(0);

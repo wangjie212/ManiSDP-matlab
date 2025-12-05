@@ -1,5 +1,5 @@
 function [Xopt,yopt,Sopt,obj] = recover_mosek_sol_blk(res, K)
-if ~isfield(K, 'f') && length(K.s) == 1
+if ~isfield(K, 'f') && isscalar(K.s)
     n               = K.s;
     idxtril         = tril(true(n,n));
     Xopt            = zeros(n,n);

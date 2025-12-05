@@ -1,7 +1,7 @@
-% This function solves linear SDPs with unital diagonal and without extra affine constraints.
+% This function solves SDPs with unit-diagonal and without extra affine constraints using the primal approach:
 % Min  <C, X>
-% s.t. X >= 0,
-%      X_ii = 1, i = 1,...,n.
+% s.t. X >= 0
+%      diag(X) = 1
 
 function [X, obj, data] = ManiSDP_onlyunitdiag(C, options)
 
@@ -11,7 +11,7 @@ if ~isfield(options,'tol'); options.tol = 1e-8; end
 if ~isfield(options,'theta'); options.theta = 1e-1; end
 if ~isfield(options,'delta'); options.delta = 8; end
 if ~isfield(options,'alpha'); options.alpha = 0.5; end
-if ~isfield(options,'tolgradnorm'); options.tolgrad = 1e-8; end
+if ~isfield(options,'tolgradnorm'); options.tolgradnorm = 1e-8; end
 if ~isfield(options,'TR_maxinner'); options.TR_maxinner = 100; end
 if ~isfield(options,'TR_maxiter'); options.TR_maxiter = 40; end
 if ~isfield(options,'line_search'); options.line_search = 0; end
@@ -25,19 +25,17 @@ Y = [];
 U = [];
 YC = [];
 eG = [];
-% fac_size = [];
 problem.cost = @cost;
 problem.grad = @grad;
 problem.hess = @hess;
 opts.verbosity = 0;     % Set to 0 for no output, 2 for normal output
 opts.maxinner = options.TR_maxinner;     % maximum Hessian calls per iteration
 opts.maxiter = options.TR_maxiter;
-opts.tolgradnorm = options.tolgrad; % tolerance on gradient norm
+opts.tolgradnorm = options.tolgradnorm; % tolerance on gradient norm
 
 data.status = 0;
 timespend = tic;
 for iter = 1:options.AL_maxiter
-%     fac_size = [fac_size; p];
     problem.M = obliquefactoryNTrans(p, n);
     if ~isempty(U)
         Y = line_search(Y, U);
@@ -85,12 +83,12 @@ for iter = 1:options.AL_maxiter
         Y = Y./sqrt(sum(Y.^2));
     end
 end
+data.X = X;
 data.S = S;
 data.z = z;
 data.dinf = dinf;
 data.gradnorm = gradnorm;
 data.time = toc(timespend);
-% data.fac_size = fac_size;
 if data.status == 0 && dinf > options.tol
     data.status = 1;
     fprintf('Iteration maximum is reached!\n');
@@ -103,7 +101,7 @@ fprintf('ManiSDP: optimum = %0.8f, time = %0.2fs\n', obj, toc(timespend));
     end
 
     function nY = line_search(Y, U)
-         alpha = 0.5;
+         alpha = 1;
          cost0 = co(Y);
          i = 1;
          nY = Y + alpha*U;

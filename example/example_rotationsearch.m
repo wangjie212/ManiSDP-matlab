@@ -1,4 +1,4 @@
-clear; clc;
+% clear; clc;
 % addpath(genpath('..'));
 % addpath(genpath('../../mosek'));
 % addpath(genpath('../../SDPLR'));
@@ -27,22 +27,17 @@ SDP = QUASAR_Problem(a,wb,betasq);
 mb = K.s;
 C = full(reshape(c, mb, mb));
 
-%% Solve using ManiSDP
+%% Solve with ManiSDP
 rng(0);
 clear options;
 options.tol = 1e-8;
 % options.Y0 = v_gnc/sqrt(N+1);
 tic
-[~, fval, data] = ManiSDP_unittrace(At, b/(N+1), c, mb, options);
+[~, fval, data] = ManiSDP_unittrace(At, b/(N+1), c, K, options);
 emani = max([data.gap, data.pinf, data.dinf]);
 tmani = toc;
 
-% fz = [[1:length(data.fac_size)]' data.fac_size];
-% residue = [[1:length(data.seta)]' log10(data.seta)];
-% writematrix(fz, 'd://works/mypaper/manisdp/rs_fz_500.txt','Delimiter',' ');
-% writematrix(residue, 'd://works/mypaper/manisdp/rs_residue_500.txt','Delimiter',' ');
-
-%% Solve using STRIDE
+%% Solve with STRIDE
 % options.pgdStepSize     = 10; % step size, default 10
 % % options.maxiterPGD      = 10; % maximum outer iterations for STRIDE, default 5-10
 % options.SDPNALpath      = sdpnalpath; % provide path to SDPNAL
@@ -73,7 +68,7 @@ tmani = toc;
 % epgd = max([gap, eta, mS]);
 % time_pgd = toc;
 
-%% Solve using MOSEK
+%% Solve with MOSEK
 % prob       = convert_sedumi2mosek(At, b, c, K);
 % tic
 % [~,res]    = mosekopt('minimize echo(3)',prob);
@@ -87,7 +82,7 @@ tmani = toc;
 % emosek = max([eta, gap, mS]);
 % tmosek = toc;
 
-%% Solve using SDPLR
+%% Solve with SDPLR
 % rng(0);
 % pars.printlevel = 1;
 % pars.feastol = 1e-8;
@@ -103,7 +98,7 @@ tmani = toc;
 % elr = max([eta, gap, mS]);
 % tlr = toc;
 
-%% Solve using SDPNAL+
+%% Solve with SDPNAL+
 % options.tol = 1e-8;
 % addpath(genpath(sdpnalpath));
 % rng(0);

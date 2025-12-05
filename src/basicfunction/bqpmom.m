@@ -3,7 +3,7 @@
 % s.t. x_i^2 = 1, i = 1,...,n.
 % Output sedumi format data.
 
-function [At, b, c, mb] = bqpmom(n, Q, e)
+function [At, b, c, K] = bqpmom(n, Q, e)
 basis = get_basis(n, 2);
 ind = true(size(basis, 2), 1);
 for i = 1:size(basis, 2)
@@ -31,9 +31,9 @@ for i = 1:mb
     end
 end
 ncons = mb*(mb+1)/2 - lsp + n*(mb-1) - mb + 1;
-row = [1];
-col = [1];
-val = [1];
+row = 1;
+col = 1;
+val = 1;
 b = sparse(ncons, 1);
 b(1) = 1;
 for i = 2:n+1
@@ -42,7 +42,7 @@ for i = 2:n+1
     val = [val; 0.5; -0.5];
 end
 l = n + 2;
-ind = [1:n];
+ind = 1:n;
 for i = n+2:mb
     cc = ind(basis(:,i)==1) + 1;
     row = [row; (cc(1)-1)*mb+cc(1); (i-1)*mb+i; (cc(2)-1)*mb+cc(2); (i-1)*mb+i];
@@ -90,8 +90,8 @@ for i = 1:lsp
 end
 At = sparse(row,col,val,mb^2,ncons);
 
-row = [2:n+1]';
-col = [2:n+1]';
+row = (2:n+1)';
+col = (2:n+1)';
 val = diag(Q);
 for i = 1:n
     for j = 1:size(mm{i},2)
@@ -113,4 +113,5 @@ for i = 2:n
 end    
 C = sparse(row,col,val,mb,mb);
 c = C(:);
+K.s = mb;
 end

@@ -26,7 +26,7 @@ for i = 1:mb
     nAt(i*(i+1)/2, i) = 1;
 end
 
-%% Solve using ManiSDP
+%% Solve with ManiSDP
 rng(0);
 clear options;
 options.p0 = 40;
@@ -35,7 +35,7 @@ tic
 emani = data.dinf;
 tmani = toc;
 
-%% Solve using MOSEK
+%% Solve with MOSEK
 % prob       = convert_sedumi2mosek(At, b, c, K);
 % tic
 % [~,res]    = mosekopt('minimize echo(3)',prob);
@@ -49,7 +49,7 @@ tmani = toc;
 % emosek = max([eta, gap, mS]);
 % tmosek = toc;
 
-%% Solve using SDPLR
+%% Solve with SDPLR
 % rng(0);
 % pars.printlevel = 1;
 % pars.feastol = 1e-8;
@@ -65,7 +65,7 @@ tmani = toc;
 % elr = max([eta, gap, mS]);
 % tlr = toc;
 
-%% Solve using SDPNAL+
+%% Solve with SDPNAL+
 % options.tol = 1e-8;
 % addpath(genpath(sdpnalpath));
 % rng(0);

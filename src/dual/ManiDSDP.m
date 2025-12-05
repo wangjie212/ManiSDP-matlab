@@ -1,13 +1,14 @@
 % This function solves SDPs using the dual approach:
-%    sup  <C, X> + <c, x>
-%    s.t. A(X) + B(x) = b
+%    sup  <C, X> + <c, w>
+%    s.t. A(X) + B(w) = b
 %         X in S_+^{n}
-%         x in R^l
+%         w in R^l
 
 function [X, obj, data] = ManiDSDP(A, b, c, K, options)
 
-if ~isfield(options,'p0'); options.p0 = ceil(log(length(b))); end
-if ~isfield(options,'AL_maxiter'); options.AL_maxiter = 1000; end
+% if ~isfield(options,'p0'); options.p0 = ceil(log(length(b))); end
+if ~isfield(options,'p0'); options.p0 = 1; end
+if ~isfield(options,'ADMM_maxiter'); options.ADMM_maxiter = 1000; end
 if ~isfield(options,'gama'); options.gama = 2; end
 if ~isfield(options,'sigma0'); options.sigma0 = 1e-1; end
 if ~isfield(options,'sigma_min'); options.sigma_min = 1e-2; end
@@ -16,14 +17,15 @@ if ~isfield(options,'tol'); options.tol = 1e-8; end
 if ~isfield(options,'theta'); options.theta = 1e-2; end
 if ~isfield(options,'delta'); options.delta = 8; end
 if ~isfield(options,'alpha'); options.alpha = 0.01; end
-if ~isfield(options,'tolgradnorm'); options.tolgrad = 1e-8; end
+if ~isfield(options,'tolgradnorm'); options.tolgradnorm = 1e-8; end
 if ~isfield(options,'TR_maxinner'); options.TR_maxinner = 20; end
 if ~isfield(options,'TR_maxiter'); options.TR_maxiter = 4; end
-if ~isfield(options,'tao'); options.tao = 0.1; end
+if ~isfield(options,'tau1'); options.tau1 = 0.1; end
+if ~isfield(options,'tau2'); options.tau2 = 1; end
 if ~isfield(options,'line_search'); options.line_search = 1; end
 
 n = K.s;
-fprintf('ManiDSDP is starting...\n');
+fprintf('ManiSDP is starting...\n');
 fprintf('SDP size: n = %i, m = %i\n', n, size(b,1));
 warning('off', 'manopt:trs_tCG_cached:memory');
 normc = 1 + norm(c);
@@ -46,17 +48,15 @@ Y = [];
 U = [];
 
 problem.costgrad = @costgrad;
-% problem.cost = @cost;
-% problem.grad = @grad;
 problem.hess = @hess;
 opts.verbosity = 0;     % Set to 0 for no output, 2 for normal output
 opts.maxinner  = options.TR_maxinner;    % maximum Hessian calls per iteration
 opts.maxiter   = options.TR_maxiter;
-opts.tolgradnorm = options.tolgrad;
+opts.tolgradnorm = options.tolgradnorm;
 % opts.trscache = false;
 data.status = 0;
 timespend = tic;
-for iter = 1:options.AL_maxiter
+for iter = 1:options.ADMM_maxiter
     problem.M = euclideanfactory(n, p);
     if ~isempty(U)
         Y = line_search(Y, U);
@@ -70,13 +70,11 @@ for iter = 1:options.AL_maxiter
     Af = B'*y - cf;
     pinf = (norm(As)+norm(Af))/normc;
     by = b'*y;
-    x = x + sigma*(iAB*(Af-w/sigma) + A'*(iA'*(As-x/sigma)) - As);
-    % x = x - sigma*As;
+    x = x + sigma*(iAB*(Af - w/sigma) + A'*(iA'*(As - x/sigma)) - As);
     w = w - sigma*Af;
-    X = reshape(x+bA, n, n);
-    X = 0.5*(X+X');
+    X = reshape(x + bA, n, n);
     [vX, dX] = eig(X, 'vector');
-    obj = c'*x + cf'*w;
+    obj = c'*(x + bA) + cf'*w;
     dinf = max(0, -dX(1))/(1+abs(dX(end)));
     gap = abs(obj-by)/(1+abs(obj)+abs(by));
     [V, D, ~] = svd(Y);
@@ -118,42 +116,27 @@ for iter = 1:options.AL_maxiter
     else
         Y = [Y options.alpha*vX(:,1:nne)];
     end
-
-    if pinf < options.tao*gradnorm
-        sigma = max(sigma/gama, options.sigma_min);
-    else
-        sigma = min(sigma*gama, options.sigma_max);
+    if pinf < options.tau1*gradnorm
+          sigma = max(sigma/gama, options.sigma_min);
+    elseif pinf > options.tau2*gradnorm
+          sigma = min(sigma*gama, options.sigma_max);
     end
 end
-data.S = S;
+data.X = X;
 data.y = y;
+data.S = S;
 data.w = w;
 data.gap = gap;
 data.pinf = pinf;
 data.dinf = dinf;
 data.gradnorm = gradnorm;
 data.time = toc(timespend);
-% data.fac_size = fac_size;
-% data.seta = seta;
 if data.status == 0 && eta > options.tol
     data.status = 1;
     fprintf('Iteration maximum is reached!\n');
 end
 
 fprintf('ManiDSDP: optimum = %0.8f, time = %0.2fs\n', obj, toc(timespend));
-
-    %     function Y = line_search(Y, U)
-%         alpha = [0.02;0.04;0.06;0.08;0.1];
-%         val = zeros(length(alpha),1);
-%         for i = 1:length(alpha)
-%             nY = Y + alpha(i)*U;
-%             nY = nY./sqrt(sum(nY.^2));
-%             val(i) = co(nY);
-%         end
-%         [~,I] = min(val);
-%         Y = Y + alpha(I)*U;
-%         Y = Y./sqrt(sum(Y.^2));
-%     end
         
     function val = co(Y)
         S = Y*Y';
@@ -165,7 +148,7 @@ fprintf('ManiDSDP: optimum = %0.8f, time = %0.2fs\n', obj, toc(timespend));
     end
 
     function nY = line_search(Y, U)
-         alpha = 2;
+         alpha = 1;
          cost0 = co(Y);
          i = 1;
          nY = Y + alpha*U;
@@ -183,30 +166,13 @@ fprintf('ManiDSDP: optimum = %0.8f, time = %0.2fs\n', obj, toc(timespend));
         As = A'*y - sc - x/sigma;
         Af = B'*y - cf - w/sigma;
         f = b'*y + 0.5*sigma*(As'*As + Af'*Af);
-        X = reshape(bA+sigma*(iAB*Af+A'*(iA'*As)-As), n, n);
+        X = reshape(bA + sigma*(iAB*Af + A'*(iA'*As) - As), n, n);
         G = 2*X*Y;
     end
 
-%       function [f, store] = cost(Y, store)
-%         S = Y'*Y;
-%         sc = S(:) - c;
-%         y = iA'*sc;
-%         As = A'*y - sc - x/sigma;
-%         f = b'*y + 0.5*sigma*(As'*As);
-%       end
-%   
-%       function [G, store] = grad(Y, store)
-%         X = reshape(-sigma*As+bA, n, n);
-%         eG = 2*Y*X;
-%         G = eG - Y.*sum(Y.*egrad);
-%       end
-
-    % If you want to, you can specify the Riemannian Hessian as well.
     function [H, store] = hess(Y, U, store)      
         YU = U*Y';
         yAU = reshape((YU(:)'*iA)*A, n, n);
-%        H = 2*X*U + 2*sigma*(YU + YU'- 4*yAU + 2*reshape((YU(:)'*iAB)*iAB'+(yAU(:)'*iA)*A, n, n))*Y;
-        H = 2*X*U + 2*sigma*(U*(Y'*Y)+Y*(U'*Y)) + 4*sigma*(-2*yAU + reshape((YU(:)'*iAB)*iAB'+(yAU(:)'*iA)*A, n, n))*Y;
-        % H = 2*X*U + 2*sigma*(YU + YU'- 4*yAU)*Y;
+        H = 2*X*U + 2*sigma*(U*(Y'*Y) + Y*(U'*Y)) + 4*sigma*(reshape((YU(:)'*iAB)*iAB' + (yAU(:)'*iA)*A, n, n) - 2*yAU)*Y;
     end
 end

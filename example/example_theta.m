@@ -1,3 +1,4 @@
+%% Generate the theta problem (Sec. 4.4, Wang, Y., Deng, K., Liu, H., & Wen, Z. (2023). A decomposition augmented lagrangian method for low-rank semidefinite programming. SIAM Journal on Optimization, 33(3), 1361-1390.)
 rng(1);
 n = 1000;
 m = 10*n;
@@ -19,7 +20,6 @@ for i = 1:m
     row(2*i-1:2*i) = [(Omega(i,1)-1)*n+Omega(i,2); (Omega(i,2)-1)*n+Omega(i,1)];
     col(2*i-1:2*i) = [i; i];
     val(2*i-1:2*i) = [1; 1];
-    % nrow(i) = Omega(i,2)*(Omega(i,2)-1)/2+Omega(i,1);
     if Omega(i,2) > Omega(i,1)
         nrow(i) = Omega(i,2)*(Omega(i,2)-1)/2+Omega(i,1);
     else
@@ -38,29 +38,25 @@ for i = 1:n
 end
 At = sparse(row,col,val,n^2,m+1);
 nAt = sparse(nrow,ncol,nval,n*(n+1)/2,m+1);
+clear K;
 K.l = 0;
 K.s = n;
 blk{1,1} = 's';
 blk{1,2} = n;
 
-%% Solve using ManiSDP
+%% Solve with ManiSDP
 rng(0);
 clear options;
-options.sigma0 = 1e-1;
 options.tol = 1e-6;
-options.TR_maxinner = 20;
-options.TR_maxiter = 4;
-options.tao = 1e-3;
-options.theta = 1e-3;
-options.delta = 8;
-options.line_search = 0;
-options.alpha = 0.001;
+options.sigma0 = 1e5;
+options.sigma_max = 1e8;
+options.line_search = 1;
 tic
-[~, fval, data] = ManiSDP_unittrace(At, b, c, n, options);
+[~, fval, data] = ManiSDP_unittrace(At, b, c, K, options);
 emani = max([data.gap, data.pinf, data.dinf]);
 tmani = toc;
 
-%% Solve using MOSEK
+%% Solve with MOSEK
 prob       = convert_sedumi2mosek(At, b, c, K);
 tic
 [~,res]    = mosekopt('minimize echo(3)',prob);
@@ -74,7 +70,7 @@ mS = abs(min(dS))/(1+dS(end));
 emosek = max([eta, gap, mS]);
 tmosek = toc;
 
-%% Solve using SDPLR
+%% Solve with SDPLR
 % rng(0);
 % pars.printlevel = 1;
 % pars.feastol = 1e-8;
@@ -90,7 +86,7 @@ tmosek = toc;
 % elr = max([eta, gap, mS]);
 % tlr = toc;
 
-%% Solve using SDPNAL+
+%% Solve with SDPNAL+
 % sdpnalpath  = '../../SDPNAL+v1.0';
 % addpath(genpath(sdpnalpath));
 % rng(0);

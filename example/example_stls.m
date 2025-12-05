@@ -1,4 +1,4 @@
-clear; clc;
+% clear; clc;
 % addpath(genpath('..'));
 % addpath(genpath('../../mosek'));
 % addpath(genpath('../../SDPLR'));
@@ -8,8 +8,8 @@ addpath(genpath('../../STRIDE'));
 
 %% construct space of n1 x n2 hankel matrices (n1 <= n2)
 rng(1);
-n1 = 10;
-n2 = 10;
+n1 = 20;
+n2 = 20;
 [S,k,Scell] = hankel_struct(n1,n2);
 % generate random hankel matrix
 u1 = randn(k,1);
@@ -22,24 +22,21 @@ n = SDP.n;
 mb = n;
 C = full(reshape(c, mb, mb));
 
-%% Solve using ManiSDP
+%% Solve with ManiSDP
 rng(0);
 clear options;
 options.tol = 1e-8;
 options.alpha = 0.2;
 TR_maxinner = 50;
+options.tau1 = 1e-2;
+options.tau2 = 1e2;
 % options.Y0 = xtld;
 tic
-[~, fval, data] = ManiSDP(At, b, c, n, options);
+[~, fval, data] = ManiSDP(At, b, c, K, options);
 emani = max([data.gap, data.pinf, data.dinf]);
 tmani = toc;
 
-% fz = [[1:length(data.fac_size)]' data.fac_size];
-% residue = [[1:length(data.seta)]' log10(data.seta)];
-% writematrix(fz, 'd://works/mypaper/manisdp/stls_fz_40.txt','Delimiter',' ');
-% writematrix(residue, 'd://works/mypaper/manisdp/stls_residue_40.txt','Delimiter',' ');
-
-%% Optimistic initialization using SLRA
+%% Optimistic initialization with SLRA
 % s.m             = n1;
 % s.n             = n2;
 % tol             = 0;
@@ -60,7 +57,7 @@ tmani = toc;
 % xtld            = kron([uslra;1],zslra);
 % X0              = {xtld * xtld'};
 
-%% Solve using STRIDE
+%% Solve with STRIDE
 % pgdopts.pgdStepSize     = 10;
 % pgdopts.maxiterSGS      = 300;
 % pgdopts.maxiterLBFGS    = 1000;
@@ -91,7 +88,7 @@ tmani = toc;
 % ztUnorm         = norm(z'*U); % measure of rank deficientness
 % fprintf('norm(zt*U) = %3.2e, eta = %3.2e.\n',ztUnorm,eta);
 
-%% Solve using MOSEK
+%% Solve with MOSEK
 % prob       = convert_sedumi2mosek(At, b, c, K);
 % tic
 % [~,res]    = mosekopt('minimize echo(3)',prob);
@@ -105,7 +102,7 @@ tmani = toc;
 % emosek = max([eta, gap, mS]);
 % tmosek = toc;
 
-%% Solve using SDPLR
+%% Solve with SDPLR
 % rng(0);
 % pars.printlevel = 1;
 % pars.feastol = 1e-8;
@@ -121,7 +118,7 @@ tmani = toc;
 % elr = max([eta, gap, mS]);
 % tlr = toc;
 
-%% Solve using SDPNAL+
+%% Solve with SDPNAL+
 % options.tol = 1e-8;
 % addpath(genpath(sdpnalpath));
 % rng(0);

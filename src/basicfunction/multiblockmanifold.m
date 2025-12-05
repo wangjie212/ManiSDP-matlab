@@ -1,6 +1,6 @@
 function M = multiblockmanifold(pset, nset, nob)
     nelems = length(pset);
-    M.dim = @() (pset(1:nob)-1)'*nset(1:nob) + pset(nob+1:end)'*nset(nob+1:end);
+    M.dim = @() (pset(1:nob)-1)*nset(1:nob)' + pset(nob+1:end)*nset(nob+1:end)';
     
     M.inner = @inner;
     function val = inner(x, u, v)
@@ -9,7 +9,7 @@ function M = multiblockmanifold(pset, nset, nob)
 
     M.norm = @(x, d) sqrt(M.inner(x, d, d));
     if nelems > nob
-        M.typicaldist = @() sqrt(pi*sum(nset(1:nob)) + pset(nob+1:end)'*nset(nob+1:end));
+        M.typicaldist = @() sqrt(pi*sum(nset(1:nob)) + pset(nob+1:end)*nset(nob+1:end)');
     else
         M.typicaldist = @() sqrt(pi*sum(nset(1:nob)));
     end

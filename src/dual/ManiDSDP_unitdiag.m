@@ -1,14 +1,15 @@
-% This function solves SDPs with unit-diagonal using the dual approach:
-%    sup  <C, X> + <c, x>
-%    s.t. A(X) + B(x) = b
+% This function solves SDPs with dual unit-diagonal (diag(S) = 1) using the dual approach:
+%    sup  <C, X> + <c, w>
+%    s.t. A(X) + B(w) = b
 %         X in S_+^{n}
-%         diag(X) = 1
-%         x in R^l
+%         w in R^l
+%         diag(S) = 1
 
 function [X, obj, data] = ManiDSDP_unitdiag(A, b, c, K, options)
 
+% if ~isfield(options,'p0'); options.p0 = 2; end
 if ~isfield(options,'p0'); options.p0 = ceil(log(length(b))); end
-if ~isfield(options,'AL_maxiter'); options.AL_maxiter = 1000; end
+if ~isfield(options,'ADMM_maxiter'); options.ADMM_maxiter = 300; end
 if ~isfield(options,'gama'); options.gama = 2; end
 if ~isfield(options,'sigma0'); options.sigma0 = 1e-3; end
 if ~isfield(options,'sigma_min'); options.sigma_min = 1e-3; end
@@ -17,14 +18,15 @@ if ~isfield(options,'tol'); options.tol = 1e-8; end
 if ~isfield(options,'theta'); options.theta = 1e-3; end
 if ~isfield(options,'delta'); options.delta = 8; end
 if ~isfield(options,'alpha'); options.alpha = 0.1; end
-if ~isfield(options,'tolgradnorm'); options.tolgrad = 1e-8; end
+if ~isfield(options,'tolgradnorm'); options.tolgradnorm = 1e-8; end
 if ~isfield(options,'TR_maxinner'); options.TR_maxinner = 20; end
 if ~isfield(options,'TR_maxiter'); options.TR_maxiter = 4; end
-if ~isfield(options,'tao'); options.tao = 8; end
+if ~isfield(options,'tau1'); options.tau1 = 1e1; end
+if ~isfield(options,'tau2'); options.tau2 = 1e2; end
 if ~isfield(options,'line_search'); options.line_search = 0; end
 
 n = K.s;
-fprintf('ManiDSDP is starting...\n');
+fprintf('ManiSDP is starting...\n');
 fprintf('SDP size: n = %i, m = %i\n', n, size(b,1));
 warning('off', 'manopt:trs_tCG_cached:memory');
 
@@ -46,19 +48,21 @@ w = zeros(K.f, 1);
 eG = zeros(p, n);
 Y = [];
 U = [];
+fac_size = [];
+seta = [];
 
-problem.costgrad = @costgrad;
-% problem.cost = @cost;
-% problem.grad = @grad;
+problem.cost = @cost;
+problem.grad = @grad;
 problem.hess = @hess;
 opts.verbosity = 0;     % Set to 0 for no output, 2 for normal output
 opts.maxinner  = options.TR_maxinner;    % maximum Hessian calls per iteration
 opts.maxiter   = options.TR_maxiter;
-opts.tolgradnorm = options.tolgrad;
+opts.tolgradnorm = options.tolgradnorm;
 % opts.trscache = false;
 data.status = 0;
 timespend = tic;
-for iter = 1:options.AL_maxiter
+for iter = 1:options.ADMM_maxiter
+    fac_size = [fac_size; p];
     problem.M = obliquefactoryNTrans(p, n);
     if ~isempty(U)
         Y = line_search(Y, U);
@@ -77,9 +81,10 @@ for iter = 1:options.AL_maxiter
     eX = reshape(x + bA, n, n);
     z = sum(S.*eX);
     X = eX - diag(z);
-    X = 0.5*(X+X');
     [vX, dX] = eig(X, 'vector');
-    obj = c'*x + cf'*w + sum(z);
+    % [vX, dX] = eigs(X, options.delta, 'smallestreal');
+    % dX = diag(dX);
+    obj = c'*eX(:) + cf'*w + sum(z);
     dinf = max(0, -dX(1))/(1+abs(dX(end)));
     gap = abs(obj-by)/(1+abs(obj)+abs(by));
     [~, D, V] = svd(Y);
@@ -88,12 +93,13 @@ for iter = 1:options.AL_maxiter
     fprintf('Iter %d, obj:%0.8f, gap:%0.1e, pinf:%0.1e, dinf:%0.1e, gradnorm:%0.1e, r:%d, p:%d, sigma:%0.3f, time:%0.2fs\n', ...
              iter,    obj,       gap,       pinf,       dinf,       gradnorm,       r,    p,    sigma,   toc(timespend));
     eta = max([gap, pinf, dinf]);
+    seta = [seta; eta];
     if eta < options.tol
         fprintf('Optimality is reached!\n');
         break;
     end
-    if mod(iter, 20) == 0
-        if iter > 50 && gap > gap0 && pinf > pinf0 && dinf > dinf0
+    if mod(iter, 50) == 0
+        if iter > 100 && gap > gap0 && pinf > pinf0 && dinf > dinf0
             data.status = 2;
             fprintf('Slow progress!\n');
             break;
@@ -118,54 +124,41 @@ for iter = 1:options.AL_maxiter
         Y = [Y; options.alpha*vX(:,1:nne)'];
         Y = Y./sqrt(sum(Y.^2));
     end
-
-    if pinf < options.tao*gradnorm
-        sigma = max(sigma/gama, options.sigma_min);
-    else
-        sigma = min(sigma*gama, options.sigma_max);
+    if pinf < options.tau1*gradnorm
+          sigma = max(sigma/gama, options.sigma_min);
+    elseif pinf > options.tau2*gradnorm
+          sigma = min(sigma*gama, options.sigma_max);
     end
 end
-data.S = S;
+data.X = X;
 data.y = y;
-data.z = z;
+data.S = S;
 data.w = w;
 data.gap = gap;
 data.pinf = pinf;
 data.dinf = dinf;
 data.gradnorm = gradnorm;
 data.time = toc(timespend);
-% data.fac_size = fac_size;
-% data.seta = seta;
+data.fac_size = fac_size;
+data.seta = seta;
 if data.status == 0 && eta > options.tol
     data.status = 1;
     fprintf('Iteration maximum is reached!\n');
 end
 
 fprintf('ManiDSDP: optimum = %0.8f, time = %0.2fs\n', obj, toc(timespend));
-
-    %     function Y = line_search(Y, U)
-%         alpha = [0.02;0.04;0.06;0.08;0.1];
-%         val = zeros(length(alpha),1);
-%         for i = 1:length(alpha)
-%             nY = Y + alpha(i)*U;
-%             nY = nY./sqrt(sum(nY.^2));
-%             val(i) = co(nY);
-%         end
-%         [~,I] = min(val);
-%         Y = Y + alpha(I)*U;
-%         Y = Y./sqrt(sum(Y.^2));
-%     end
         
     function val = co(Y)
         S = Y'*Y;
         sc = S(:) - c;
         y = iA'*sc;
         As = A'*y - sc - x/sigma;
-        val = b'*y + 0.5*sigma*(As'*As);
+        Af = B'*y - cf - w/sigma;
+        val = b'*y + 0.5*sigma*(As'*As + Af'*Af);
     end
 
     function nY = line_search(Y, U)
-         alpha = 0.1;
+         alpha = 1;
          cost0 = co(Y);
          i = 1;
          nY = Y + alpha*U;
@@ -178,34 +171,22 @@ fprintf('ManiDSDP: optimum = %0.8f, time = %0.2fs\n', obj, toc(timespend));
          end
     end
 
-    function [f, G, store] = costgrad(Y, store)
+      function [f, store] = cost(Y, store)
         S = Y'*Y;
         sc = S(:) - c;
         y = iA'*sc;
         As = A'*y - sc - x/sigma;
         Af = B'*y - cf - w/sigma;
         f = b'*y + 0.5*sigma*(As'*As + Af'*Af);
+      end
+
+      function [G, store] = grad(Y, store)
         X = reshape(bA - sigma*As, n, n);
         eG = 2*Y*X;
         G = eG - Y.*sum(Y.*eG);
-    end
+      end
 
-%       function [f, store] = cost(Y, store)
-%         S = Y'*Y;
-%         sc = S(:) - c;
-%         y = iA'*sc;
-%         As = A'*y - sc - x/sigma;
-%         f = b'*y + 0.5*sigma*(As'*As);
-%       end
-%   
-%       function [G, store] = grad(Y, store)
-%         X = reshape(-sigma*As+bA, n, n);
-%         eG = 2*Y*X;
-%         G = eG - Y.*sum(Y.*egrad);
-%       end
-
-    % If you want to, you can specify the Riemannian Hessian as well.
-    function [H, store] = hess(Y, U, store)      
+    function [H, store] = hess(Y, U, store)
         YU = Y'*U;
         yAU = reshape(A'*(iA'*YU(:)), n, n);
         eH = 2*U*X - 4*sigma*(Y*yAU) + 2*sigma*((Y*U')*Y+(Y*Y')*U);
@@ -214,8 +195,7 @@ fprintf('ManiDSDP: optimum = %0.8f, time = %0.2fs\n', obj, toc(timespend));
 
     function M = obliquefactoryNTrans(n, m)
         M.dim = @() (n-1)*m;
-%        M.inner = @(x, d1, d2) d1(:)'*d2(:);
-        M.inner = @(x, d1, d2) sum(d1.*d2,'all');
+        M.inner = @(x, d1, d2) d1(:)'*d2(:);
         M.norm = @(x, d) norm(d);
         M.typicaldist = @() pi*sqrt(m);
         M.proj = @(X, U) U - X.*sum(X.*U);

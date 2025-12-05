@@ -6,9 +6,9 @@ clear; clc;
 % addpath(genpath('../../STRIDE'));
 
 %% Generate random matrix completion problems
-rng(1);
-p = 1000;
-q = 1000;
+rng(3);
+p = 2000;
+q = 2000;
 n = p + q;
 m = 400*n;
 k = 10;
@@ -46,7 +46,7 @@ K.s = n;
 blk{1,1} = 's';
 blk{1,2} = n;
 
-%% Solve using ManiSDP
+%% Solve with ManiSDP
 rng(0);
 clear options;
 options.tol = 1e-8;
@@ -54,14 +54,14 @@ options.theta = 1e-2;
 options.TR_maxinner = 6;
 options.TR_maxiter = 8;
 options.delta = 10;
-options.tao = 1e-3;
+options.tau = 1e-3;
 options.alpha = 0.1;
 tic
-[~, fval, data] = ManiSDP(At, b, c, n, options);
+[~, fval, data] = ManiSDP(At, b, c, K, options);
 emani = max([data.gap, data.pinf, data.dinf]);
 tmani = toc;
 
-%% Solve using SDPLR
+%% Solve with SDPLR
 % rng(0);
 % pars.printlevel = 1;
 % pars.feastol = 1e-8;
@@ -77,21 +77,21 @@ tmani = toc;
 % elr = max([eta, gap, mS]);
 % tlr = toc;
 
-%% Solve using SDPNAL+
-sdpnalpath  = '../../SDPNAL+v1.0';
-options.tol = 1e-8;
-addpath(genpath(sdpnalpath));
-rng(0);
-tic
-[objnal,X,~,y,S] = sdpnalplus(blk, {nAt}, {C}, b, [], [], [], [], [], options);
-by = b'*y;
-gap = abs(objnal(1)-by)/(abs(by)+abs(objnal(1))+1);
-x = X{1}(:);
-eta = norm(At'*x - b)/(1+norm(b));
-[~, dS] = eig(S{1}, 'vector');
-mS = abs(min(dS))/(1+dS(end));
-enal = max([eta, gap, mS]);
-tnal = toc;
+%% Solve with SDPNAL+
+% sdpnalpath  = '../../SDPNAL+v1.0';
+% options.tol = 1e-8;
+% addpath(genpath(sdpnalpath));
+% rng(0);
+% tic
+% [objnal,X,~,y,S] = sdpnalplus(blk, {nAt}, {C}, b, [], [], [], [], [], options);
+% by = b'*y;
+% gap = abs(objnal(1)-by)/(abs(by)+abs(objnal(1))+1);
+% x = X{1}(:);
+% eta = norm(At'*x - b)/(1+norm(b));
+% [~, dS] = eig(S{1}, 'vector');
+% mS = abs(min(dS))/(1+dS(end));
+% enal = max([eta, gap, mS]);
+% tnal = toc;
 
 % fprintf('SDPLR: optimum = %0.8f, eta = %0.1e, time = %0.2fs\n', vlr, elr, tlr);
 % fprintf('SDPNAL: optimum = %0.8f, eta = %0.1e, time = %0.2fs\n', objnal(1), enal, tnal);

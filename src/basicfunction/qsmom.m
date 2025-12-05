@@ -3,7 +3,7 @@
 % s.t.    x^2 = 1.
 % Output sedumi format data.
 
-function [At, b, c, mb] = qsmom(n, coe)
+function [At, b, c, K] = qsmom(n, coe)
 basis = get_basis(n, 2);
 mb = size(basis, 2);
 sp = get_basis(n, 4);
@@ -112,4 +112,5 @@ for i = 1:lsp
 end    
 C = sparse(row,col,val,mb,mb);
 c = C(:);
+K.s = mb;
 end

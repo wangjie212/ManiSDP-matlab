@@ -22,9 +22,8 @@ At = SDP.sedumi.At;
 b = SDP.sedumi.b;
 c = SDP.sedumi.c;
 K = SDP.sedumi.K;
-mb = K.s;
 
 rng(0);
 tic
-[X, fval, data] = ManiSDP_unitdiag(At, b, c, mb);
+[X, fval, data] = ManiSDP_unitdiag(At, b, c, K);
 tmani = toc;

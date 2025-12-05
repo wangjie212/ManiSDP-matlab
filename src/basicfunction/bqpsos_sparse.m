@@ -50,7 +50,7 @@ end
 A = sparse(row,col,val,lsp,nz);
 b = coe;
 K.f = 1;
-K.s = mb;
+K.s = mb';
 c = zeros(nz, 1);
 c(1) = 1;
 end
