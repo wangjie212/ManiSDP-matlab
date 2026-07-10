@@ -1,0 +1,1738 @@
+正在生成 BQP 矩量松弛数据...
+
+=== 情形 1: ManiCSDP_unitdiag (复数 SDP) ===
+ManiCSDP is starting...
+CSDP size: n = 136, m = 3600
+Iter 1, obj:-66.08190714, gap:1.5e-02, pinf:4.4e+01, dinf:5.3e-02, gradnorm:4.5e+00, r:2, p:2, sigma:0.001, time:0.01s
+Iter 2, obj:-68.11057540, gap:4.1e-02, pinf:4.3e+01, dinf:5.5e-03, gradnorm:7.7e-01, r:10, p:10, sigma:0.002, time:0.02s
+Iter 3, obj:-67.70692604, gap:8.0e-02, pinf:3.8e+01, dinf:2.3e-02, gradnorm:1.7e+00, r:18, p:18, sigma:0.004, time:0.05s
+Iter 4, obj:-64.22206389, gap:4.0e-02, pinf:2.3e+01, dinf:5.4e-02, gradnorm:5.4e+00, r:26, p:26, sigma:0.008, time:0.07s
+Iter 5, obj:-67.46610117, gap:1.3e-02, pinf:9.3e+00, dinf:1.2e-02, gradnorm:3.0e+00, r:33, p:34, sigma:0.016, time:0.09s
+Iter 6, obj:-68.01752509, gap:1.8e-03, pinf:4.8e+00, dinf:1.0e-03, gradnorm:6.4e-01, r:24, p:41, sigma:0.032, time:0.13s
+Iter 7, obj:-68.08159655, gap:2.6e-03, pinf:1.7e+00, dinf:2.2e-04, gradnorm:9.7e-02, r:16, p:28, sigma:0.064, time:0.18s
+Iter 8, obj:-67.97750689, gap:3.1e-03, pinf:1.1e+00, dinf:1.7e-04, gradnorm:3.2e-02, r:10, p:19, sigma:0.128, time:0.24s
+Iter 9, obj:-67.82469246, gap:3.3e-03, pinf:7.8e-01, dinf:2.9e-04, gradnorm:4.8e-02, r:8, p:13, sigma:0.256, time:0.29s
+Iter 10, obj:-67.62077755, gap:3.0e-03, pinf:5.2e-01, dinf:7.3e-04, gradnorm:7.6e-02, r:8, p:13, sigma:0.512, time:0.35s
+Iter 11, obj:-67.41712504, gap:2.4e-03, pinf:3.1e-01, dinf:8.5e-04, gradnorm:9.2e-02, r:9, p:13, sigma:1.024, time:0.40s
+Iter 12, obj:-67.24961962, gap:1.6e-03, pinf:1.7e-01, dinf:1.1e-03, gradnorm:1.6e-01, r:10, p:13, sigma:2.048, time:0.46s
+Iter 13, obj:-67.14864151, gap:1.0e-03, pinf:9.1e-02, dinf:7.1e-04, gradnorm:2.9e-01, r:11, p:15, sigma:4.096, time:0.51s
+Iter 14, obj:-67.09318463, gap:4.2e-04, pinf:4.9e-02, dinf:4.9e-04, gradnorm:2.9e-01, r:11, p:15, sigma:2.048, time:0.57s
+Iter 15, obj:-67.06681239, gap:1.2e-04, pinf:3.1e-02, dinf:1.2e-05, gradnorm:5.2e-02, r:11, p:13, sigma:1.024, time:0.62s
+Iter 16, obj:-67.05756692, gap:1.9e-05, pinf:1.4e-02, dinf:1.8e-06, gradnorm:1.8e-02, r:10, p:12, sigma:0.512, time:0.67s
+Iter 17, obj:-67.05589914, gap:6.5e-07, pinf:7.4e-03, dinf:5.7e-08, gradnorm:3.2e-03, r:5, p:11, sigma:0.256, time:0.72s
+Iter 18, obj:-67.05585802, gap:1.1e-08, pinf:1.0e-03, dinf:2.2e-08, gradnorm:2.1e-03, r:3, p:6, sigma:0.512, time:0.76s
+Iter 19, obj:-67.05586710, gap:9.0e-09, pinf:7.1e-04, dinf:3.0e-10, gradnorm:2.0e-04, r:1, p:4, sigma:0.256, time:0.80s
+Iter 20, obj:-67.05586863, gap:2.1e-13, pinf:4.6e-05, dinf:1.1e-14, gradnorm:1.2e-06, r:1, p:2, sigma:0.512, time:0.83s
+Iter 21, obj:-67.05586863, gap:2.1e-16, pinf:1.3e-06, dinf:5.1e-16, gradnorm:3.3e-07, r:1, p:2, sigma:1.024, time:0.87s
+Iter 22, obj:-67.05586863, gap:0.0e+00, pinf:3.9e-08, dinf:4.7e-17, gradnorm:3.2e-08, r:1, p:2, sigma:2.048, time:0.90s
+Iter 23, obj:-67.05586863, gap:0.0e+00, pinf:1.1e-09, dinf:3.7e-17, gradnorm:9.2e-09, r:1, p:2, sigma:4.096, time:0.92s
+Optimality is reached!
+ManiCSDP: optimum = -67.05586863, time = 0.92s
+ManiCSDP_unitdiag: f = -67.05586863, eta = 1.1e-09, t = 0.92s
+
+=== 情形 2: SeDuMi (复数 SDP) ===
+SeDuMi 成功，用时 122.38s (迭代 21 次)
+  f = -67.05586687, pinf = 2.46e-09, dinf = 4.89e-09, gap = 2.03e-10
+
+正在执行 CSDP → RSDP 转换...
+
+=== 情形 3: MOSEK (实 RSDP) ===
+MOSEK 成功，用时 2.71s
+  f = -67.05586860, pinf = 5.61e-12, dinf = 0.00e+00, gap = 1.50e-12
+
+=== 情形 4: ManiSDP_complexunitdiag (实 RSDP) ===
+ManiSDP_complexunitdiag is starting...
+Real SDP: n2 = 272 (complex n = 136), m = 3600
+Iter 1, obj:-64.25399189, gap:1.6e-02, pinf:4.6e+01, dinf:3.6e-02, gradnorm:5.7e+00, r:2, p:2, sigma:0.001, time:0.01s
+Iter 2, obj:-67.97033787, gap:4.1e-02, pinf:4.2e+01, dinf:9.9e-03, gradnorm:7.2e-01, r:10, p:10, sigma:0.002, time:0.02s
+Iter 3, obj:-65.79326717, gap:6.0e-02, pinf:3.3e+01, dinf:2.8e-02, gradnorm:2.6e+00, r:18, p:18, sigma:0.004, time:0.05s
+Iter 4, obj:-67.72060562, gap:6.6e-03, pinf:1.1e+01, dinf:1.3e-02, gradnorm:1.5e+00, r:26, p:26, sigma:0.008, time:0.07s
+Iter 5, obj:-68.10533026, gap:2.9e-04, pinf:4.4e+00, dinf:5.7e-04, gradnorm:1.6e-01, r:20, p:34, sigma:0.016, time:0.12s
+Iter 6, obj:-68.14499956, gap:1.6e-03, pinf:2.0e+00, dinf:2.6e-05, gradnorm:1.2e-02, r:13, p:24, sigma:0.032, time:0.17s
+Iter 7, obj:-68.10071025, gap:2.4e-03, pinf:1.5e+00, dinf:1.5e-04, gradnorm:6.6e-03, r:11, p:17, sigma:0.064, time:0.23s
+Iter 8, obj:-68.01237302, gap:3.1e-03, pinf:1.1e+00, dinf:3.1e-04, gradnorm:3.8e-02, r:12, p:17, sigma:0.128, time:0.29s
+Iter 9, obj:-67.85649131, gap:3.4e-03, pinf:8.2e-01, dinf:6.3e-04, gradnorm:5.2e-02, r:16, p:20, sigma:0.256, time:0.34s
+Iter 10, obj:-67.69863608, gap:3.9e-03, pinf:6.2e-01, dinf:2.5e-03, gradnorm:1.4e-01, r:20, p:24, sigma:0.512, time:0.39s
+Iter 11, obj:-67.40759638, gap:2.3e-03, pinf:3.2e-01, dinf:8.1e-04, gradnorm:1.6e-01, r:22, p:28, sigma:1.024, time:0.46s
+Iter 12, obj:-67.24997283, gap:1.6e-03, pinf:1.7e-01, dinf:6.2e-04, gradnorm:1.5e-01, r:24, p:30, sigma:2.048, time:0.54s
+Iter 13, obj:-67.14774766, gap:1.0e-03, pinf:9.3e-02, dinf:8.8e-04, gradnorm:1.8e-01, r:24, p:32, sigma:4.096, time:0.60s
+Iter 14, obj:-67.09475284, gap:4.4e-04, pinf:4.9e-02, dinf:3.7e-04, gradnorm:1.7e-01, r:24, p:32, sigma:2.048, time:0.67s
+Iter 15, obj:-67.06615405, gap:1.1e-04, pinf:3.2e-02, dinf:2.8e-05, gradnorm:5.7e-02, r:22, p:30, sigma:1.024, time:0.75s
+Iter 16, obj:-67.05768074, gap:2.0e-05, pinf:1.6e-02, dinf:2.0e-06, gradnorm:1.6e-02, r:20, p:24, sigma:0.512, time:0.81s
+Iter 17, obj:-67.05595671, gap:1.0e-06, pinf:9.0e-03, dinf:1.1e-07, gradnorm:3.4e-03, r:10, p:22, sigma:0.256, time:0.87s
+Iter 18, obj:-67.05588163, gap:2.0e-07, pinf:1.3e-03, dinf:1.7e-08, gradnorm:1.3e-03, r:6, p:12, sigma:0.512, time:0.91s
+Iter 19, obj:-67.05586911, gap:7.5e-09, pinf:7.6e-04, dinf:5.0e-10, gradnorm:1.8e-04, r:3, p:8, sigma:0.256, time:0.96s
+Iter 20, obj:-67.05586900, gap:3.6e-09, pinf:7.3e-05, dinf:1.2e-10, gradnorm:1.2e-04, r:2, p:5, sigma:0.512, time:1.00s
+Iter 21, obj:-67.05586864, gap:5.4e-11, pinf:7.0e-05, dinf:2.5e-12, gradnorm:1.2e-05, r:2, p:4, sigma:0.256, time:1.04s
+Iter 22, obj:-67.05586863, gap:9.2e-12, pinf:8.4e-06, dinf:3.1e-12, gradnorm:3.1e-05, r:2, p:4, sigma:0.512, time:1.08s
+Iter 23, obj:-67.05586863, gap:3.7e-13, pinf:1.1e-05, dinf:1.1e-12, gradnorm:1.6e-05, r:2, p:4, sigma:0.256, time:1.12s
+Iter 24, obj:-67.05586863, gap:4.5e-13, pinf:1.2e-05, dinf:8.8e-14, gradnorm:2.7e-06, r:2, p:4, sigma:0.128, time:1.16s
+Iter 25, obj:-67.05586863, gap:2.3e-13, pinf:2.2e-06, dinf:2.7e-14, gradnorm:1.7e-06, r:2, p:4, sigma:0.256, time:1.20s
+Iter 26, obj:-67.05586863, gap:1.3e-13, pinf:6.7e-07, dinf:4.5e-14, gradnorm:2.8e-06, r:2, p:4, sigma:0.512, time:1.24s
+Iter 27, obj:-67.05586863, gap:2.6e-14, pinf:1.2e-06, dinf:1.8e-15, gradnorm:3.4e-07, r:2, p:4, sigma:0.256, time:1.28s
+Iter 28, obj:-67.05586863, gap:1.1e-14, pinf:2.8e-07, dinf:1.2e-14, gradnorm:1.1e-06, r:2, p:4, sigma:0.512, time:1.32s
+Iter 29, obj:-67.05586863, gap:3.9e-15, pinf:4.1e-07, dinf:2.5e-16, gradnorm:1.0e-07, r:2, p:4, sigma:0.256, time:1.36s
+Iter 30, obj:-67.05586863, gap:1.7e-15, pinf:6.9e-08, dinf:4.4e-16, gradnorm:2.4e-07, r:2, p:4, sigma:0.512, time:1.40s
+Iter 31, obj:-67.05586863, gap:0.0e+00, pinf:9.3e-08, dinf:6.8e-17, gradnorm:2.0e-08, r:2, p:4, sigma:0.256, time:1.44s
+Iter 32, obj:-67.05586863, gap:1.1e-16, pinf:1.1e-08, dinf:7.7e-18, gradnorm:3.9e-08, r:2, p:3, sigma:0.512, time:1.48s
+Iter 33, obj:-67.05586863, gap:0.0e+00, pinf:1.4e-08, dinf:4.7e-19, gradnorm:5.9e-09, r:2, p:3, sigma:0.256, time:1.51s
+Iter 34, obj:-67.05586863, gap:1.1e-16, pinf:2.8e-09, dinf:2.6e-18, gradnorm:9.2e-09, r:2, p:3, sigma:0.512, time:1.54s
+Optimality is reached!
+ManiSDP_complexunitdiag: optimum = -67.05586863, time = 1.54s
+ManiSDP_complexunitdiag: f = -67.05586863, eta = 2.8e-09, t = 1.54s
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+d=15 rng(2)
+正在生成 BQP 矩量松弛数据...
+
+=== 情形 1: ManiCSDP_unitdiag (复数 SDP) ===
+ManiCSDP is starting...
+CSDP size: n = 136, m = 3600
+Iter 1, obj:-64.93238635, gap:1.7e-02, pinf:4.7e+01, dinf:2.0e-02, gradnorm:3.1e+00, r:2, p:2, sigma:0.001, time:0.01s
+Iter 2, obj:-64.11466542, gap:2.2e-03, pinf:1.4e+01, dinf:1.7e-02, gradnorm:4.1e+00, r:10, p:10, sigma:0.002, time:0.04s
+Iter 3, obj:-65.53542248, gap:1.1e-03, pinf:6.8e+00, dinf:1.9e-03, gradnorm:4.9e-01, r:17, p:18, sigma:0.004, time:0.07s
+Iter 4, obj:-65.54910075, gap:5.4e-04, pinf:3.2e+00, dinf:2.2e-04, gradnorm:2.1e-01, r:24, p:25, sigma:0.008, time:0.12s
+Iter 5, obj:-65.55182145, gap:6.4e-04, pinf:1.6e+00, dinf:1.1e-05, gradnorm:3.1e-02, r:18, p:27, sigma:0.016, time:0.19s
+Iter 6, obj:-65.54149532, gap:9.9e-04, pinf:1.3e+00, dinf:4.3e-05, gradnorm:6.8e-03, r:12, p:20, sigma:0.032, time:0.26s
+Iter 7, obj:-65.51536688, gap:1.4e-03, pinf:1.1e+00, dinf:2.3e-05, gradnorm:6.0e-03, r:10, p:14, sigma:0.064, time:0.31s
+Iter 8, obj:-65.45714477, gap:1.8e-03, pinf:8.5e-01, dinf:1.9e-04, gradnorm:1.1e-02, r:9, p:12, sigma:0.128, time:0.36s
+Iter 9, obj:-65.36458073, gap:1.9e-03, pinf:6.1e-01, dinf:8.7e-04, gradnorm:1.2e-01, r:10, p:14, sigma:0.256, time:0.41s
+Iter 10, obj:-65.24667642, gap:1.7e-03, pinf:3.8e-01, dinf:8.8e-04, gradnorm:1.5e-01, r:13, p:18, sigma:0.512, time:0.47s
+Iter 11, obj:-65.13243766, gap:1.0e-03, pinf:1.8e-01, dinf:6.9e-04, gradnorm:1.3e-01, r:14, p:19, sigma:1.024, time:0.54s
+Iter 12, obj:-65.06507350, gap:5.5e-04, pinf:8.6e-02, dinf:1.2e-03, gradnorm:1.7e-01, r:13, p:19, sigma:2.048, time:0.60s
+Iter 13, obj:-65.04284655, gap:2.3e-04, pinf:4.8e-02, dinf:1.4e-03, gradnorm:1.8e-01, r:11, p:17, sigma:1.024, time:0.67s
+Iter 14, obj:-65.03573318, gap:6.3e-05, pinf:4.0e-02, dinf:4.4e-05, gradnorm:7.3e-02, r:9, p:14, sigma:0.512, time:0.73s
+Iter 15, obj:-65.03237056, gap:8.0e-06, pinf:2.9e-02, dinf:2.7e-05, gradnorm:7.9e-02, r:7, p:10, sigma:0.256, time:0.78s
+Iter 16, obj:-65.03227180, gap:5.7e-07, pinf:3.5e-02, dinf:9.7e-08, gradnorm:4.6e-03, r:4, p:8, sigma:0.128, time:0.82s
+Iter 17, obj:-65.03231713, gap:3.1e-07, pinf:1.7e-03, dinf:5.6e-09, gradnorm:7.8e-04, r:4, p:5, sigma:0.256, time:0.85s
+Iter 18, obj:-65.03234236, gap:1.4e-07, pinf:4.0e-04, dinf:5.9e-09, gradnorm:7.6e-04, r:3, p:5, sigma:0.512, time:0.89s
+Iter 19, obj:-65.03235610, gap:4.7e-08, pinf:3.1e-04, dinf:1.6e-09, gradnorm:4.7e-04, r:2, p:4, sigma:0.256, time:0.93s
+Iter 20, obj:-65.03236192, gap:6.6e-09, pinf:5.0e-04, dinf:7.4e-11, gradnorm:1.0e-04, r:1, p:3, sigma:0.128, time:0.97s
+Iter 21, obj:-65.03236285, gap:7.0e-14, pinf:4.1e-05, dinf:6.2e-16, gradnorm:2.7e-07, r:1, p:2, sigma:0.256, time:1.00s
+Iter 22, obj:-65.03236285, gap:2.2e-16, pinf:1.2e-06, dinf:0.0e+00, gradnorm:1.7e-09, r:1, p:2, sigma:0.512, time:1.04s
+Iter 23, obj:-65.03236285, gap:1.1e-16, pinf:2.1e-08, dinf:0.0e+00, gradnorm:5.1e-09, r:1, p:2, sigma:1.024, time:1.05s
+Iter 24, obj:-65.03236285, gap:0.0e+00, pinf:3.1e-10, dinf:0.0e+00, gradnorm:1.4e-09, r:1, p:2, sigma:2.048, time:1.07s
+Optimality is reached!
+ManiCSDP: optimum = -65.03236285, time = 1.07s
+ManiCSDP_unitdiag: f = -65.03236285, eta = 3.1e-10, t = 1.07s
+
+=== 情形 2: SeDuMi (复数 SDP) ===
+SeDuMi 成功，用时 132.85s (迭代 22 次)
+  f = -65.03235998, pinf = 4.52e-09, dinf = 9.99e-09, gap = 3.07e-10
+
+正在执行 CSDP → RSDP 转换...
+
+=== 情形 3: MOSEK (实 RSDP) ===
+MOSEK 成功，用时 2.20s
+  f = -65.03232513, pinf = 2.07e-13, dinf = 1.56e-16, gap = 3.55e-10
+
+=== 情形 4: ManiSDP_complexunitdiag (实 RSDP) ===
+ManiSDP_complexunitdiag is starting...
+Real SDP: n2 = 272 (complex n = 136), m = 3600
+Iter 1, obj:-63.01892469, gap:1.9e-02, pinf:4.9e+01, dinf:3.6e-02, gradnorm:3.9e+00, r:2, p:2, sigma:0.001, time:0.01s
+Iter 2, obj:-63.75711434, gap:1.8e-02, pinf:3.1e+01, dinf:2.0e-02, gradnorm:2.5e+00, r:10, p:10, sigma:0.002, time:0.03s
+Iter 3, obj:-65.40047899, gap:5.6e-03, pinf:1.3e+01, dinf:5.4e-03, gradnorm:9.6e-01, r:18, p:18, sigma:0.004, time:0.06s
+Iter 4, obj:-65.50319527, gap:1.3e-03, pinf:7.5e+00, dinf:5.1e-03, gradnorm:3.5e-01, r:24, p:26, sigma:0.008, time:0.10s
+Iter 5, obj:-65.52168838, gap:1.1e-03, pinf:2.9e+00, dinf:1.6e-03, gradnorm:1.8e-01, r:30, p:32, sigma:0.016, time:0.15s
+Iter 6, obj:-65.54246200, gap:1.0e-03, pinf:1.6e+00, dinf:1.3e-04, gradnorm:3.2e-02, r:23, p:38, sigma:0.032, time:0.21s
+Iter 7, obj:-65.51342825, gap:1.5e-03, pinf:1.1e+00, dinf:4.8e-05, gradnorm:8.6e-03, r:14, p:27, sigma:0.064, time:0.27s
+Iter 8, obj:-65.45418559, gap:1.8e-03, pinf:8.5e-01, dinf:3.2e-05, gradnorm:7.3e-03, r:13, p:18, sigma:0.128, time:0.32s
+Iter 9, obj:-65.36336797, gap:2.0e-03, pinf:6.2e-01, dinf:8.2e-04, gradnorm:7.8e-02, r:14, p:17, sigma:0.256, time:0.36s
+Iter 10, obj:-65.24209080, gap:1.6e-03, pinf:3.8e-01, dinf:6.7e-04, gradnorm:9.9e-02, r:17, p:22, sigma:0.512, time:0.42s
+Iter 11, obj:-65.13145166, gap:1.0e-03, pinf:1.8e-01, dinf:6.8e-04, gradnorm:9.1e-02, r:22, p:25, sigma:1.024, time:0.48s
+Iter 12, obj:-65.06529368, gap:5.5e-04, pinf:8.5e-02, dinf:1.2e-03, gradnorm:1.2e-01, r:20, p:30, sigma:2.048, time:0.55s
+Iter 13, obj:-65.04201163, gap:2.2e-04, pinf:4.7e-02, dinf:1.2e-03, gradnorm:1.1e-01, r:18, p:28, sigma:1.024, time:0.61s
+Iter 14, obj:-65.03550223, gap:6.0e-05, pinf:3.7e-02, dinf:2.7e-05, gradnorm:4.3e-02, r:16, p:24, sigma:0.512, time:0.67s
+Iter 15, obj:-65.03224571, gap:6.8e-06, pinf:2.5e-02, dinf:1.4e-06, gradnorm:1.4e-02, r:14, p:18, sigma:0.256, time:0.72s
+Iter 16, obj:-65.03231023, gap:1.8e-06, pinf:5.5e-03, dinf:5.0e-07, gradnorm:6.7e-03, r:12, p:16, sigma:0.512, time:0.77s
+Iter 17, obj:-65.03231986, gap:6.3e-09, pinf:4.0e-03, dinf:4.3e-08, gradnorm:2.0e-03, r:9, p:14, sigma:0.256, time:0.82s
+Iter 18, obj:-65.03234169, gap:7.6e-08, pinf:7.4e-04, dinf:1.2e-08, gradnorm:9.3e-04, r:8, p:11, sigma:0.512, time:0.86s
+Iter 19, obj:-65.03235986, gap:1.8e-08, pinf:5.6e-04, dinf:5.3e-10, gradnorm:1.5e-04, r:2, p:10, sigma:0.256, time:0.90s
+Iter 20, obj:-65.03236271, gap:1.0e-09, pinf:2.9e-05, dinf:1.3e-11, gradnorm:3.8e-05, r:2, p:4, sigma:0.512, time:0.94s
+Iter 21, obj:-65.03236282, gap:2.0e-10, pinf:1.5e-05, dinf:2.5e-12, gradnorm:2.2e-05, r:2, p:4, sigma:0.256, time:0.98s
+Iter 22, obj:-65.03236285, gap:9.5e-12, pinf:1.5e-05, dinf:1.6e-13, gradnorm:5.2e-06, r:2, p:4, sigma:0.128, time:1.02s
+Iter 23, obj:-65.03236285, gap:1.8e-12, pinf:3.2e-06, dinf:5.2e-14, gradnorm:2.5e-06, r:2, p:4, sigma:0.256, time:1.06s
+Iter 24, obj:-65.03236285, gap:5.8e-13, pinf:6.3e-07, dinf:1.7e-14, gradnorm:1.3e-06, r:2, p:4, sigma:0.512, time:1.10s
+Iter 25, obj:-65.03236285, gap:8.5e-14, pinf:9.0e-07, dinf:1.6e-15, gradnorm:3.9e-07, r:2, p:4, sigma:0.256, time:1.14s
+Iter 26, obj:-65.03236285, gap:2.7e-14, pinf:1.2e-07, dinf:1.6e-15, gradnorm:4.3e-07, r:2, p:4, sigma:0.512, time:1.18s
+Iter 27, obj:-65.03236285, gap:6.0e-15, pinf:1.5e-07, dinf:2.8e-16, gradnorm:1.7e-07, r:2, p:4, sigma:0.256, time:1.22s
+Iter 28, obj:-65.03236285, gap:5.4e-16, pinf:9.1e-08, dinf:3.0e-17, gradnorm:5.5e-08, r:2, p:4, sigma:0.128, time:1.26s
+Iter 29, obj:-65.03236285, gap:0.0e+00, pinf:1.9e-08, dinf:0.0e+00, gradnorm:2.1e-08, r:2, p:3, sigma:0.256, time:1.30s
+Iter 30, obj:-65.03236285, gap:2.2e-16, pinf:1.0e-08, dinf:2.6e-18, gradnorm:1.5e-08, r:2, p:3, sigma:0.128, time:1.34s
+Iter 31, obj:-65.03236285, gap:0.0e+00, pinf:2.0e-08, dinf:9.2e-17, gradnorm:3.4e-09, r:2, p:3, sigma:0.064, time:1.36s
+Iter 32, obj:-65.03236285, gap:0.0e+00, pinf:7.5e-09, dinf:0.0e+00, gradnorm:6.0e-09, r:2, p:4, sigma:0.128, time:1.37s
+Optimality is reached!
+ManiSDP_complexunitdiag: optimum = -65.03236285, time = 1.37s
+ManiSDP_complexunitdiag: f = -65.03236285, eta = 7.5e-09, t = 1.37s
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+d=15 rng(3)
+正在生成 BQP 矩量松弛数据...
+
+=== 情形 1: ManiCSDP_unitdiag (复数 SDP) ===
+ManiCSDP is starting...
+CSDP size: n = 136, m = 3600
+Iter 1, obj:-55.78852158, gap:2.0e-02, pinf:4.7e+01, dinf:8.2e-02, gradnorm:7.5e+00, r:2, p:2, sigma:0.001, time:0.01s
+Iter 2, obj:-59.17314570, gap:5.0e-02, pinf:4.4e+01, dinf:5.7e-03, gradnorm:6.1e-01, r:10, p:10, sigma:0.002, time:0.03s
+Iter 3, obj:-58.12766339, gap:1.4e-02, pinf:1.8e+01, dinf:3.1e-02, gradnorm:3.6e+00, r:18, p:18, sigma:0.004, time:0.05s
+Iter 4, obj:-59.49054234, gap:3.1e-04, pinf:6.3e+00, dinf:1.8e-03, gradnorm:6.0e-01, r:15, p:26, sigma:0.008, time:0.10s
+Iter 5, obj:-59.53106881, gap:4.7e-04, pinf:2.2e+00, dinf:2.4e-05, gradnorm:2.1e-02, r:11, p:18, sigma:0.016, time:0.15s
+Iter 6, obj:-59.52238468, gap:8.2e-04, pinf:1.2e+00, dinf:1.6e-06, gradnorm:3.1e-03, r:5, p:13, sigma:0.032, time:0.20s
+Iter 7, obj:-59.49915818, gap:1.1e-03, pinf:8.9e-01, dinf:1.1e-04, gradnorm:2.3e-03, r:5, p:6, sigma:0.064, time:0.25s
+Iter 8, obj:-59.45233433, gap:1.2e-03, pinf:6.2e-01, dinf:4.4e-04, gradnorm:5.4e-02, r:5, p:7, sigma:0.128, time:0.29s
+Iter 9, obj:-59.38270406, gap:9.5e-04, pinf:3.7e-01, dinf:4.5e-04, gradnorm:3.0e-02, r:6, p:9, sigma:0.256, time:0.34s
+Iter 10, obj:-59.31896830, gap:5.8e-04, pinf:1.8e-01, dinf:1.6e-04, gradnorm:4.5e-02, r:7, p:11, sigma:0.512, time:0.39s
+Iter 11, obj:-59.28151944, gap:2.9e-04, pinf:8.0e-02, dinf:3.6e-05, gradnorm:6.7e-02, r:8, p:10, sigma:1.024, time:0.44s
+Iter 12, obj:-59.26589205, gap:1.5e-04, pinf:3.8e-02, dinf:1.6e-04, gradnorm:1.6e-01, r:7, p:10, sigma:2.048, time:0.49s
+Iter 13, obj:-59.25836735, gap:5.5e-05, pinf:2.2e-02, dinf:2.6e-05, gradnorm:7.7e-02, r:7, p:9, sigma:1.024, time:0.54s
+Iter 14, obj:-59.25519322, gap:1.3e-05, pinf:1.1e-02, dinf:6.5e-07, gradnorm:1.1e-02, r:7, p:8, sigma:0.512, time:0.58s
+Iter 15, obj:-59.25432512, gap:2.0e-06, pinf:2.8e-03, dinf:6.9e-08, gradnorm:3.8e-03, r:6, p:8, sigma:0.256, time:0.63s
+Iter 16, obj:-59.25416703, gap:1.2e-07, pinf:1.5e-03, dinf:6.5e-09, gradnorm:1.6e-03, r:3, p:7, sigma:0.128, time:0.67s
+Iter 17, obj:-59.25415661, gap:3.3e-09, pinf:1.3e-03, dinf:1.1e-10, gradnorm:2.1e-04, r:1, p:4, sigma:0.064, time:0.71s
+Iter 18, obj:-59.25415632, gap:1.5e-13, pinf:8.4e-05, dinf:1.6e-15, gradnorm:4.2e-07, r:1, p:2, sigma:0.128, time:0.75s
+Iter 19, obj:-59.25415632, gap:2.4e-16, pinf:1.4e-06, dinf:0.0e+00, gradnorm:4.4e-09, r:1, p:2, sigma:0.256, time:0.77s
+Iter 20, obj:-59.25415632, gap:0.0e+00, pinf:1.7e-08, dinf:0.0e+00, gradnorm:2.4e-09, r:1, p:2, sigma:0.512, time:0.79s
+Iter 21, obj:-59.25415632, gap:5.9e-17, pinf:3.2e-10, dinf:0.0e+00, gradnorm:3.0e-10, r:1, p:2, sigma:1.024, time:0.80s
+Optimality is reached!
+ManiCSDP: optimum = -59.25415632, time = 0.80s
+ManiCSDP_unitdiag: f = -59.25415632, eta = 3.2e-10, t = 0.80s
+
+=== 情形 2: SeDuMi (复数 SDP) ===
+SeDuMi 成功，用时 128.28s (迭代 21 次)
+  f = -59.25415315, pinf = 4.50e-09, dinf = 1.16e-08, gap = 3.91e-10
+
+正在执行 CSDP → RSDP 转换...
+
+=== 情形 3: MOSEK (实 RSDP) ===
+MOSEK 成功，用时 2.26s
+  f = -59.25415558, pinf = 2.60e-13, dinf = 0.00e+00, gap = 1.60e-11
+
+=== 情形 4: ManiSDP_complexunitdiag (实 RSDP) ===
+ManiSDP_complexunitdiag is starting...
+Real SDP: n2 = 272 (complex n = 136), m = 3600
+Iter 1, obj:-58.15153454, gap:2.0e-02, pinf:4.8e+01, dinf:2.5e-02, gradnorm:3.0e+00, r:2, p:2, sigma:0.001, time:0.02s
+Iter 2, obj:-59.13536634, gap:5.1e-02, pinf:4.4e+01, dinf:5.2e-03, gradnorm:3.1e-01, r:10, p:10, sigma:0.002, time:0.04s
+Iter 3, obj:-55.72348660, gap:2.0e-02, pinf:2.3e+01, dinf:5.5e-02, gradnorm:4.3e+00, r:18, p:18, sigma:0.004, time:0.07s
+Iter 4, obj:-59.18254467, gap:1.7e-03, pinf:1.0e+01, dinf:5.0e-03, gradnorm:1.0e+00, r:26, p:26, sigma:0.008, time:0.11s
+Iter 5, obj:-59.52748521, gap:3.9e-04, pinf:2.4e+00, dinf:3.0e-05, gradnorm:3.8e-02, r:16, p:34, sigma:0.016, time:0.18s
+Iter 6, obj:-59.52352351, gap:8.3e-04, pinf:1.2e+00, dinf:9.9e-06, gradnorm:7.1e-03, r:11, p:20, sigma:0.032, time:0.24s
+Iter 7, obj:-59.49884143, gap:1.1e-03, pinf:8.8e-01, dinf:4.7e-07, gradnorm:1.6e-03, r:10, p:15, sigma:0.064, time:0.29s
+Iter 8, obj:-59.44969933, gap:1.2e-03, pinf:6.3e-01, dinf:6.4e-04, gradnorm:9.6e-03, r:10, p:12, sigma:0.128, time:0.35s
+Iter 9, obj:-59.38042570, gap:9.3e-04, pinf:3.6e-01, dinf:3.5e-04, gradnorm:2.4e-02, r:12, p:16, sigma:0.256, time:0.40s
+Iter 10, obj:-59.31853471, gap:5.7e-04, pinf:1.8e-01, dinf:8.9e-05, gradnorm:2.8e-02, r:14, p:20, sigma:0.512, time:0.46s
+Iter 11, obj:-59.28205038, gap:3.0e-04, pinf:8.2e-02, dinf:4.1e-05, gradnorm:5.3e-02, r:14, p:20, sigma:1.024, time:0.51s
+Iter 12, obj:-59.26595284, gap:1.5e-04, pinf:3.8e-02, dinf:1.6e-04, gradnorm:8.2e-02, r:14, p:18, sigma:2.048, time:0.57s
+Iter 13, obj:-59.25818211, gap:5.3e-05, pinf:2.0e-02, dinf:9.1e-06, gradnorm:3.2e-02, r:14, p:18, sigma:1.024, time:0.62s
+Iter 14, obj:-59.25522653, gap:1.3e-05, pinf:7.9e-03, dinf:5.2e-07, gradnorm:7.3e-03, r:14, p:16, sigma:0.512, time:0.69s
+Iter 15, obj:-59.25451206, gap:4.5e-06, pinf:2.8e-03, dinf:6.9e-07, gradnorm:1.9e-02, r:12, p:16, sigma:1.024, time:0.75s
+Iter 16, obj:-59.25421043, gap:6.0e-07, pinf:3.0e-03, dinf:1.9e-08, gradnorm:1.2e-03, r:9, p:14, sigma:0.512, time:0.81s
+Iter 17, obj:-59.25417204, gap:1.9e-07, pinf:3.2e-04, dinf:2.7e-08, gradnorm:2.7e-03, r:8, p:11, sigma:1.024, time:0.85s
+Iter 18, obj:-59.25415881, gap:2.6e-08, pinf:4.6e-04, dinf:1.0e-09, gradnorm:2.9e-04, r:3, p:10, sigma:0.512, time:0.89s
+Iter 19, obj:-59.25415697, gap:6.4e-09, pinf:6.4e-05, dinf:4.0e-10, gradnorm:3.3e-04, r:2, p:5, sigma:1.024, time:0.94s
+Iter 20, obj:-59.25415633, gap:1.1e-10, pinf:5.6e-05, dinf:4.5e-12, gradnorm:1.8e-05, r:2, p:4, sigma:0.512, time:0.98s
+Iter 21, obj:-59.25415632, gap:4.6e-11, pinf:3.6e-06, dinf:1.8e-12, gradnorm:1.8e-05, r:2, p:4, sigma:1.024, time:1.03s
+Iter 22, obj:-59.25415632, gap:1.6e-12, pinf:4.3e-06, dinf:3.6e-14, gradnorm:1.3e-06, r:2, p:4, sigma:0.512, time:1.07s
+Iter 23, obj:-59.25415632, gap:4.9e-13, pinf:2.9e-07, dinf:2.5e-14, gradnorm:2.3e-06, r:2, p:4, sigma:1.024, time:1.11s
+Iter 24, obj:-59.25415632, gap:2.7e-14, pinf:4.3e-07, dinf:9.6e-16, gradnorm:3.1e-07, r:2, p:4, sigma:0.512, time:1.15s
+Iter 25, obj:-59.25415632, gap:7.0e-15, pinf:5.2e-08, dinf:2.6e-16, gradnorm:2.3e-07, r:2, p:4, sigma:1.024, time:1.19s
+Iter 26, obj:-59.25415632, gap:0.0e+00, pinf:2.8e-08, dinf:1.1e-16, gradnorm:1.5e-08, r:2, p:4, sigma:0.512, time:1.23s
+Iter 27, obj:-59.25415632, gap:5.9e-17, pinf:2.7e-09, dinf:3.8e-18, gradnorm:8.9e-09, r:2, p:4, sigma:1.024, time:1.26s
+Optimality is reached!
+ManiSDP_complexunitdiag: optimum = -59.25415632, time = 1.26s
+ManiSDP_complexunitdiag: f = -59.25415632, eta = 2.7e-09, t = 1.26s
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+d=20 rng(2)
+正在生成 BQP 矩量松弛数据...
+
+=== 情形 1: ManiCSDP_unitdiag (复数 SDP) ===
+ManiCSDP is starting...
+CSDP size: n = 231, m = 8400
+Iter 1, obj:-104.26412852, gap:2.5e-02, pinf:7.2e+01, dinf:2.0e-02, gradnorm:3.8e+00, r:2, p:2, sigma:0.001, time:0.02s
+Iter 2, obj:-104.57692833, gap:6.3e-02, pinf:6.4e+01, dinf:1.4e-02, gradnorm:2.0e+00, r:10, p:10, sigma:0.002, time:0.06s
+Iter 3, obj:-103.13063047, gap:9.2e-02, pinf:4.9e+01, dinf:1.2e-02, gradnorm:3.3e+00, r:17, p:18, sigma:0.004, time:0.09s
+Iter 4, obj:-101.42524278, gap:1.5e-02, pinf:2.4e+01, dinf:5.2e-02, gradnorm:7.9e+00, r:22, p:25, sigma:0.008, time:0.13s
+Iter 5, obj:-104.84820922, gap:2.0e-03, pinf:1.1e+01, dinf:4.8e-03, gradnorm:1.3e+00, r:28, p:30, sigma:0.016, time:0.17s
+Iter 6, obj:-105.57900972, gap:6.6e-05, pinf:2.5e+00, dinf:1.5e-03, gradnorm:6.1e-01, r:18, p:36, sigma:0.032, time:0.26s
+Iter 7, obj:-105.57964451, gap:3.0e-04, pinf:9.9e-01, dinf:8.6e-04, gradnorm:3.7e-01, r:15, p:21, sigma:0.064, time:0.33s
+Iter 8, obj:-105.56736071, gap:2.4e-04, pinf:4.6e-01, dinf:1.1e-03, gradnorm:4.8e-01, r:11, p:17, sigma:0.128, time:0.42s
+Iter 9, obj:-105.56299624, gap:1.0e-04, pinf:2.7e-01, dinf:6.0e-04, gradnorm:3.4e-01, r:8, p:13, sigma:0.064, time:0.50s
+Iter 10, obj:-105.55812548, gap:1.8e-05, pinf:4.2e-01, dinf:3.6e-04, gradnorm:2.2e-01, r:5, p:9, sigma:0.032, time:0.57s
+Iter 11, obj:-105.55721445, gap:2.6e-06, pinf:1.6e-01, dinf:8.8e-07, gradnorm:3.0e-02, r:4, p:6, sigma:0.064, time:0.64s
+Iter 12, obj:-105.55724802, gap:1.2e-06, pinf:1.3e-02, dinf:8.5e-08, gradnorm:8.1e-03, r:4, p:5, sigma:0.128, time:0.70s
+Iter 13, obj:-105.55719012, gap:3.2e-07, pinf:2.1e-03, dinf:2.3e-08, gradnorm:4.2e-03, r:3, p:5, sigma:0.256, time:0.77s
+Iter 14, obj:-105.55717393, gap:7.1e-08, pinf:1.5e-03, dinf:5.8e-09, gradnorm:1.5e-03, r:2, p:4, sigma:0.128, time:0.83s
+Iter 15, obj:-105.55717036, gap:1.6e-08, pinf:5.3e-04, dinf:1.1e-09, gradnorm:5.7e-04, r:2, p:3, sigma:0.256, time:0.90s
+Iter 16, obj:-105.55716973, gap:3.9e-09, pinf:3.3e-04, dinf:2.8e-10, gradnorm:3.3e-04, r:1, p:3, sigma:0.128, time:0.96s
+Iter 17, obj:-105.55716950, gap:1.6e-13, pinf:1.2e-04, dinf:5.7e-16, gradnorm:4.2e-07, r:1, p:2, sigma:0.256, time:1.02s
+Iter 18, obj:-105.55716950, gap:0.0e+00, pinf:1.2e-06, dinf:3.5e-17, gradnorm:7.6e-08, r:1, p:2, sigma:0.512, time:1.08s
+Iter 19, obj:-105.55716950, gap:6.7e-17, pinf:8.6e-09, dinf:0.0e+00, gradnorm:4.8e-09, r:1, p:2, sigma:1.024, time:1.12s
+Optimality is reached!
+ManiCSDP: optimum = -105.55716950, time = 1.12s
+ManiCSDP_unitdiag: f = -105.55716950, eta = 8.6e-09, t = 1.12s
+
+=== 情形 2: SeDuMi (复数 SDP) ===
+SeDuMi 成功，用时 1952.87s (迭代 25 次)
+  f = -105.55716508, pinf = 3.54e-09, dinf = 9.77e-09, gap = 1.58e-10
+
+正在执行 CSDP → RSDP 转换...
+
+=== 情形 3: MOSEK (实 RSDP) ===
+MOSEK 成功，用时 14.41s
+  f = -105.55715105, pinf = 2.38e-13, dinf = 2.19e-16, gap = 3.12e-10
+
+=== 情形 4: ManiSDP_complexunitdiag (实 RSDP) ===
+ManiSDP_complexunitdiag is starting...
+Real SDP: n2 = 462 (complex n = 231), m = 8400
+Iter 1, obj:-98.87619171, gap:2.6e-02, pinf:7.1e+01, dinf:5.7e-02, gradnorm:7.9e+00, r:2, p:2, sigma:0.001, time:0.04s
+Iter 2, obj:-104.71798458, gap:7.8e-02, pinf:7.2e+01, dinf:3.8e-02, gradnorm:7.9e-01, r:10, p:10, sigma:0.002, time:0.10s
+Iter 3, obj:-100.02438829, gap:1.4e-01, pinf:5.9e+01, dinf:2.8e-02, gradnorm:3.0e+00, r:18, p:18, sigma:0.004, time:0.15s
+Iter 4, obj:-96.41282117, gap:1.8e-01, pinf:4.7e+01, dinf:5.6e-02, gradnorm:4.5e+00, r:26, p:26, sigma:0.008, time:0.20s
+Iter 5, obj:-95.53597268, gap:5.8e-02, pinf:3.2e+01, dinf:1.1e-01, gradnorm:9.8e+00, r:32, p:34, sigma:0.016, time:0.27s
+Iter 6, obj:-103.58505063, gap:4.7e-03, pinf:1.2e+01, dinf:1.3e-02, gradnorm:2.2e+00, r:36, p:40, sigma:0.032, time:0.35s
+Iter 7, obj:-105.18212296, gap:6.0e-03, pinf:6.2e+00, dinf:3.8e-02, gradnorm:2.9e+00, r:38, p:44, sigma:0.064, time:0.45s
+Iter 8, obj:-105.47529630, gap:6.7e-04, pinf:2.0e+00, dinf:7.9e-03, gradnorm:1.0e+00, r:35, p:46, sigma:0.128, time:0.57s
+Iter 9, obj:-105.55495810, gap:8.2e-05, pinf:3.8e-01, dinf:2.3e-03, gradnorm:5.0e-01, r:18, p:41, sigma:0.256, time:0.79s
+Iter 10, obj:-105.55670424, gap:1.6e-05, pinf:2.8e-01, dinf:1.1e-05, gradnorm:5.6e-02, r:13, p:22, sigma:0.128, time:0.98s
+Iter 11, obj:-105.55755102, gap:9.7e-06, pinf:3.5e-02, dinf:2.7e-06, gradnorm:2.2e-02, r:10, p:15, sigma:0.256, time:1.13s
+Iter 12, obj:-105.55724110, gap:2.6e-06, pinf:8.0e-03, dinf:2.4e-07, gradnorm:7.3e-03, r:8, p:12, sigma:0.512, time:1.32s
+Iter 13, obj:-105.55719347, gap:1.0e-06, pinf:3.1e-03, dinf:1.7e-07, gradnorm:5.7e-03, r:8, p:10, sigma:1.024, time:1.53s
+Iter 14, obj:-105.55717451, gap:1.2e-07, pinf:8.3e-04, dinf:9.5e-09, gradnorm:1.2e-03, r:6, p:10, sigma:0.512, time:1.71s
+Iter 15, obj:-105.55716976, gap:6.1e-09, pinf:7.2e-04, dinf:4.0e-10, gradnorm:1.9e-04, r:2, p:8, sigma:0.256, time:1.90s
+Iter 16, obj:-105.55716948, gap:5.2e-11, pinf:4.1e-05, dinf:2.3e-11, gradnorm:7.0e-05, r:2, p:4, sigma:0.512, time:2.07s
+Iter 17, obj:-105.55716950, gap:1.0e-11, pinf:3.2e-05, dinf:4.4e-12, gradnorm:2.8e-05, r:2, p:4, sigma:0.256, time:2.24s
+Iter 18, obj:-105.55716950, gap:2.7e-12, pinf:9.0e-06, dinf:1.3e-12, gradnorm:1.4e-05, r:2, p:4, sigma:0.512, time:2.42s
+Iter 19, obj:-105.55716950, gap:5.3e-13, pinf:7.6e-06, dinf:2.4e-13, gradnorm:6.2e-06, r:2, p:4, sigma:0.256, time:2.61s
+Iter 20, obj:-105.55716950, gap:1.3e-13, pinf:1.9e-06, dinf:5.8e-14, gradnorm:3.6e-06, r:2, p:4, sigma:0.512, time:2.78s
+Iter 21, obj:-105.55716950, gap:2.6e-14, pinf:1.9e-06, dinf:9.6e-15, gradnorm:1.5e-06, r:2, p:4, sigma:0.256, time:3.01s
+Iter 22, obj:-105.55716950, gap:6.8e-15, pinf:4.9e-07, dinf:3.1e-15, gradnorm:8.8e-07, r:2, p:4, sigma:0.512, time:3.21s
+Iter 23, obj:-105.55716950, gap:1.4e-15, pinf:5.5e-07, dinf:6.3e-16, gradnorm:4.2e-07, r:2, p:4, sigma:0.256, time:3.39s
+Iter 24, obj:-105.55716950, gap:3.3e-16, pinf:1.5e-07, dinf:1.4e-16, gradnorm:2.1e-07, r:2, p:4, sigma:0.512, time:3.57s
+Iter 25, obj:-105.55716950, gap:2.0e-16, pinf:1.4e-07, dinf:3.5e-17, gradnorm:8.4e-08, r:2, p:4, sigma:0.256, time:3.77s
+Iter 26, obj:-105.55716950, gap:6.7e-17, pinf:2.4e-08, dinf:4.6e-17, gradnorm:4.4e-08, r:2, p:4, sigma:0.512, time:3.95s
+Iter 27, obj:-105.55716950, gap:6.7e-17, pinf:2.3e-08, dinf:0.0e+00, gradnorm:1.7e-08, r:2, p:4, sigma:0.256, time:4.14s
+Iter 28, obj:-105.55716950, gap:0.0e+00, pinf:8.5e-09, dinf:4.0e-18, gradnorm:9.6e-09, r:2, p:3, sigma:0.512, time:4.24s
+Optimality is reached!
+ManiSDP_complexunitdiag: optimum = -105.55716950, time = 4.24s
+ManiSDP_complexunitdiag: f = -105.55716950, eta = 8.5e-09, t = 4.24s
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+d=20 rng(3)
+正在生成 BQP 矩量松弛数据...
+
+=== 情形 1: ManiCSDP_unitdiag (复数 SDP) ===
+ManiCSDP is starting...
+CSDP size: n = 231, m = 8400
+Iter 1, obj:-95.19675523, gap:3.0e-02, pinf:7.5e+01, dinf:5.1e-02, gradnorm:1.4e+01, r:2, p:2, sigma:0.001, time:0.02s
+Iter 2, obj:-103.66854122, gap:8.2e-02, pinf:7.3e+01, dinf:2.7e-02, gradnorm:2.1e+00, r:10, p:10, sigma:0.002, time:0.04s
+Iter 3, obj:-101.70855486, gap:1.5e-01, pinf:6.1e+01, dinf:2.0e-02, gradnorm:3.1e+00, r:18, p:18, sigma:0.004, time:0.08s
+Iter 4, obj:-97.52639384, gap:2.2e-01, pinf:4.9e+01, dinf:4.2e-02, gradnorm:5.9e+00, r:25, p:26, sigma:0.008, time:0.11s
+Iter 5, obj:-98.25454829, gap:2.0e-02, pinf:1.8e+01, dinf:2.8e-02, gradnorm:5.8e+00, r:32, p:33, sigma:0.016, time:0.15s
+Iter 6, obj:-103.19457125, gap:8.8e-03, pinf:9.1e+00, dinf:6.4e-03, gradnorm:3.1e+00, r:29, p:40, sigma:0.032, time:0.21s
+Iter 7, obj:-103.76276420, gap:3.0e-03, pinf:3.7e+00, dinf:1.5e-02, gradnorm:2.8e+00, r:23, p:36, sigma:0.064, time:0.28s
+Iter 8, obj:-103.76282934, gap:9.5e-04, pinf:1.3e+00, dinf:5.6e-04, gradnorm:9.7e-01, r:13, p:25, sigma:0.128, time:0.34s
+Iter 9, obj:-103.73905025, gap:2.2e-04, pinf:2.3e-01, dinf:1.3e-05, gradnorm:1.1e-01, r:5, p:15, sigma:0.256, time:0.42s
+Iter 10, obj:-103.71737395, gap:6.7e-05, pinf:4.3e-02, dinf:7.2e-06, gradnorm:8.1e-02, r:5, p:6, sigma:0.512, time:0.49s
+Iter 11, obj:-103.70912849, gap:9.4e-06, pinf:1.8e-02, dinf:4.9e-07, gradnorm:2.3e-02, r:3, p:6, sigma:0.256, time:0.56s
+Iter 12, obj:-103.70798655, gap:6.0e-07, pinf:9.8e-03, dinf:2.5e-08, gradnorm:8.0e-03, r:3, p:4, sigma:0.128, time:0.63s
+Iter 13, obj:-103.70792383, gap:8.2e-08, pinf:1.2e-03, dinf:3.3e-09, gradnorm:1.9e-03, r:3, p:4, sigma:0.256, time:0.70s
+Iter 14, obj:-103.70791541, gap:8.0e-09, pinf:4.9e-04, dinf:5.0e-10, gradnorm:5.8e-04, r:1, p:4, sigma:0.128, time:0.76s
+Iter 15, obj:-103.70791459, gap:3.4e-12, pinf:6.0e-04, dinf:1.7e-15, gradnorm:1.4e-06, r:1, p:2, sigma:0.064, time:0.82s
+Iter 16, obj:-103.70791459, gap:5.0e-15, pinf:1.8e-05, dinf:0.0e+00, gradnorm:2.6e-09, r:1, p:2, sigma:0.128, time:0.88s
+Iter 17, obj:-103.70791459, gap:0.0e+00, pinf:4.3e-07, dinf:0.0e+00, gradnorm:3.3e-09, r:1, p:2, sigma:0.256, time:0.92s
+Iter 18, obj:-103.70791459, gap:6.8e-17, pinf:7.2e-09, dinf:0.0e+00, gradnorm:8.8e-10, r:1, p:2, sigma:0.512, time:0.94s
+Optimality is reached!
+ManiCSDP: optimum = -103.70791459, time = 0.94s
+ManiCSDP_unitdiag: f = -103.70791459, eta = 7.2e-09, t = 0.94s
+
+=== 情形 2: SeDuMi (复数 SDP) ===
+SeDuMi 成功，用时 1789.09s (迭代 22 次)
+  f = -103.70790909, pinf = 4.49e-09, dinf = 1.19e-08, gap = 2.26e-10
+
+正在执行 CSDP → RSDP 转换...
+
+=== 情形 3: MOSEK (实 RSDP) ===
+MOSEK 成功，用时 16.83s
+  f = -103.70791457, pinf = 5.18e-12, dinf = 0.00e+00, gap = 2.53e-13
+
+=== 情形 4: ManiSDP_complexunitdiag (实 RSDP) ===
+ManiSDP_complexunitdiag is starting...
+Real SDP: n2 = 462 (complex n = 231), m = 8400
+Iter 1, obj:-100.89959542, gap:2.8e-02, pinf:7.4e+01, dinf:2.1e-02, gradnorm:4.9e+00, r:2, p:2, sigma:0.001, time:0.05s
+Iter 2, obj:-103.59381299, gap:7.7e-02, pinf:7.0e+01, dinf:1.1e-02, gradnorm:1.3e+00, r:10, p:10, sigma:0.002, time:0.12s
+Iter 3, obj:-102.32936906, gap:1.6e-01, pinf:6.2e+01, dinf:1.8e-02, gradnorm:1.6e+00, r:18, p:18, sigma:0.004, time:0.19s
+Iter 4, obj:-100.61491075, gap:1.1e-01, pinf:3.5e+01, dinf:5.1e-02, gradnorm:4.7e+00, r:24, p:26, sigma:0.008, time:0.26s
+Iter 5, obj:-102.60318631, gap:2.9e-03, pinf:1.3e+01, dinf:2.9e-02, gradnorm:2.8e+00, r:30, p:32, sigma:0.016, time:0.34s
+Iter 6, obj:-103.23678453, gap:9.0e-04, pinf:5.4e+00, dinf:1.6e-03, gradnorm:6.9e-01, r:32, p:38, sigma:0.032, time:0.43s
+Iter 7, obj:-103.87785211, gap:8.0e-04, pinf:1.6e+00, dinf:4.0e-04, gradnorm:3.2e-01, r:18, p:38, sigma:0.064, time:0.62s
+Iter 8, obj:-103.79544444, gap:4.2e-04, pinf:4.4e-01, dinf:6.1e-06, gradnorm:4.7e-02, r:9, p:20, sigma:0.128, time:0.84s
+Iter 9, obj:-103.74485966, gap:1.9e-04, pinf:1.5e-01, dinf:3.2e-06, gradnorm:4.2e-02, r:8, p:11, sigma:0.256, time:1.02s
+Iter 10, obj:-103.72348099, gap:8.9e-05, pinf:6.1e-02, dinf:1.6e-06, gradnorm:2.1e-02, r:6, p:10, sigma:0.512, time:1.22s
+Iter 11, obj:-103.71515437, gap:4.5e-05, pinf:2.8e-02, dinf:1.2e-06, gradnorm:2.4e-02, r:6, p:8, sigma:1.024, time:1.45s
+Iter 12, obj:-103.71136570, gap:2.3e-05, pinf:1.3e-02, dinf:7.4e-07, gradnorm:1.5e-02, r:6, p:8, sigma:2.048, time:1.64s
+Iter 13, obj:-103.70923693, gap:9.1e-06, pinf:5.7e-03, dinf:2.3e-07, gradnorm:9.6e-03, r:6, p:8, sigma:1.024, time:1.83s
+Iter 14, obj:-103.70807564, gap:1.0e-06, pinf:1.3e-03, dinf:2.0e-08, gradnorm:1.8e-03, r:6, p:8, sigma:0.512, time:2.02s
+Iter 15, obj:-103.70792148, gap:4.2e-08, pinf:6.5e-04, dinf:1.7e-09, gradnorm:9.7e-04, r:3, p:8, sigma:0.256, time:2.21s
+Iter 16, obj:-103.70791475, gap:9.3e-10, pinf:3.2e-04, dinf:1.5e-11, gradnorm:7.0e-05, r:2, p:5, sigma:0.128, time:2.40s
+Iter 17, obj:-103.70791459, gap:4.1e-11, pinf:2.6e-05, dinf:9.1e-13, gradnorm:2.4e-05, r:2, p:4, sigma:0.256, time:2.57s
+Iter 18, obj:-103.70791459, gap:1.1e-11, pinf:3.3e-06, dinf:3.8e-13, gradnorm:1.4e-05, r:2, p:4, sigma:0.512, time:2.75s
+Iter 19, obj:-103.70791459, gap:2.3e-12, pinf:6.1e-06, dinf:1.2e-13, gradnorm:8.3e-06, r:2, p:4, sigma:0.256, time:2.93s
+Iter 20, obj:-103.70791459, gap:3.4e-13, pinf:3.8e-06, dinf:5.1e-15, gradnorm:1.8e-06, r:2, p:4, sigma:0.128, time:3.11s
+Iter 21, obj:-103.70791459, gap:7.5e-14, pinf:7.9e-07, dinf:5.7e-15, gradnorm:1.9e-06, r:2, p:4, sigma:0.256, time:3.28s
+Iter 22, obj:-103.70791459, gap:1.4e-14, pinf:7.7e-07, dinf:2.0e-16, gradnorm:4.4e-07, r:2, p:4, sigma:0.128, time:3.46s
+Iter 23, obj:-103.70791459, gap:2.5e-15, pinf:2.1e-07, dinf:6.9e-16, gradnorm:5.7e-07, r:2, p:4, sigma:0.256, time:3.68s
+Iter 24, obj:-103.70791459, gap:4.8e-16, pinf:2.5e-07, dinf:0.0e+00, gradnorm:8.9e-08, r:2, p:4, sigma:0.128, time:3.85s
+Iter 25, obj:-103.70791459, gap:6.8e-17, pinf:3.8e-08, dinf:6.8e-17, gradnorm:1.1e-07, r:2, p:3, sigma:0.256, time:4.03s
+Iter 26, obj:-103.70791459, gap:0.0e+00, pinf:6.0e-08, dinf:0.0e+00, gradnorm:8.0e-09, r:2, p:4, sigma:0.128, time:4.18s
+Iter 27, obj:-103.70791459, gap:6.8e-17, pinf:5.1e-09, dinf:2.1e-17, gradnorm:1.4e-08, r:2, p:3, sigma:0.256, time:4.40s
+Optimality is reached!
+ManiSDP_complexunitdiag: optimum = -103.70791459, time = 4.40s
+ManiSDP_complexunitdiag: f = -103.70791459, eta = 5.1e-09, t = 4.40s
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+d=20 rng(4)
+正在生成 BQP 矩量松弛数据...
+
+=== 情形 1: ManiCSDP_unitdiag (复数 SDP) ===
+ManiCSDP is starting...
+CSDP size: n = 231, m = 8400
+Iter 1, obj:-98.21406758, gap:2.3e-02, pinf:6.6e+01, dinf:8.9e-02, gradnorm:1.3e+01, r:2, p:2, sigma:0.001, time:0.03s
+Iter 2, obj:-106.28246659, gap:6.0e-02, pinf:6.4e+01, dinf:5.6e-02, gradnorm:2.2e+00, r:10, p:10, sigma:0.002, time:0.05s
+Iter 3, obj:-106.34997582, gap:1.1e-01, pinf:5.7e+01, dinf:1.1e-02, gradnorm:1.4e+00, r:17, p:18, sigma:0.004, time:0.08s
+Iter 4, obj:-104.55060587, gap:5.5e-02, pinf:3.4e+01, dinf:6.0e-02, gradnorm:7.3e+00, r:25, p:25, sigma:0.008, time:0.13s
+Iter 5, obj:-105.29966477, gap:2.6e-02, pinf:1.8e+01, dinf:3.9e-02, gradnorm:6.6e+00, r:33, p:33, sigma:0.016, time:0.17s
+Iter 6, obj:-106.81770579, gap:3.3e-03, pinf:9.6e+00, dinf:7.7e-03, gradnorm:1.4e+00, r:38, p:41, sigma:0.032, time:0.23s
+Iter 7, obj:-107.38671762, gap:5.6e-03, pinf:3.7e+00, dinf:2.3e-03, gradnorm:6.8e-01, r:30, p:45, sigma:0.064, time:0.31s
+Iter 8, obj:-107.13584453, gap:7.6e-03, pinf:2.4e+00, dinf:1.4e-03, gradnorm:2.6e-01, r:24, p:34, sigma:0.128, time:0.41s
+Iter 9, obj:-106.49538696, gap:8.1e-03, pinf:1.7e+00, dinf:1.9e-03, gradnorm:5.6e-01, r:20, p:30, sigma:0.256, time:0.52s
+Iter 10, obj:-105.92347425, gap:9.7e-03, pinf:1.3e+00, dinf:6.4e-03, gradnorm:1.2e+00, r:24, p:28, sigma:0.512, time:0.62s
+Iter 11, obj:-105.20020500, gap:1.1e-02, pinf:9.8e-01, dinf:1.5e-02, gradnorm:2.6e+00, r:27, p:32, sigma:1.024, time:0.71s
+Iter 12, obj:-104.37058593, gap:4.3e-03, pinf:8.8e-01, dinf:7.6e-03, gradnorm:1.4e+00, r:31, p:35, sigma:0.512, time:0.81s
+Iter 13, obj:-103.33489922, gap:2.0e-03, pinf:2.8e+00, dinf:4.5e-02, gradnorm:3.1e+00, r:29, p:39, sigma:0.256, time:0.92s
+Iter 14, obj:-102.96003027, gap:3.5e-03, pinf:3.0e+00, dinf:8.1e-03, gradnorm:1.2e+00, r:29, p:37, sigma:0.128, time:1.02s
+Iter 15, obj:-104.47367023, gap:2.9e-03, pinf:9.9e-01, dinf:6.3e-03, gradnorm:1.7e+00, r:21, p:37, sigma:0.256, time:1.11s
+Iter 16, obj:-104.36817446, gap:1.7e-03, pinf:1.1e+00, dinf:1.0e-03, gradnorm:4.9e-01, r:19, p:29, sigma:0.128, time:1.23s
+Iter 17, obj:-104.24176682, gap:1.1e-03, pinf:3.9e-01, dinf:5.0e-04, gradnorm:3.7e-01, r:18, p:26, sigma:0.256, time:1.31s
+Iter 18, obj:-104.29177062, gap:8.6e-04, pinf:2.2e-01, dinf:9.0e-04, gradnorm:3.2e-01, r:16, p:23, sigma:0.512, time:1.46s
+Iter 19, obj:-104.28679021, gap:4.3e-04, pinf:1.7e-01, dinf:1.3e-04, gradnorm:2.0e-01, r:15, p:21, sigma:0.256, time:1.58s
+Iter 20, obj:-104.26102384, gap:2.1e-04, pinf:1.2e-01, dinf:9.4e-06, gradnorm:7.6e-02, r:13, p:16, sigma:0.128, time:1.68s
+Iter 21, obj:-104.23973448, gap:8.6e-05, pinf:5.3e-02, dinf:1.2e-06, gradnorm:2.7e-02, r:11, p:14, sigma:0.256, time:1.78s
+Iter 22, obj:-104.23429033, gap:5.8e-05, pinf:2.8e-02, dinf:3.2e-06, gradnorm:2.9e-02, r:11, p:12, sigma:0.512, time:1.86s
+Iter 23, obj:-104.23008594, gap:3.6e-05, pinf:1.8e-02, dinf:3.6e-07, gradnorm:8.6e-03, r:9, p:12, sigma:0.256, time:1.95s
+Iter 24, obj:-104.22797700, gap:2.5e-05, pinf:1.2e-02, dinf:5.1e-07, gradnorm:1.9e-02, r:8, p:10, sigma:0.512, time:2.04s
+Iter 25, obj:-104.22607824, gap:1.5e-05, pinf:7.4e-03, dinf:1.4e-07, gradnorm:4.8e-03, r:7, p:9, sigma:0.256, time:2.12s
+Iter 26, obj:-104.22511515, gap:1.0e-05, pinf:4.6e-03, dinf:2.0e-07, gradnorm:9.9e-03, r:6, p:8, sigma:0.512, time:2.20s
+Iter 27, obj:-104.22409877, gap:4.8e-06, pinf:3.0e-03, dinf:4.7e-08, gradnorm:2.2e-03, r:6, p:7, sigma:0.256, time:2.28s
+Iter 28, obj:-104.22382001, gap:3.3e-06, pinf:1.7e-03, dinf:5.7e-08, gradnorm:4.0e-03, r:6, p:7, sigma:0.512, time:2.35s
+Iter 29, obj:-104.22356099, gap:2.0e-06, pinf:1.3e-03, dinf:1.9e-08, gradnorm:1.8e-03, r:6, p:7, sigma:0.256, time:2.43s
+Iter 30, obj:-104.22333370, gap:7.5e-07, pinf:9.7e-04, dinf:7.7e-09, gradnorm:8.8e-04, r:5, p:7, sigma:0.128, time:2.51s
+Iter 31, obj:-104.22326647, gap:4.0e-07, pinf:3.8e-04, dinf:4.0e-09, gradnorm:8.7e-04, r:4, p:6, sigma:0.256, time:2.58s
+Iter 32, obj:-104.22321269, gap:1.1e-07, pinf:3.6e-04, dinf:1.4e-09, gradnorm:6.0e-04, r:3, p:5, sigma:0.128, time:2.66s
+Iter 33, obj:-104.22319273, gap:5.4e-09, pinf:3.8e-04, dinf:4.5e-11, gradnorm:6.4e-05, r:1, p:4, sigma:0.064, time:2.72s
+Iter 34, obj:-104.22319168, gap:1.7e-13, pinf:6.8e-05, dinf:4.8e-16, gradnorm:2.5e-07, r:1, p:2, sigma:0.128, time:2.78s
+Iter 35, obj:-104.22319168, gap:8.8e-16, pinf:3.7e-06, dinf:0.0e+00, gradnorm:2.6e-08, r:1, p:2, sigma:0.256, time:2.84s
+Iter 36, obj:-104.22319168, gap:6.8e-17, pinf:1.8e-07, dinf:1.9e-19, gradnorm:2.1e-09, r:1, p:2, sigma:0.512, time:2.88s
+Iter 37, obj:-104.22319168, gap:0.0e+00, pinf:4.8e-09, dinf:0.0e+00, gradnorm:2.4e-09, r:1, p:2, sigma:1.024, time:2.90s
+Optimality is reached!
+ManiCSDP: optimum = -104.22319168, time = 2.90s
+ManiCSDP_unitdiag: f = -104.22319168, eta = 4.8e-09, t = 2.90s
+
+=== 情形 2: SeDuMi (复数 SDP) ===
+SeDuMi 成功，用时 1663.60s (迭代 22 次)
+  f = -104.22318841, pinf = 2.73e-09, dinf = 6.39e-09, gap = 1.24e-10
+
+正在执行 CSDP → RSDP 转换...
+
+=== 情形 3: MOSEK (实 RSDP) ===
+MOSEK 成功，用时 13.78s
+  f = -104.22281114, pinf = 1.58e-12, dinf = 2.00e-16, gap = 3.61e-09
+
+=== 情形 4: ManiSDP_complexunitdiag (实 RSDP) ===
+ManiSDP_complexunitdiag is starting...
+Real SDP: n2 = 462 (complex n = 231), m = 8400
+Iter 1, obj:-103.22329481, gap:2.2e-02, pinf:6.7e+01, dinf:4.9e-02, gradnorm:6.1e+00, r:2, p:2, sigma:0.001, time:0.05s
+Iter 2, obj:-106.72730086, gap:5.1e-02, pinf:6.0e+01, dinf:1.4e-02, gradnorm:1.9e+00, r:10, p:10, sigma:0.002, time:0.12s
+Iter 3, obj:-106.39982538, gap:9.4e-02, pinf:5.1e+01, dinf:1.6e-02, gradnorm:2.3e+00, r:16, p:18, sigma:0.004, time:0.19s
+Iter 4, obj:-100.73956436, gap:5.5e-02, pinf:3.8e+01, dinf:6.8e-02, gradnorm:5.6e+00, r:24, p:24, sigma:0.008, time:0.26s
+Iter 5, obj:-107.08615481, gap:1.1e-02, pinf:1.6e+01, dinf:1.7e-02, gradnorm:2.6e+00, r:32, p:32, sigma:0.016, time:0.36s
+Iter 6, obj:-107.60465938, gap:6.9e-03, pinf:8.3e+00, dinf:1.1e-02, gradnorm:1.3e+00, r:32, p:40, sigma:0.032, time:0.51s
+Iter 7, obj:-107.45501293, gap:6.0e-03, pinf:3.3e+00, dinf:4.7e-03, gradnorm:6.9e-01, r:31, p:40, sigma:0.064, time:0.63s
+Iter 8, obj:-107.14519019, gap:8.1e-03, pinf:2.5e+00, dinf:4.1e-03, gradnorm:6.0e-01, r:29, p:39, sigma:0.128, time:0.83s
+Iter 9, obj:-106.39844867, gap:8.3e-03, pinf:1.8e+00, dinf:1.2e-02, gradnorm:1.6e+00, r:28, p:37, sigma:0.256, time:1.03s
+Iter 10, obj:-105.69457094, gap:7.5e-03, pinf:1.2e+00, dinf:1.6e-02, gradnorm:1.5e+00, r:33, p:36, sigma:0.512, time:1.26s
+Iter 11, obj:-105.42302825, gap:6.6e-03, pinf:1.2e+00, dinf:3.2e-03, gradnorm:3.2e-01, r:39, p:41, sigma:0.256, time:1.42s
+Iter 12, obj:-104.83087941, gap:4.0e-03, pinf:7.4e-01, dinf:1.0e-02, gradnorm:8.5e-01, r:36, p:47, sigma:0.512, time:1.68s
+Iter 13, obj:-104.59137406, gap:2.7e-03, pinf:1.0e+00, dinf:6.5e-03, gradnorm:1.2e+00, r:35, p:44, sigma:0.256, time:1.95s
+Iter 14, obj:-104.53149405, gap:1.5e-03, pinf:1.0e+00, dinf:3.2e-04, gradnorm:1.6e-01, r:30, p:43, sigma:0.128, time:2.20s
+Iter 15, obj:-104.49489550, gap:1.5e-03, pinf:3.6e-01, dinf:3.1e-04, gradnorm:1.3e-01, r:28, p:38, sigma:0.256, time:2.36s
+Iter 16, obj:-104.43935644, gap:1.2e-03, pinf:2.1e-01, dinf:9.2e-04, gradnorm:1.1e-01, r:28, p:36, sigma:0.512, time:2.65s
+Iter 17, obj:-104.36668330, gap:8.5e-04, pinf:1.3e-01, dinf:3.0e-04, gradnorm:1.2e-01, r:28, p:36, sigma:1.024, time:2.92s
+Iter 18, obj:-104.31558693, gap:6.2e-04, pinf:8.5e-02, dinf:9.3e-04, gradnorm:1.3e-01, r:28, p:36, sigma:2.048, time:3.19s
+Iter 19, obj:-104.27001985, gap:3.3e-04, pinf:5.7e-02, dinf:4.4e-04, gradnorm:9.4e-02, r:28, p:36, sigma:1.024, time:3.45s
+Iter 20, obj:-104.24575133, gap:1.5e-04, pinf:4.5e-02, dinf:3.3e-05, gradnorm:4.9e-02, r:28, p:34, sigma:0.512, time:3.71s
+Iter 21, obj:-104.23353890, gap:6.8e-05, pinf:2.6e-02, dinf:2.9e-06, gradnorm:2.5e-02, r:28, p:30, sigma:0.256, time:3.96s
+Iter 22, obj:-104.22835151, gap:3.4e-05, pinf:1.3e-02, dinf:5.8e-06, gradnorm:3.1e-02, r:28, p:30, sigma:0.512, time:4.21s
+Iter 23, obj:-104.22519003, gap:1.3e-05, pinf:1.0e-02, dinf:4.8e-07, gradnorm:8.0e-03, r:26, p:30, sigma:0.256, time:4.45s
+Iter 24, obj:-104.22428723, gap:7.1e-06, pinf:4.1e-03, dinf:3.0e-07, gradnorm:8.3e-03, r:24, p:28, sigma:0.512, time:4.69s
+Iter 25, obj:-104.22341955, gap:1.7e-06, pinf:2.8e-03, dinf:1.7e-07, gradnorm:6.0e-03, r:20, p:26, sigma:0.256, time:4.93s
+Iter 26, obj:-104.22325296, gap:4.6e-07, pinf:2.5e-03, dinf:3.1e-08, gradnorm:2.4e-03, r:15, p:22, sigma:0.128, time:5.16s
+Iter 27, obj:-104.22321673, gap:1.9e-07, pinf:9.6e-04, dinf:7.7e-09, gradnorm:1.1e-03, r:8, p:17, sigma:0.256, time:5.38s
+Iter 28, obj:-104.22320342, gap:7.6e-08, pinf:9.0e-04, dinf:4.8e-09, gradnorm:1.0e-03, r:4, p:10, sigma:0.128, time:5.57s
+Iter 29, obj:-104.22319291, gap:7.7e-09, pinf:1.0e-03, dinf:2.2e-10, gradnorm:1.5e-04, r:2, p:6, sigma:0.064, time:5.76s
+Iter 30, obj:-104.22319171, gap:2.0e-10, pinf:1.7e-04, dinf:4.4e-11, gradnorm:1.1e-04, r:2, p:4, sigma:0.128, time:5.95s
+Iter 31, obj:-104.22319168, gap:4.9e-11, pinf:3.1e-05, dinf:1.8e-11, gradnorm:8.5e-05, r:2, p:4, sigma:0.256, time:6.13s
+Iter 32, obj:-104.22319168, gap:1.2e-11, pinf:4.0e-05, dinf:4.5e-12, gradnorm:3.5e-05, r:2, p:4, sigma:0.128, time:6.31s
+Iter 33, obj:-104.22319168, gap:3.1e-12, pinf:2.0e-05, dinf:3.0e-12, gradnorm:3.4e-05, r:2, p:4, sigma:0.256, time:6.49s
+Iter 34, obj:-104.22319168, gap:5.0e-13, pinf:1.4e-05, dinf:7.0e-13, gradnorm:1.4e-05, r:2, p:4, sigma:0.128, time:6.66s
+Iter 35, obj:-104.22319168, gap:4.5e-14, pinf:1.6e-05, dinf:2.3e-14, gradnorm:2.5e-06, r:2, p:4, sigma:0.064, time:6.85s
+Iter 36, obj:-104.22319168, gap:5.8e-14, pinf:2.9e-06, dinf:4.8e-14, gradnorm:3.1e-06, r:2, p:4, sigma:0.128, time:7.03s
+Iter 37, obj:-104.22319168, gap:3.7e-14, pinf:3.1e-06, dinf:2.6e-15, gradnorm:1.2e-06, r:2, p:4, sigma:0.064, time:7.22s
+Iter 38, obj:-104.22319168, gap:1.5e-14, pinf:1.2e-06, dinf:1.1e-14, gradnorm:1.7e-06, r:2, p:4, sigma:0.128, time:7.41s
+Iter 39, obj:-104.22319168, gap:6.0e-15, pinf:1.5e-06, dinf:5.7e-16, gradnorm:4.2e-07, r:2, p:4, sigma:0.064, time:7.59s
+Iter 40, obj:-104.22319168, gap:2.3e-15, pinf:3.3e-07, dinf:3.6e-16, gradnorm:2.6e-07, r:2, p:4, sigma:0.128, time:7.76s
+Iter 41, obj:-104.22319168, gap:9.5e-16, pinf:7.2e-08, dinf:4.2e-16, gradnorm:3.5e-07, r:2, p:4, sigma:0.256, time:7.94s
+Iter 42, obj:-104.22319168, gap:4.1e-16, pinf:1.1e-07, dinf:6.6e-17, gradnorm:1.3e-07, r:2, p:4, sigma:0.128, time:8.11s
+Iter 43, obj:-104.22319168, gap:6.8e-17, pinf:1.4e-07, dinf:2.3e-17, gradnorm:1.9e-08, r:2, p:4, sigma:0.064, time:8.29s
+Iter 44, obj:-104.22319168, gap:6.8e-17, pinf:1.5e-08, dinf:0.0e+00, gradnorm:9.0e-09, r:2, p:4, sigma:0.128, time:8.43s
+Iter 45, obj:-104.22319168, gap:6.8e-17, pinf:3.6e-09, dinf:0.0e+00, gradnorm:1.4e-08, r:2, p:3, sigma:0.256, time:8.61s
+Optimality is reached!
+ManiSDP_complexunitdiag: optimum = -104.22319168, time = 8.61s
+ManiSDP_complexunitdiag: f = -104.22319168, eta = 3.6e-09, t = 8.61s
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+d=25 rng(1)
+正在生成 BQP 矩量松弛数据...
+
+=== 情形 1: ManiCSDP_unitdiag (复数 SDP) ===
+ManiCSDP is starting...
+CSDP size: n = 351, m = 16250
+Iter 1, obj:-116.07187982, gap:4.2e-02, pinf:9.6e+01, dinf:2.3e-01, gradnorm:1.1e+01, r:2, p:2, sigma:0.001, time:0.11s
+Iter 2, obj:-142.61804572, gap:8.3e-02, pinf:9.3e+01, dinf:3.0e-02, gradnorm:8.0e+00, r:10, p:10, sigma:0.002, time:0.19s
+Iter 3, obj:-144.12543410, gap:2.0e-01, pinf:8.4e+01, dinf:1.9e-02, gradnorm:2.5e+00, r:17, p:18, sigma:0.004, time:0.27s
+Iter 4, obj:-132.07347140, gap:3.8e-01, pinf:7.2e+01, dinf:4.8e-02, gradnorm:5.3e+00, r:23, p:25, sigma:0.008, time:0.36s
+Iter 5, obj:-125.28725548, gap:2.2e-01, pinf:4.7e+01, dinf:2.6e-01, gradnorm:1.8e+01, r:31, p:31, sigma:0.016, time:0.44s
+Iter 6, obj:-139.22818963, gap:7.2e-02, pinf:1.9e+01, dinf:9.4e-02, gradnorm:1.6e+01, r:39, p:39, sigma:0.032, time:0.51s
+Iter 7, obj:-144.41442640, gap:4.2e-03, pinf:1.3e+01, dinf:3.5e-02, gradnorm:3.9e+00, r:39, p:47, sigma:0.064, time:0.66s
+Iter 8, obj:-145.56018219, gap:4.5e-03, pinf:3.4e+00, dinf:2.1e-02, gradnorm:3.5e+00, r:28, p:45, sigma:0.128, time:0.86s
+Iter 9, obj:-145.83253146, gap:3.4e-03, pinf:3.2e+00, dinf:6.7e-04, gradnorm:5.4e-01, r:22, p:33, sigma:0.064, time:1.07s
+Iter 10, obj:-145.74503911, gap:3.4e-03, pinf:1.4e+00, dinf:2.9e-03, gradnorm:1.1e+00, r:18, p:24, sigma:0.128, time:1.28s
+Iter 11, obj:-145.38502684, gap:1.4e-03, pinf:5.3e-01, dinf:6.9e-04, gradnorm:4.6e-01, r:12, p:21, sigma:0.256, time:1.54s
+Iter 12, obj:-145.24512798, gap:1.0e-03, pinf:3.4e-01, dinf:6.6e-04, gradnorm:6.8e-01, r:12, p:13, sigma:0.512, time:1.77s
+Iter 13, obj:-145.11331831, gap:3.1e-04, pinf:3.3e-01, dinf:2.8e-03, gradnorm:1.2e+00, r:11, p:15, sigma:0.256, time:1.99s
+Iter 14, obj:-145.06716660, gap:3.3e-05, pinf:3.6e-01, dinf:3.8e-06, gradnorm:5.4e-02, r:10, p:14, sigma:0.128, time:2.20s
+Iter 15, obj:-145.06845861, gap:2.3e-05, pinf:1.8e-02, dinf:7.2e-07, gradnorm:2.4e-02, r:9, p:11, sigma:0.256, time:2.42s
+Iter 16, obj:-145.06357181, gap:1.1e-06, pinf:9.6e-03, dinf:1.4e-07, gradnorm:1.6e-02, r:8, p:10, sigma:0.128, time:2.68s
+Iter 17, obj:-145.06352187, gap:7.3e-09, pinf:8.6e-03, dinf:6.0e-09, gradnorm:2.3e-03, r:5, p:9, sigma:0.064, time:2.94s
+Iter 18, obj:-145.06353571, gap:2.9e-09, pinf:1.1e-03, dinf:5.7e-10, gradnorm:7.6e-04, r:1, p:6, sigma:0.128, time:3.18s
+Iter 19, obj:-145.06353818, gap:1.1e-13, pinf:1.0e-04, dinf:7.9e-15, gradnorm:3.6e-06, r:1, p:2, sigma:0.256, time:3.39s
+Iter 20, obj:-145.06353818, gap:0.0e+00, pinf:1.1e-06, dinf:6.6e-17, gradnorm:8.1e-09, r:1, p:2, sigma:0.512, time:3.58s
+Iter 21, obj:-145.06353818, gap:0.0e+00, pinf:1.0e-08, dinf:0.0e+00, gradnorm:5.9e-09, r:1, p:2, sigma:1.024, time:3.65s
+Iter 22, obj:-145.06353818, gap:0.0e+00, pinf:5.0e-10, dinf:8.5e-17, gradnorm:9.4e-09, r:1, p:2, sigma:2.048, time:3.72s
+Optimality is reached!
+ManiCSDP: optimum = -145.06353818, time = 3.72s
+ManiCSDP_unitdiag: f = -145.06353818, eta = 5.0e-10, t = 3.72s
+Log: D:\Mine\Mani\ManiCSDP\Numerical Experiment\results_bqp_overnight\bqp_sedumi_d25_rng1.txt
+Started: 2026-05-07 02:29:48
+========== BQP SeDuMi  d=25  rng(1) ==========
+N (matrix size) = 351,  maxc = 1.8877e+00
+SeDuMi 1.3.7 by AdvOL, 2005-2008 and Jos F. Sturm, 1998-2003.
+Alg = 2: xz-corrector, Adaptive Step-Differentiation, theta = 0.250, beta = 0.500
+Status: ERROR
+内存不足。
+
+出错 getsymbada (第 56 行)
+            SYMBADA = SYMBADA + Ablks'*Ablks;
+
+出错 sedumi (第 382 行)
+ADA_sedumi_ = getsymbada(A,Ablkjc,DAt,K.sblkstart);
+
+出错 run_bqp_overnight>run_sedumi_case (第 114 行)
+    [x_sed, y_sed, info_sed] = sedumi(At_c', b_c, c_c/maxc_c, K_sedumi, pars);
+
+出错 run_bqp_overnight>@()run_sedumi_case(25,seed) (第 35 行)
+    run_case(@() run_sedumi_case(25, seed), out_dir, sprintf('bqp_sedumi_d25_rng%d.txt', seed));
+
+出错 run_bqp_overnight>run_case (第 58 行)
+        case_fun();
+
+出错 run_bqp_overnight (第 35 行)
+    run_case(@() run_sedumi_case(25, seed), out_dir, sprintf('bqp_sedumi_d25_rng%d.txt', seed));
+Finished: 2026-05-07 02:30:17
+========== CASE END ==========
+正在执行 CSDP → RSDP 转换...
+
+=== 情形 3: MOSEK (实 RSDP) ===
+MOSEK 成功，用时 82.59s
+  f = -145.06351080, pinf = 1.39e-12, dinf = 1.98e-16, gap = 5.93e-11
+
+=== 情形 4: ManiSDP_complexunitdiag (实 RSDP) ===
+ManiSDP_complexunitdiag is starting...
+Real SDP: n2 = 702 (complex n = 351), m = 16250
+Iter 1, obj:-138.79413249, gap:3.3e-02, pinf:9.5e+01, dinf:3.9e-02, gradnorm:9.2e+00, r:2, p:2, sigma:0.001, time:0.13s
+Iter 2, obj:-145.68518114, gap:8.6e-02, pinf:8.8e+01, dinf:1.3e-02, gradnorm:8.5e-01, r:10, p:10, sigma:0.002, time:0.27s
+Iter 3, obj:-141.99306727, gap:1.8e-01, pinf:7.9e+01, dinf:2.9e-02, gradnorm:2.4e+00, r:16, p:18, sigma:0.004, time:0.40s
+Iter 4, obj:-139.01708096, gap:1.3e-01, pinf:4.8e+01, dinf:5.1e-02, gradnorm:6.1e+00, r:24, p:24, sigma:0.008, time:0.54s
+Iter 5, obj:-144.59976463, gap:1.1e-02, pinf:1.7e+01, dinf:6.1e-02, gradnorm:4.5e+00, r:30, p:32, sigma:0.016, time:0.72s
+Iter 6, obj:-146.36616264, gap:3.3e-03, pinf:9.3e+00, dinf:2.4e-03, gradnorm:7.9e-01, r:34, p:38, sigma:0.032, time:0.90s
+Iter 7, obj:-146.49030672, gap:3.8e-03, pinf:3.2e+00, dinf:1.3e-02, gradnorm:1.0e+00, r:32, p:42, sigma:0.064, time:1.34s
+Iter 8, obj:-146.15940661, gap:3.2e-03, pinf:1.8e+00, dinf:1.0e-03, gradnorm:4.2e-01, r:25, p:40, sigma:0.128, time:1.85s
+Iter 9, obj:-145.73735623, gap:2.3e-03, pinf:8.7e-01, dinf:3.0e-04, gradnorm:1.6e-01, r:21, p:33, sigma:0.256, time:2.40s
+Iter 10, obj:-145.38902531, gap:1.4e-03, pinf:4.2e-01, dinf:2.1e-04, gradnorm:3.1e-01, r:20, p:29, sigma:0.512, time:2.94s
+Iter 11, obj:-145.19748749, gap:6.9e-04, pinf:1.9e-01, dinf:6.1e-04, gradnorm:1.9e-01, r:20, p:26, sigma:1.024, time:3.56s
+Iter 12, obj:-145.11694949, gap:3.4e-04, pinf:8.9e-02, dinf:1.5e-03, gradnorm:2.0e-01, r:20, p:26, sigma:2.048, time:4.12s
+Iter 13, obj:-145.07637156, gap:9.2e-05, pinf:4.3e-02, dinf:8.7e-04, gradnorm:1.9e-01, r:22, p:28, sigma:1.024, time:4.70s
+Iter 14, obj:-145.06361254, gap:9.1e-06, pinf:2.5e-02, dinf:9.0e-07, gradnorm:2.3e-02, r:20, p:26, sigma:0.512, time:5.27s
+Iter 15, obj:-145.06340513, gap:3.3e-06, pinf:9.2e-03, dinf:9.2e-07, gradnorm:2.3e-02, r:19, p:22, sigma:1.024, time:5.70s
+Iter 16, obj:-145.06333350, gap:4.0e-08, pinf:6.7e-03, dinf:8.9e-08, gradnorm:7.6e-03, r:17, p:21, sigma:0.512, time:6.22s
+Iter 17, obj:-145.06352969, gap:2.3e-09, pinf:3.5e-03, dinf:5.2e-09, gradnorm:2.3e-03, r:6, p:19, sigma:0.256, time:6.80s
+Iter 18, obj:-145.06353911, gap:5.4e-09, pinf:2.6e-04, dinf:1.9e-10, gradnorm:2.1e-04, r:2, p:8, sigma:0.512, time:7.31s
+Iter 19, obj:-145.06353818, gap:4.3e-12, pinf:2.5e-05, dinf:1.2e-12, gradnorm:5.3e-05, r:2, p:4, sigma:1.024, time:7.73s
+Iter 20, obj:-145.06353818, gap:9.5e-13, pinf:5.9e-06, dinf:1.5e-14, gradnorm:2.3e-06, r:2, p:4, sigma:0.512, time:8.13s
+Iter 21, obj:-145.06353818, gap:3.7e-13, pinf:4.2e-07, dinf:1.8e-14, gradnorm:6.1e-06, r:2, p:4, sigma:1.024, time:8.52s
+Iter 22, obj:-145.06353818, gap:8.2e-14, pinf:6.1e-07, dinf:1.6e-15, gradnorm:5.9e-07, r:2, p:4, sigma:0.512, time:8.92s
+Iter 23, obj:-145.06353818, gap:3.3e-14, pinf:1.5e-07, dinf:3.6e-15, gradnorm:2.6e-06, r:2, p:4, sigma:1.024, time:9.32s
+Iter 24, obj:-145.06353818, gap:3.3e-15, pinf:2.8e-07, dinf:1.6e-16, gradnorm:1.7e-07, r:2, p:4, sigma:0.512, time:9.73s
+Iter 25, obj:-145.06353818, gap:9.8e-16, pinf:3.2e-08, dinf:1.1e-16, gradnorm:4.1e-07, r:2, p:4, sigma:1.024, time:10.12s
+Iter 26, obj:-145.06353818, gap:0.0e+00, pinf:4.4e-08, dinf:4.3e-17, gradnorm:2.9e-08, r:2, p:4, sigma:0.512, time:10.51s
+Iter 27, obj:-145.06353818, gap:9.8e-17, pinf:7.6e-09, dinf:0.0e+00, gradnorm:1.1e-07, r:2, p:4, sigma:1.024, time:10.92s
+Optimality is reached!
+ManiSDP_complexunitdiag: optimum = -145.06353818, time = 10.92s
+ManiSDP_complexunitdiag: f = -145.06353818, eta = 7.6e-09, t = 10.92s
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+d=25 rng(2)
+正在生成 BQP 矩量松弛数据...
+
+=== 情形 1: ManiCSDP_unitdiag (复数 SDP) ===
+ManiCSDP is starting...
+CSDP size: n = 351, m = 16250
+Iter 1, obj:-134.50262258, gap:3.3e-02, pinf:9.3e+01, dinf:1.0e-01, gradnorm:2.2e+01, r:2, p:2, sigma:0.001, time:0.06s
+Iter 2, obj:-156.53666612, gap:8.0e-02, pinf:9.1e+01, dinf:1.1e-02, gradnorm:2.0e+00, r:9, p:10, sigma:0.002, time:0.13s
+Iter 3, obj:-149.00347037, gap:1.5e-01, pinf:7.6e+01, dinf:2.8e-02, gradnorm:5.0e+00, r:16, p:17, sigma:0.004, time:0.22s
+Iter 4, obj:-144.54112063, gap:1.1e-01, pinf:5.0e+01, dinf:1.5e-01, gradnorm:1.6e+01, r:24, p:24, sigma:0.008, time:0.31s
+Iter 5, obj:-153.73925882, gap:2.1e-02, pinf:2.6e+01, dinf:2.0e-02, gradnorm:6.7e+00, r:31, p:32, sigma:0.016, time:0.39s
+Iter 6, obj:-154.93566400, gap:3.4e-03, pinf:9.5e+00, dinf:1.5e-02, gradnorm:3.2e+00, r:34, p:39, sigma:0.032, time:0.53s
+Iter 7, obj:-156.18493346, gap:7.0e-03, pinf:5.1e+00, dinf:7.9e-03, gradnorm:2.2e+00, r:29, p:41, sigma:0.064, time:0.78s
+Iter 8, obj:-155.78582487, gap:8.3e-03, pinf:3.3e+00, dinf:4.4e-03, gradnorm:1.3e+00, r:32, p:36, sigma:0.128, time:0.94s
+Iter 9, obj:-154.58610843, gap:6.1e-03, pinf:2.0e+00, dinf:1.0e-02, gradnorm:2.4e+00, r:29, p:40, sigma:0.256, time:1.27s
+Iter 10, obj:-154.55005726, gap:6.2e-03, pinf:2.1e+00, dinf:1.7e-03, gradnorm:6.3e-01, r:28, p:37, sigma:0.128, time:1.55s
+Iter 11, obj:-154.13561992, gap:6.1e-03, pinf:1.3e+00, dinf:2.2e-03, gradnorm:9.8e-01, r:28, p:36, sigma:0.256, time:1.74s
+Iter 12, obj:-153.55372715, gap:5.4e-03, pinf:9.8e-01, dinf:3.6e-03, gradnorm:1.6e+00, r:28, p:36, sigma:0.512, time:2.03s
+Iter 13, obj:-152.86026999, gap:1.9e-03, pinf:9.4e-01, dinf:6.3e-04, gradnorm:4.9e-01, r:23, p:36, sigma:0.256, time:2.38s
+Iter 14, obj:-152.79070070, gap:1.7e-03, pinf:4.0e-01, dinf:2.2e-04, gradnorm:3.1e-01, r:18, p:29, sigma:0.512, time:2.72s
+Iter 15, obj:-152.66676398, gap:1.3e-03, pinf:2.3e-01, dinf:1.6e-03, gradnorm:4.2e-01, r:17, p:22, sigma:1.024, time:3.01s
+Iter 16, obj:-152.50805964, gap:5.1e-04, pinf:1.4e-01, dinf:1.2e-03, gradnorm:6.8e-01, r:16, p:22, sigma:0.512, time:3.31s
+Iter 17, obj:-152.40973947, gap:6.0e-05, pinf:1.2e-01, dinf:1.5e-05, gradnorm:1.2e-01, r:15, p:20, sigma:0.256, time:3.57s
+Iter 18, obj:-152.40669392, gap:3.6e-05, pinf:2.5e-02, dinf:9.5e-07, gradnorm:2.0e-02, r:14, p:16, sigma:0.512, time:3.79s
+Iter 19, obj:-152.40327559, gap:2.0e-05, pinf:1.2e-02, dinf:5.7e-06, gradnorm:8.1e-02, r:14, p:15, sigma:1.024, time:4.05s
+Iter 20, obj:-152.40024331, gap:5.8e-06, pinf:7.1e-03, dinf:3.7e-07, gradnorm:1.1e-02, r:12, p:15, sigma:0.512, time:4.32s
+Iter 21, obj:-152.39900535, gap:2.9e-07, pinf:5.2e-03, dinf:2.7e-08, gradnorm:7.5e-03, r:6, p:13, sigma:0.256, time:4.54s
+Iter 22, obj:-152.39896737, gap:3.8e-08, pinf:2.1e-03, dinf:1.2e-08, gradnorm:6.1e-03, r:2, p:7, sigma:0.128, time:4.77s
+Iter 23, obj:-152.39896520, gap:1.0e-08, pinf:3.4e-03, dinf:3.0e-10, gradnorm:6.9e-04, r:1, p:3, sigma:0.064, time:4.98s
+Iter 24, obj:-152.39896286, gap:1.2e-12, pinf:3.0e-04, dinf:1.5e-14, gradnorm:3.7e-06, r:1, p:2, sigma:0.128, time:5.16s
+Iter 25, obj:-152.39896286, gap:1.8e-15, pinf:8.2e-06, dinf:7.1e-17, gradnorm:3.8e-07, r:1, p:2, sigma:0.256, time:5.34s
+Iter 26, obj:-152.39896286, gap:1.9e-16, pinf:2.1e-07, dinf:1.6e-17, gradnorm:1.8e-08, r:1, p:2, sigma:0.512, time:5.54s
+Iter 27, obj:-152.39896286, gap:2.8e-16, pinf:4.0e-09, dinf:2.1e-17, gradnorm:5.6e-09, r:1, p:2, sigma:1.024, time:5.61s
+Optimality is reached!
+ManiCSDP: optimum = -152.39896286, time = 5.61s
+ManiCSDP_unitdiag: f = -152.39896286, eta = 4.0e-09, t = 5.61s
+Log: D:\Mine\Mani\ManiCSDP\Numerical Experiment\results_bqp_overnight\bqp_sedumi_d25_rng2.txt
+Started: 2026-05-07 02:30:17
+========== BQP SeDuMi  d=25  rng(2) ==========
+N (matrix size) = 351,  maxc = 2.1458e+00
+SeDuMi 1.3.7 by AdvOL, 2005-2008 and Jos F. Sturm, 1998-2003.
+Alg = 2: xz-corrector, Adaptive Step-Differentiation, theta = 0.250, beta = 0.500
+Status: ERROR
+内存不足。
+
+出错 getsymbada (第 56 行)
+            SYMBADA = SYMBADA + Ablks'*Ablks;
+
+出错 sedumi (第 382 行)
+ADA_sedumi_ = getsymbada(A,Ablkjc,DAt,K.sblkstart);
+
+出错 run_bqp_overnight>run_sedumi_case (第 114 行)
+    [x_sed, y_sed, info_sed] = sedumi(At_c', b_c, c_c/maxc_c, K_sedumi, pars);
+
+出错 run_bqp_overnight>@()run_sedumi_case(25,seed) (第 35 行)
+    run_case(@() run_sedumi_case(25, seed), out_dir, sprintf('bqp_sedumi_d25_rng%d.txt', seed));
+
+出错 run_bqp_overnight>run_case (第 58 行)
+        case_fun();
+
+出错 run_bqp_overnight (第 35 行)
+    run_case(@() run_sedumi_case(25, seed), out_dir, sprintf('bqp_sedumi_d25_rng%d.txt', seed));
+Finished: 2026-05-07 02:30:47
+========== CASE END ==========
+正在执行 CSDP → RSDP 转换...
+
+=== 情形 3: MOSEK (实 RSDP) ===
+MOSEK 成功，用时 80.78s
+  f = -152.39865955, pinf = 4.20e-13, dinf = 0.00e+00, gap = 2.54e-09
+
+=== 情形 4: ManiSDP_complexunitdiag (实 RSDP) ===
+ManiSDP_complexunitdiag is starting...
+Real SDP: n2 = 702 (complex n = 351), m = 16250
+Iter 1, obj:-145.10147597, gap:3.4e-02, pinf:9.8e+01, dinf:9.0e-02, gradnorm:9.6e+00, r:2, p:2, sigma:0.001, time:0.10s
+Iter 2, obj:-153.94881468, gap:8.6e-02, pinf:9.1e+01, dinf:4.1e-02, gradnorm:2.5e+00, r:10, p:10, sigma:0.002, time:0.21s
+Iter 3, obj:-151.69851275, gap:1.8e-01, pinf:8.1e+01, dinf:2.4e-02, gradnorm:3.2e+00, r:14, p:18, sigma:0.004, time:0.33s
+Iter 4, obj:-138.33777891, gap:8.8e-02, pinf:4.4e+01, dinf:1.4e-01, gradnorm:1.2e+01, r:22, p:22, sigma:0.008, time:0.47s
+Iter 5, obj:-151.31487094, gap:1.7e-02, pinf:3.0e+01, dinf:3.1e-02, gradnorm:6.2e+00, r:30, p:30, sigma:0.016, time:0.64s
+Iter 6, obj:-155.68501649, gap:3.2e-03, pinf:7.7e+00, dinf:2.7e-03, gradnorm:1.5e+00, r:32, p:38, sigma:0.032, time:0.92s
+Iter 7, obj:-155.82910654, gap:5.6e-03, pinf:4.5e+00, dinf:1.7e-02, gradnorm:1.7e+00, r:36, p:40, sigma:0.064, time:1.26s
+Iter 8, obj:-155.75643800, gap:6.3e-03, pinf:2.9e+00, dinf:2.6e-03, gradnorm:7.6e-01, r:32, p:44, sigma:0.128, time:1.70s
+Iter 9, obj:-154.85515345, gap:6.3e-03, pinf:1.8e+00, dinf:1.3e-02, gradnorm:1.5e+00, r:30, p:40, sigma:0.256, time:2.29s
+Iter 10, obj:-154.34557553, gap:7.7e-03, pinf:1.4e+00, dinf:3.9e-03, gradnorm:9.2e-01, r:36, p:38, sigma:0.512, time:2.73s
+Iter 11, obj:-153.22212027, gap:4.6e-03, pinf:7.3e-01, dinf:6.4e-03, gradnorm:1.0e+00, r:41, p:44, sigma:1.024, time:3.36s
+Iter 12, obj:-152.67506626, gap:1.7e-03, pinf:6.2e-01, dinf:1.5e-03, gradnorm:4.6e-01, r:42, p:49, sigma:0.512, time:4.04s
+Iter 13, obj:-152.58821311, gap:1.3e-03, pinf:3.0e-01, dinf:5.2e-03, gradnorm:4.5e-01, r:37, p:50, sigma:1.024, time:4.71s
+Iter 14, obj:-152.50334229, gap:5.9e-04, pinf:1.8e-01, dinf:4.1e-04, gradnorm:3.3e-01, r:34, p:45, sigma:0.512, time:5.35s
+Iter 15, obj:-152.42042075, gap:1.2e-04, pinf:1.1e-01, dinf:1.5e-05, gradnorm:8.4e-02, r:30, p:40, sigma:0.256, time:5.97s
+Iter 16, obj:-152.40274071, gap:2.5e-05, pinf:2.9e-02, dinf:3.4e-06, gradnorm:4.6e-02, r:27, p:32, sigma:0.512, time:6.46s
+Iter 17, obj:-152.40007464, gap:6.9e-06, pinf:1.8e-02, dinf:2.7e-06, gradnorm:4.4e-02, r:22, p:29, sigma:0.256, time:7.02s
+Iter 18, obj:-152.39903051, gap:9.6e-07, pinf:1.3e-02, dinf:3.3e-07, gradnorm:1.8e-02, r:16, p:24, sigma:0.128, time:7.53s
+Iter 19, obj:-152.39891427, gap:5.5e-08, pinf:1.4e-02, dinf:9.7e-09, gradnorm:2.3e-03, r:10, p:18, sigma:0.064, time:8.02s
+Iter 20, obj:-152.39893928, gap:4.8e-08, pinf:2.2e-03, dinf:7.4e-09, gradnorm:2.7e-03, r:6, p:12, sigma:0.128, time:8.48s
+Iter 21, obj:-152.39895764, gap:1.2e-08, pinf:1.7e-03, dinf:1.1e-09, gradnorm:9.4e-04, r:2, p:8, sigma:0.064, time:8.91s
+Iter 22, obj:-152.39896282, gap:9.2e-11, pinf:4.5e-04, dinf:1.1e-11, gradnorm:1.0e-04, r:2, p:4, sigma:0.128, time:9.30s
+Iter 23, obj:-152.39896286, gap:9.7e-12, pinf:2.3e-05, dinf:7.7e-13, gradnorm:2.9e-05, r:2, p:4, sigma:0.256, time:9.71s
+Iter 24, obj:-152.39896286, gap:2.4e-12, pinf:1.3e-05, dinf:8.4e-14, gradnorm:9.5e-06, r:2, p:4, sigma:0.128, time:10.12s
+Iter 25, obj:-152.39896286, gap:5.7e-13, pinf:3.5e-06, dinf:6.7e-14, gradnorm:8.0e-06, r:2, p:4, sigma:0.256, time:10.52s
+Iter 26, obj:-152.39896286, gap:1.1e-13, pinf:2.0e-06, dinf:1.2e-14, gradnorm:3.7e-06, r:2, p:4, sigma:0.128, time:10.94s
+Iter 27, obj:-152.39896286, gap:2.5e-14, pinf:2.8e-06, dinf:2.2e-16, gradnorm:4.8e-07, r:2, p:4, sigma:0.064, time:11.35s
+Iter 28, obj:-152.39896286, gap:3.1e-15, pinf:4.4e-07, dinf:3.2e-16, gradnorm:5.6e-07, r:2, p:4, sigma:0.128, time:11.74s
+Iter 29, obj:-152.39896286, gap:5.6e-16, pinf:4.0e-07, dinf:7.1e-18, gradnorm:9.6e-08, r:2, p:4, sigma:0.064, time:12.13s
+Iter 30, obj:-152.39896286, gap:1.9e-16, pinf:8.1e-08, dinf:8.0e-17, gradnorm:7.4e-08, r:2, p:3, sigma:0.128, time:12.55s
+Iter 31, obj:-152.39896286, gap:1.9e-16, pinf:1.6e-08, dinf:0.0e+00, gradnorm:5.5e-09, r:2, p:4, sigma:0.256, time:12.69s
+Iter 32, obj:-152.39896286, gap:1.9e-16, pinf:3.0e-09, dinf:7.3e-17, gradnorm:7.9e-09, r:2, p:3, sigma:0.512, time:12.91s
+Optimality is reached!
+ManiSDP_complexunitdiag: optimum = -152.39896286, time = 12.91s
+ManiSDP_complexunitdiag: f = -152.39896286, eta = 3.0e-09, t = 12.91s
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+d=25 rng(4)
+正在生成 BQP 矩量松弛数据...
+
+=== 情形 1: ManiCSDP_unitdiag (复数 SDP) ===
+ManiCSDP is starting...
+CSDP size: n = 351, m = 16250
+Iter 1, obj:-147.80917553, gap:3.5e-02, pinf:1.0e+02, dinf:2.2e-02, gradnorm:4.0e+00, r:2, p:2, sigma:0.001, time:0.05s
+Iter 2, obj:-145.37914265, gap:7.5e-02, pinf:8.1e+01, dinf:1.7e-02, gradnorm:4.3e+00, r:10, p:10, sigma:0.002, time:0.15s
+Iter 3, obj:-138.36693935, gap:9.9e-02, pinf:6.4e+01, dinf:4.9e-02, gradnorm:8.3e+00, r:18, p:18, sigma:0.004, time:0.24s
+Iter 4, obj:-146.95775175, gap:3.6e-02, pinf:2.9e+01, dinf:5.1e-02, gradnorm:5.3e+00, r:26, p:26, sigma:0.008, time:0.34s
+Iter 5, obj:-146.14605477, gap:1.8e-02, pinf:1.9e+01, dinf:2.2e-02, gradnorm:5.4e+00, r:33, p:34, sigma:0.016, time:0.43s
+Iter 6, obj:-148.41566116, gap:2.4e-03, pinf:7.2e+00, dinf:3.7e-03, gradnorm:1.5e+00, r:32, p:41, sigma:0.032, time:0.59s
+Iter 7, obj:-148.57046340, gap:1.3e-03, pinf:2.2e+00, dinf:6.2e-04, gradnorm:8.0e-01, r:19, p:37, sigma:0.064, time:0.83s
+Iter 8, obj:-148.43580017, gap:5.4e-04, pinf:6.3e-01, dinf:2.2e-04, gradnorm:4.6e-01, r:10, p:22, sigma:0.128, time:1.09s
+Iter 9, obj:-148.35669864, gap:2.0e-04, pinf:1.8e-01, dinf:3.2e-05, gradnorm:1.5e-01, r:8, p:12, sigma:0.256, time:1.32s
+Iter 10, obj:-148.32440327, gap:4.9e-05, pinf:5.3e-02, dinf:2.3e-06, gradnorm:5.2e-02, r:7, p:9, sigma:0.512, time:1.55s
+Iter 11, obj:-148.31986572, gap:2.4e-05, pinf:1.9e-02, dinf:4.1e-06, gradnorm:9.1e-02, r:7, p:8, sigma:1.024, time:1.80s
+Iter 12, obj:-148.31675686, gap:7.4e-06, pinf:1.2e-02, dinf:3.1e-07, gradnorm:1.9e-02, r:7, p:8, sigma:0.512, time:2.05s
+Iter 13, obj:-148.31561145, gap:1.6e-06, pinf:6.3e-03, dinf:6.9e-08, gradnorm:9.9e-03, r:6, p:8, sigma:0.256, time:2.29s
+Iter 14, obj:-148.31541445, gap:3.2e-07, pinf:5.3e-03, dinf:1.3e-08, gradnorm:3.6e-03, r:5, p:7, sigma:0.128, time:2.54s
+Iter 15, obj:-148.31538005, gap:8.1e-08, pinf:1.1e-03, dinf:9.3e-09, gradnorm:4.8e-03, r:3, p:6, sigma:0.256, time:2.77s
+Iter 16, obj:-148.31537251, gap:2.1e-08, pinf:1.2e-03, dinf:6.9e-10, gradnorm:9.7e-04, r:2, p:4, sigma:0.128, time:2.99s
+Iter 17, obj:-148.31536934, gap:1.4e-09, pinf:2.4e-04, dinf:6.9e-10, gradnorm:1.3e-03, r:1, p:3, sigma:0.256, time:3.21s
+Iter 18, obj:-148.31536943, gap:5.4e-13, pinf:3.7e-04, dinf:3.4e-15, gradnorm:1.5e-06, r:1, p:2, sigma:0.128, time:3.42s
+Iter 19, obj:-148.31536943, gap:1.9e-16, pinf:3.8e-06, dinf:0.0e+00, gradnorm:7.0e-08, r:1, p:2, sigma:0.256, time:3.62s
+Iter 20, obj:-148.31536943, gap:9.5e-17, pinf:2.9e-08, dinf:3.6e-18, gradnorm:5.1e-09, r:1, p:2, sigma:0.512, time:3.73s
+Iter 21, obj:-148.31536943, gap:2.9e-16, pinf:4.6e-10, dinf:0.0e+00, gradnorm:2.2e-09, r:1, p:2, sigma:1.024, time:3.80s
+Optimality is reached!
+ManiCSDP: optimum = -148.31536943, time = 3.80s
+ManiCSDP_unitdiag: f = -148.31536943, eta = 4.6e-10, t = 3.80s
+Log: D:\Mine\Mani\ManiCSDP\Numerical Experiment\results_bqp_overnight\bqp_sedumi_d25_rng4.txt
+Started: 2026-05-07 02:30:47
+========== BQP SeDuMi  d=25  rng(4) ==========
+N (matrix size) = 351,  maxc = 1.6588e+00
+SeDuMi 1.3.7 by AdvOL, 2005-2008 and Jos F. Sturm, 1998-2003.
+Alg = 2: xz-corrector, Adaptive Step-Differentiation, theta = 0.250, beta = 0.500
+Status: ERROR
+内存不足。
+
+出错 getsymbada (第 56 行)
+            SYMBADA = SYMBADA + Ablks'*Ablks;
+
+出错 sedumi (第 382 行)
+ADA_sedumi_ = getsymbada(A,Ablkjc,DAt,K.sblkstart);
+
+出错 run_bqp_overnight>run_sedumi_case (第 114 行)
+    [x_sed, y_sed, info_sed] = sedumi(At_c', b_c, c_c/maxc_c, K_sedumi, pars);
+
+出错 run_bqp_overnight>@()run_sedumi_case(25,seed) (第 35 行)
+    run_case(@() run_sedumi_case(25, seed), out_dir, sprintf('bqp_sedumi_d25_rng%d.txt', seed));
+
+出错 run_bqp_overnight>run_case (第 58 行)
+        case_fun();
+
+出错 run_bqp_overnight (第 35 行)
+    run_case(@() run_sedumi_case(25, seed), out_dir, sprintf('bqp_sedumi_d25_rng%d.txt', seed));
+Finished: 2026-05-07 02:31:15
+========== CASE END ==========
+正在执行 CSDP → RSDP 转换...
+
+=== 情形 3: MOSEK (实 RSDP) ===
+MOSEK 成功，用时 80.74s
+  f = -148.31535915, pinf = 7.41e-13, dinf = 0.00e+00, gap = 4.37e-12
+
+=== 情形 4: ManiSDP_complexunitdiag (实 RSDP) ===
+ManiSDP_complexunitdiag is starting...
+Real SDP: n2 = 702 (complex n = 351), m = 16250
+Iter 1, obj:-139.15290413, gap:3.0e-02, pinf:9.0e+01, dinf:5.1e-02, gradnorm:7.9e+00, r:2, p:2, sigma:0.001, time:0.12s
+Iter 2, obj:-146.35106013, gap:7.9e-02, pinf:8.6e+01, dinf:1.5e-02, gradnorm:2.5e+00, r:10, p:10, sigma:0.002, time:0.29s
+Iter 3, obj:-144.98808799, gap:1.6e-01, pinf:7.6e+01, dinf:2.2e-02, gradnorm:2.4e+00, r:16, p:18, sigma:0.004, time:0.43s
+Iter 4, obj:-142.85716432, gap:1.6e-01, pinf:5.2e+01, dinf:8.5e-02, gradnorm:7.4e+00, r:24, p:24, sigma:0.008, time:0.58s
+Iter 5, obj:-140.30930397, gap:1.0e-01, pinf:4.1e+01, dinf:7.6e-02, gradnorm:6.6e+00, r:30, p:32, sigma:0.016, time:0.71s
+Iter 6, obj:-145.24336604, gap:3.5e-02, pinf:1.6e+01, dinf:2.5e-02, gradnorm:5.3e+00, r:36, p:38, sigma:0.032, time:0.86s
+Iter 7, obj:-145.57393788, gap:1.4e-02, pinf:8.2e+00, dinf:1.4e-02, gradnorm:4.3e+00, r:38, p:44, sigma:0.064, time:1.03s
+Iter 8, obj:-148.03191242, gap:2.6e-03, pinf:3.8e+00, dinf:2.7e-03, gradnorm:1.3e+00, r:38, p:46, sigma:0.128, time:1.37s
+Iter 9, obj:-148.16119508, gap:2.2e-03, pinf:1.4e+00, dinf:1.6e-02, gradnorm:2.0e+00, r:37, p:46, sigma:0.256, time:1.83s
+Iter 10, obj:-148.21180720, gap:1.4e-04, pinf:1.4e+00, dinf:3.1e-03, gradnorm:9.6e-01, r:23, p:45, sigma:0.128, time:2.31s
+Iter 11, obj:-148.30672680, gap:2.7e-05, pinf:2.7e-01, dinf:1.9e-05, gradnorm:1.3e-01, r:20, p:27, sigma:0.256, time:2.74s
+Iter 12, obj:-148.31393075, gap:7.7e-06, pinf:3.4e-02, dinf:2.1e-06, gradnorm:4.1e-02, r:16, p:22, sigma:0.512, time:3.18s
+Iter 13, obj:-148.31522557, gap:8.5e-07, pinf:1.4e-02, dinf:1.4e-07, gradnorm:1.4e-02, r:13, p:18, sigma:0.256, time:3.66s
+Iter 14, obj:-148.31535785, gap:2.4e-08, pinf:8.9e-03, dinf:4.9e-09, gradnorm:1.7e-03, r:6, p:15, sigma:0.128, time:4.14s
+Iter 15, obj:-148.31536819, gap:6.2e-10, pinf:7.6e-04, dinf:1.5e-09, gradnorm:1.5e-03, r:2, p:8, sigma:0.256, time:4.56s
+Iter 16, obj:-148.31536943, gap:3.6e-11, pinf:7.1e-04, dinf:9.3e-12, gradnorm:1.0e-04, r:2, p:4, sigma:0.128, time:4.98s
+Iter 17, obj:-148.31536943, gap:4.4e-12, pinf:6.6e-05, dinf:1.8e-12, gradnorm:5.9e-05, r:2, p:4, sigma:0.256, time:5.39s
+Iter 18, obj:-148.31536943, gap:5.0e-13, pinf:7.3e-06, dinf:1.1e-13, gradnorm:1.0e-05, r:2, p:4, sigma:0.512, time:5.81s
+Iter 19, obj:-148.31536943, gap:4.9e-14, pinf:5.2e-06, dinf:2.6e-14, gradnorm:7.9e-06, r:2, p:4, sigma:0.256, time:6.26s
+Iter 20, obj:-148.31536943, gap:3.8e-15, pinf:3.7e-06, dinf:6.9e-16, gradnorm:8.5e-07, r:2, p:4, sigma:0.128, time:6.69s
+Iter 21, obj:-148.31536943, gap:3.8e-16, pinf:4.3e-07, dinf:2.3e-16, gradnorm:7.3e-07, r:2, p:4, sigma:0.256, time:7.12s
+Iter 22, obj:-148.31536943, gap:9.5e-17, pinf:3.2e-07, dinf:1.0e-17, gradnorm:6.7e-08, r:2, p:4, sigma:0.128, time:7.51s
+Iter 23, obj:-148.31536943, gap:9.5e-17, pinf:3.8e-08, dinf:8.9e-19, gradnorm:4.5e-08, r:2, p:4, sigma:0.256, time:7.91s
+Iter 24, obj:-148.31536943, gap:0.0e+00, pinf:1.7e-08, dinf:7.9e-17, gradnorm:5.9e-09, r:2, p:3, sigma:0.128, time:8.23s
+Iter 25, obj:-148.31536943, gap:2.9e-16, pinf:2.3e-09, dinf:4.8e-17, gradnorm:6.5e-09, r:2, p:3, sigma:0.256, time:8.56s
+Optimality is reached!
+ManiSDP_complexunitdiag: optimum = -148.31536943, time = 8.56s
+ManiSDP_complexunitdiag: f = -148.31536943, eta = 2.3e-09, t = 8.56s
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+d=30 rng(1)
+正在生成 BQP 矩量松弛数据...
+
+=== 情形 1: ManiCSDP_unitdiag (复数 SDP) ===
+ManiCSDP is starting...
+CSDP size: n = 496, m = 27900
+Iter 1, obj:-181.58239366, gap:4.2e-02, pinf:1.2e+02, dinf:1.7e-01, gradnorm:7.9e+00, r:2, p:2, sigma:0.001, time:0.11s
+Iter 2, obj:-193.90517427, gap:1.2e-01, pinf:1.2e+02, dinf:1.1e-01, gradnorm:6.7e+00, r:10, p:10, sigma:0.002, time:0.22s
+Iter 3, obj:-200.29731526, gap:2.3e-01, pinf:1.1e+02, dinf:2.0e-02, gradnorm:3.3e+00, r:17, p:18, sigma:0.004, time:0.36s
+Iter 4, obj:-190.35990822, gap:5.6e-01, pinf:9.6e+01, dinf:4.3e-02, gradnorm:6.8e+00, r:24, p:25, sigma:0.008, time:0.51s
+Iter 5, obj:-175.48286563, gap:2.7e-01, pinf:5.6e+01, dinf:2.4e-01, gradnorm:2.3e+01, r:32, p:32, sigma:0.016, time:0.66s
+Iter 6, obj:-190.34258971, gap:1.3e-01, pinf:2.9e+01, dinf:1.8e-01, gradnorm:2.4e+01, r:39, p:40, sigma:0.032, time:0.80s
+Iter 7, obj:-191.17822168, gap:1.2e-02, pinf:2.0e+01, dinf:6.3e-02, gradnorm:1.3e+01, r:45, p:47, sigma:0.064, time:0.99s
+Iter 8, obj:-198.94568440, gap:9.4e-03, pinf:7.3e+00, dinf:2.0e-02, gradnorm:5.1e+00, r:47, p:53, sigma:0.128, time:1.26s
+Iter 9, obj:-198.77695957, gap:1.1e-02, pinf:3.5e+00, dinf:5.4e-02, gradnorm:7.9e+00, r:49, p:55, sigma:0.256, time:1.71s
+Iter 10, obj:-199.86985960, gap:8.7e-03, pinf:4.3e+00, dinf:4.5e-03, gradnorm:1.8e+00, r:46, p:57, sigma:0.128, time:2.18s
+Iter 11, obj:-198.89997661, gap:8.9e-03, pinf:2.2e+00, dinf:1.1e-02, gradnorm:3.0e+00, r:43, p:54, sigma:0.256, time:2.59s
+Iter 12, obj:-199.61987107, gap:7.9e-03, pinf:2.3e+00, dinf:5.4e-03, gradnorm:1.7e+00, r:38, p:51, sigma:0.128, time:3.08s
+Iter 13, obj:-198.90294934, gap:6.8e-03, pinf:1.5e+00, dinf:6.3e-03, gradnorm:1.9e+00, r:38, p:46, sigma:0.256, time:3.48s
+Iter 14, obj:-198.63505959, gap:3.5e-03, pinf:3.1e+00, dinf:4.0e-02, gradnorm:6.1e+00, r:27, p:46, sigma:0.128, time:4.02s
+Iter 15, obj:-199.08568102, gap:1.7e-03, pinf:5.6e+00, dinf:1.5e-02, gradnorm:4.6e+00, r:22, p:35, sigma:0.064, time:4.49s
+Iter 16, obj:-199.23652816, gap:3.8e-04, pinf:1.6e+00, dinf:1.9e-03, gradnorm:1.6e+00, r:25, p:30, sigma:0.128, time:4.88s
+Iter 17, obj:-199.49861217, gap:3.1e-04, pinf:1.4e+00, dinf:1.5e-04, gradnorm:4.6e-01, r:18, p:32, sigma:0.064, time:5.33s
+Iter 18, obj:-199.54835906, gap:3.8e-04, pinf:4.1e-01, dinf:5.1e-05, gradnorm:3.5e-01, r:17, p:20, sigma:0.128, time:5.75s
+Iter 19, obj:-199.55360369, gap:6.4e-05, pinf:9.2e-02, dinf:2.1e-05, gradnorm:1.7e-01, r:13, p:18, sigma:0.256, time:6.25s
+Iter 20, obj:-199.54135523, gap:4.8e-06, pinf:5.5e-02, dinf:3.0e-07, gradnorm:2.8e-02, r:9, p:14, sigma:0.128, time:6.81s
+Iter 21, obj:-199.54092762, gap:1.1e-06, pinf:4.4e-03, dinf:7.0e-08, gradnorm:1.7e-02, r:7, p:10, sigma:0.256, time:7.23s
+Iter 22, obj:-199.54073425, gap:1.2e-07, pinf:2.9e-03, dinf:7.4e-09, gradnorm:5.5e-03, r:3, p:8, sigma:0.128, time:7.71s
+Iter 23, obj:-199.54071885, gap:1.2e-08, pinf:2.3e-03, dinf:5.2e-10, gradnorm:1.3e-03, r:1, p:4, sigma:0.064, time:8.15s
+Iter 24, obj:-199.54071646, gap:1.7e-12, pinf:3.5e-04, dinf:1.2e-15, gradnorm:2.7e-06, r:1, p:2, sigma:0.128, time:8.54s
+Iter 25, obj:-199.54071646, gap:4.0e-15, pinf:1.5e-05, dinf:0.0e+00, gradnorm:1.9e-07, r:1, p:2, sigma:0.256, time:8.96s
+Iter 26, obj:-199.54071646, gap:7.1e-17, pinf:4.1e-07, dinf:3.1e-18, gradnorm:8.0e-09, r:1, p:2, sigma:0.512, time:9.40s
+Iter 27, obj:-199.54071646, gap:7.1e-17, pinf:5.9e-09, dinf:0.0e+00, gradnorm:4.8e-09, r:1, p:2, sigma:1.024, time:9.54s
+Optimality is reached!
+ManiCSDP: optimum = -199.54071646, time = 9.54s
+ManiCSDP_unitdiag: f = -199.54071646, eta = 5.9e-09, t = 9.54s
+
+正在执行 CSDP → RSDP 转换...
+
+=== 情形 3: MOSEK (实 RSDP) ===
+MOSEK 求解失败（响应码 1051）
+   MOSEK 消息: 
+
+=== 情形 4: ManiSDP_complexunitdiag (实 RSDP) ===
+ManiSDP_complexunitdiag is starting...
+Real SDP: n2 = 992 (complex n = 496), m = 27900
+Iter 1, obj:-183.55488322, gap:4.2e-02, pinf:1.2e+02, dinf:9.6e-02, gradnorm:1.6e+01, r:2, p:2, sigma:0.001, time:0.34s
+Iter 2, obj:-201.52587270, gap:1.2e-01, pinf:1.2e+02, dinf:7.6e-02, gradnorm:1.5e+00, r:10, p:10, sigma:0.002, time:0.59s
+Iter 3, obj:-195.07444621, gap:2.4e-01, pinf:1.1e+02, dinf:3.2e-02, gradnorm:5.0e+00, r:16, p:18, sigma:0.004, time:0.82s
+Iter 4, obj:-192.04727676, gap:5.5e-01, pinf:9.6e+01, dinf:3.9e-02, gradnorm:4.2e+00, r:22, p:24, sigma:0.008, time:1.05s
+Iter 5, obj:-177.36798844, gap:3.9e-01, pinf:6.1e+01, dinf:1.9e-01, gradnorm:1.5e+01, r:30, p:30, sigma:0.016, time:1.29s
+Iter 6, obj:-184.55742433, gap:4.5e-01, pinf:6.2e+01, dinf:5.3e-01, gradnorm:2.4e+01, r:38, p:38, sigma:0.032, time:1.54s
+Iter 7, obj:-191.18959000, gap:4.5e-02, pinf:2.7e+01, dinf:6.2e-02, gradnorm:1.1e+01, r:44, p:46, sigma:0.064, time:1.80s
+Iter 8, obj:-197.07588274, gap:2.3e-02, pinf:1.2e+01, dinf:1.5e-01, gradnorm:9.3e+00, r:46, p:52, sigma:0.128, time:2.18s
+Iter 9, obj:-199.39466462, gap:1.3e-02, pinf:5.1e+00, dinf:1.0e-01, gradnorm:7.0e+00, r:51, p:54, sigma:0.256, time:2.66s
+Iter 10, obj:-199.15963615, gap:7.2e-03, pinf:6.6e+00, dinf:2.2e-02, gradnorm:2.4e+00, r:51, p:59, sigma:0.128, time:3.30s
+Iter 11, obj:-199.41322554, gap:6.2e-03, pinf:2.9e+00, dinf:4.2e-02, gradnorm:5.7e+00, r:48, p:59, sigma:0.256, time:4.12s
+Iter 12, obj:-199.38390295, gap:2.7e-03, pinf:4.1e+00, dinf:1.2e-02, gradnorm:2.8e+00, r:45, p:56, sigma:0.128, time:4.99s
+Iter 13, obj:-199.41324179, gap:3.2e-03, pinf:1.8e+00, dinf:1.5e-02, gradnorm:4.2e+00, r:39, p:53, sigma:0.256, time:5.95s
+Iter 14, obj:-199.58244944, gap:1.9e-03, pinf:2.3e+00, dinf:1.5e-03, gradnorm:6.9e-01, r:39, p:47, sigma:0.128, time:6.76s
+Iter 15, obj:-199.55067744, gap:2.3e-03, pinf:8.7e-01, dinf:1.6e-03, gradnorm:7.5e-01, r:39, p:47, sigma:0.256, time:7.35s
+Iter 16, obj:-199.53675960, gap:1.1e-03, pinf:4.3e-01, dinf:4.4e-03, gradnorm:6.0e-01, r:34, p:47, sigma:0.512, time:8.49s
+Iter 17, obj:-199.47096362, gap:3.5e-05, pinf:3.7e-01, dinf:6.3e-03, gradnorm:1.3e+00, r:34, p:42, sigma:0.256, time:9.49s
+Iter 18, obj:-199.52198078, gap:3.6e-05, pinf:4.9e-01, dinf:1.0e-06, gradnorm:3.1e-02, r:26, p:42, sigma:0.128, time:10.40s
+Iter 19, obj:-199.53404250, gap:1.3e-05, pinf:2.4e-02, dinf:3.3e-07, gradnorm:1.8e-02, r:19, p:28, sigma:0.256, time:11.07s
+Iter 20, obj:-199.53895591, gap:3.7e-06, pinf:7.0e-03, dinf:1.0e-07, gradnorm:1.0e-02, r:14, p:21, sigma:0.512, time:12.04s
+Iter 21, obj:-199.54057469, gap:3.1e-07, pinf:3.3e-03, dinf:8.3e-09, gradnorm:3.8e-03, r:6, p:16, sigma:0.256, time:12.96s
+Iter 22, obj:-199.54071234, gap:9.1e-09, pinf:1.3e-03, dinf:1.6e-10, gradnorm:5.5e-04, r:2, p:8, sigma:0.128, time:13.81s
+Iter 23, obj:-199.54071645, gap:2.1e-11, pinf:1.1e-04, dinf:2.4e-12, gradnorm:5.9e-05, r:2, p:4, sigma:0.256, time:14.55s
+Iter 24, obj:-199.54071645, gap:6.9e-12, pinf:5.9e-06, dinf:9.5e-14, gradnorm:7.7e-06, r:2, p:4, sigma:0.512, time:15.38s
+Iter 25, obj:-199.54071646, gap:1.1e-12, pinf:2.8e-06, dinf:6.4e-14, gradnorm:9.6e-06, r:2, p:4, sigma:0.256, time:16.20s
+Iter 26, obj:-199.54071646, gap:1.1e-13, pinf:3.2e-06, dinf:2.4e-15, gradnorm:1.7e-06, r:2, p:4, sigma:0.128, time:17.02s
+Iter 27, obj:-199.54071646, gap:2.5e-14, pinf:6.1e-07, dinf:1.9e-15, gradnorm:1.7e-06, r:2, p:4, sigma:0.256, time:17.86s
+Iter 28, obj:-199.54071646, gap:4.8e-15, pinf:4.1e-07, dinf:3.7e-16, gradnorm:7.2e-07, r:2, p:4, sigma:0.128, time:18.70s
+Iter 29, obj:-199.54071646, gap:3.6e-16, pinf:5.0e-07, dinf:9.1e-17, gradnorm:1.0e-07, r:2, p:4, sigma:0.064, time:19.53s
+Iter 30, obj:-199.54071646, gap:1.4e-16, pinf:7.2e-08, dinf:1.0e-18, gradnorm:6.8e-08, r:2, p:4, sigma:0.128, time:20.36s
+Iter 31, obj:-199.54071646, gap:7.1e-17, pinf:9.6e-09, dinf:0.0e+00, gradnorm:6.3e-08, r:2, p:3, sigma:0.256, time:21.20s
+Optimality is reached!
+ManiSDP_complexunitdiag: optimum = -199.54071646, time = 21.20s
+ManiSDP_complexunitdiag: f = -199.54071646, eta = 9.6e-09, t = 21.20s
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+d=30 rng(2)
+正在生成 BQP 矩量松弛数据...
+
+=== 情形 1: ManiCSDP_unitdiag (复数 SDP) ===
+ManiCSDP is starting...
+CSDP size: n = 496, m = 27900
+Iter 1, obj:-196.15932530, gap:3.8e-02, pinf:1.2e+02, dinf:7.8e-02, gradnorm:1.4e+01, r:2, p:2, sigma:0.001, time:0.12s
+Iter 2, obj:-209.10327775, gap:1.0e-01, pinf:1.2e+02, dinf:1.5e-02, gradnorm:3.6e+00, r:10, p:10, sigma:0.002, time:0.30s
+Iter 3, obj:-197.50851767, gap:1.9e-01, pinf:9.5e+01, dinf:3.6e-02, gradnorm:8.7e+00, r:18, p:18, sigma:0.004, time:0.45s
+Iter 4, obj:-199.92773424, gap:2.9e-02, pinf:4.6e+01, dinf:6.1e-02, gradnorm:1.5e+01, r:26, p:26, sigma:0.008, time:0.65s
+Iter 5, obj:-212.87747701, gap:4.2e-04, pinf:1.6e+01, dinf:2.5e-03, gradnorm:2.5e+00, r:25, p:34, sigma:0.016, time:0.99s
+Iter 6, obj:-212.69004445, gap:7.7e-03, pinf:1.0e+01, dinf:8.6e-02, gradnorm:5.0e+00, r:26, p:29, sigma:0.032, time:1.14s
+Iter 7, obj:-212.22351111, gap:5.0e-03, pinf:6.7e+00, dinf:4.9e-03, gradnorm:4.0e+00, r:27, p:30, sigma:0.064, time:1.31s
+Iter 8, obj:-212.87103561, gap:1.5e-03, pinf:2.6e+00, dinf:1.0e-02, gradnorm:4.8e+00, r:24, p:35, sigma:0.128, time:1.84s
+Iter 9, obj:-212.96929950, gap:4.9e-04, pinf:2.9e+00, dinf:7.2e-05, gradnorm:5.8e-01, r:18, p:29, sigma:0.064, time:2.31s
+Iter 10, obj:-213.04206796, gap:3.7e-05, pinf:3.0e-01, dinf:4.4e-05, gradnorm:4.0e-01, r:7, p:19, sigma:0.128, time:2.80s
+Iter 11, obj:-213.05170184, gap:1.6e-06, pinf:2.1e-01, dinf:3.8e-07, gradnorm:4.3e-02, r:5, p:8, sigma:0.064, time:3.30s
+Iter 12, obj:-213.05247783, gap:1.8e-07, pinf:1.8e-02, dinf:4.5e-08, gradnorm:1.9e-02, r:4, p:6, sigma:0.128, time:3.68s
+Iter 13, obj:-213.05259101, gap:2.4e-08, pinf:8.1e-03, dinf:5.1e-09, gradnorm:4.3e-03, r:2, p:5, sigma:0.064, time:4.12s
+Iter 14, obj:-213.05260378, gap:3.0e-09, pinf:1.9e-03, dinf:1.3e-09, gradnorm:3.1e-03, r:1, p:3, sigma:0.128, time:4.54s
+Iter 15, obj:-213.05260551, gap:9.0e-12, pinf:1.7e-03, dinf:7.4e-16, gradnorm:1.8e-06, r:1, p:2, sigma:0.064, time:4.95s
+Iter 16, obj:-213.05260551, gap:3.7e-15, pinf:3.0e-05, dinf:3.0e-17, gradnorm:4.7e-07, r:1, p:2, sigma:0.128, time:5.31s
+Iter 17, obj:-213.05260551, gap:6.7e-17, pinf:3.8e-07, dinf:2.6e-17, gradnorm:1.7e-08, r:1, p:2, sigma:0.256, time:5.70s
+Iter 18, obj:-213.05260551, gap:6.7e-17, pinf:2.6e-09, dinf:1.8e-17, gradnorm:1.9e-09, r:1, p:2, sigma:0.512, time:5.85s
+Optimality is reached!
+ManiCSDP: optimum = -213.05260551, time = 5.85s
+ManiCSDP_unitdiag: f = -213.05260551, eta = 2.6e-09, t = 5.85s
+
+正在执行 CSDP → RSDP 转换...
+
+=== 情形 3: MOSEK (实 RSDP) ===
+MOSEK 求解失败（响应码 1051）
+   MOSEK 消息: 
+
+=== 情形 4: ManiSDP_complexunitdiag (实 RSDP) ===
+ManiSDP_complexunitdiag is starting...
+Real SDP: n2 = 992 (complex n = 496), m = 27900
+Iter 1, obj:-211.81505014, gap:4.6e-02, pinf:1.4e+02, dinf:1.8e-02, gradnorm:2.6e+00, r:2, p:2, sigma:0.001, time:0.26s
+Iter 2, obj:-209.82995276, gap:1.2e-01, pinf:1.2e+02, dinf:1.3e-02, gradnorm:1.5e+00, r:10, p:10, sigma:0.002, time:0.56s
+Iter 3, obj:-196.15813525, gap:2.2e-01, pinf:1.0e+02, dinf:2.8e-02, gradnorm:3.7e+00, r:18, p:18, sigma:0.004, time:0.84s
+Iter 4, obj:-196.58932186, gap:1.6e-01, pinf:6.2e+01, dinf:6.7e-02, gradnorm:9.7e+00, r:26, p:26, sigma:0.008, time:1.14s
+Iter 5, obj:-209.34660188, gap:1.0e-02, pinf:2.2e+01, dinf:4.1e-02, gradnorm:7.1e+00, r:32, p:34, sigma:0.016, time:1.48s
+Iter 6, obj:-212.57906692, gap:3.2e-05, pinf:9.6e+00, dinf:1.0e-02, gradnorm:2.1e+00, r:24, p:40, sigma:0.032, time:2.01s
+Iter 7, obj:-213.03450409, gap:4.1e-05, pinf:1.8e+00, dinf:1.5e-05, gradnorm:1.1e-01, r:12, p:30, sigma:0.064, time:2.88s
+Iter 8, obj:-213.05754499, gap:5.2e-05, pinf:2.5e-01, dinf:3.3e-06, gradnorm:5.1e-02, r:10, p:14, sigma:0.128, time:3.60s
+Iter 9, obj:-213.05443730, gap:1.8e-05, pinf:7.3e-02, dinf:1.1e-06, gradnorm:2.9e-02, r:8, p:12, sigma:0.256, time:4.53s
+Iter 10, obj:-213.05295461, gap:5.8e-06, pinf:2.3e-02, dinf:5.1e-07, gradnorm:2.2e-02, r:7, p:10, sigma:0.512, time:5.42s
+Iter 11, obj:-213.05272021, gap:2.4e-06, pinf:1.0e-02, dinf:5.2e-07, gradnorm:3.4e-02, r:7, p:9, sigma:1.024, time:6.36s
+Iter 12, obj:-213.05260509, gap:5.8e-07, pinf:4.3e-03, dinf:5.1e-08, gradnorm:9.6e-03, r:6, p:9, sigma:0.512, time:7.21s
+Iter 13, obj:-213.05260463, gap:1.4e-07, pinf:2.8e-03, dinf:3.0e-08, gradnorm:8.5e-03, r:6, p:8, sigma:0.256, time:8.13s
+Iter 14, obj:-213.05260467, gap:2.8e-08, pinf:2.2e-03, dinf:6.5e-09, gradnorm:4.2e-03, r:4, p:8, sigma:0.128, time:9.00s
+Iter 15, obj:-213.05260530, gap:3.1e-09, pinf:2.7e-03, dinf:2.9e-10, gradnorm:6.0e-04, r:2, p:6, sigma:0.064, time:9.85s
+Iter 16, obj:-213.05260551, gap:1.3e-11, pinf:4.6e-04, dinf:1.6e-11, gradnorm:2.2e-04, r:2, p:4, sigma:0.128, time:10.71s
+Iter 17, obj:-213.05260551, gap:6.1e-13, pinf:3.4e-05, dinf:7.2e-13, gradnorm:6.6e-05, r:2, p:4, sigma:0.256, time:11.60s
+Iter 18, obj:-213.05260551, gap:1.3e-13, pinf:2.6e-05, dinf:1.9e-13, gradnorm:2.3e-05, r:2, p:4, sigma:0.128, time:12.42s
+Iter 19, obj:-213.05260551, gap:2.3e-14, pinf:4.0e-06, dinf:1.8e-14, gradnorm:9.2e-06, r:2, p:4, sigma:0.256, time:13.60s
+Iter 20, obj:-213.05260551, gap:2.9e-15, pinf:2.4e-06, dinf:2.2e-15, gradnorm:4.0e-06, r:2, p:4, sigma:0.128, time:14.66s
+Iter 21, obj:-213.05260551, gap:4.0e-16, pinf:2.5e-06, dinf:7.0e-17, gradnorm:4.8e-07, r:2, p:4, sigma:0.064, time:15.64s
+Iter 22, obj:-213.05260551, gap:6.7e-17, pinf:3.8e-07, dinf:3.7e-17, gradnorm:4.4e-07, r:2, p:4, sigma:0.128, time:16.57s
+Iter 23, obj:-213.05260551, gap:6.7e-17, pinf:3.1e-07, dinf:1.0e-17, gradnorm:8.4e-08, r:2, p:3, sigma:0.064, time:17.58s
+Iter 24, obj:-213.05260551, gap:1.3e-16, pinf:5.0e-08, dinf:3.3e-17, gradnorm:3.6e-08, r:2, p:3, sigma:0.128, time:18.62s
+Iter 25, obj:-213.05260551, gap:6.7e-17, pinf:6.9e-09, dinf:2.6e-17, gradnorm:4.7e-09, r:2, p:3, sigma:0.256, time:18.93s
+Optimality is reached!
+ManiSDP_complexunitdiag: optimum = -213.05260551, time = 18.93s
+ManiSDP_complexunitdiag: f = -213.05260551, eta = 6.9e-09, t = 18.93s
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+d=30 rng(3)
+正在生成 BQP 矩量松弛数据...
+
+=== 情形 1: ManiCSDP_unitdiag (复数 SDP) ===
+ManiCSDP is starting...
+CSDP size: n = 496, m = 27900
+Iter 1, obj:-166.20610347, gap:4.4e-02, pinf:1.2e+02, dinf:1.2e-01, gradnorm:1.3e+01, r:2, p:2, sigma:0.001, time:0.11s
+Iter 2, obj:-178.23441885, gap:1.3e-01, pinf:1.2e+02, dinf:7.3e-02, gradnorm:4.2e+00, r:10, p:10, sigma:0.002, time:0.24s
+Iter 3, obj:-168.00088406, gap:2.4e-01, pinf:1.1e+02, dinf:5.8e-02, gradnorm:8.3e+00, r:16, p:18, sigma:0.004, time:0.36s
+Iter 4, obj:-169.80990512, gap:5.5e-01, pinf:9.1e+01, dinf:5.7e-02, gradnorm:7.4e+00, r:23, p:24, sigma:0.008, time:0.51s
+Iter 5, obj:-160.83622608, gap:2.0e-01, pinf:5.2e+01, dinf:2.8e-01, gradnorm:2.1e+01, r:31, p:31, sigma:0.016, time:0.66s
+Iter 6, obj:-174.06804567, gap:9.2e-03, pinf:2.6e+01, dinf:3.1e-02, gradnorm:7.3e+00, r:39, p:39, sigma:0.032, time:0.81s
+Iter 7, obj:-178.33765683, gap:8.2e-03, pinf:8.6e+00, dinf:3.1e-02, gradnorm:5.6e+00, r:41, p:47, sigma:0.064, time:1.02s
+Iter 8, obj:-180.67718837, gap:7.2e-03, pinf:4.4e+00, dinf:4.0e-02, gradnorm:6.2e+00, r:33, p:49, sigma:0.128, time:1.42s
+Iter 9, obj:-180.78008640, gap:3.7e-03, pinf:4.9e+00, dinf:2.8e-03, gradnorm:9.0e-01, r:33, p:41, sigma:0.064, time:1.82s
+Iter 10, obj:-180.64595178, gap:4.7e-03, pinf:2.0e+00, dinf:5.4e-03, gradnorm:1.5e+00, r:30, p:39, sigma:0.128, time:2.18s
+Iter 11, obj:-180.30407318, gap:3.9e-03, pinf:1.4e+00, dinf:3.7e-03, gradnorm:1.2e+00, r:27, p:37, sigma:0.256, time:2.79s
+Iter 12, obj:-180.25817619, gap:3.5e-03, pinf:9.1e-01, dinf:6.2e-03, gradnorm:1.2e+00, r:23, p:35, sigma:0.512, time:3.46s
+Iter 13, obj:-180.08692598, gap:2.7e-03, pinf:8.4e-01, dinf:3.0e-02, gradnorm:3.7e+00, r:23, p:31, sigma:0.256, time:4.13s
+Iter 14, obj:-179.89897911, gap:1.7e-03, pinf:1.4e+00, dinf:9.9e-04, gradnorm:5.1e-01, r:24, p:31, sigma:0.128, time:4.58s
+Iter 15, obj:-179.90141232, gap:1.5e-03, pinf:5.3e-01, dinf:4.2e-03, gradnorm:9.8e-01, r:22, p:29, sigma:0.256, time:5.09s
+Iter 16, obj:-179.80625687, gap:8.8e-04, pinf:6.5e-01, dinf:9.8e-04, gradnorm:6.6e-01, r:21, p:29, sigma:0.128, time:5.69s
+Iter 17, obj:-179.76561091, gap:1.2e-04, pinf:4.8e-01, dinf:4.5e-04, gradnorm:2.5e-01, r:18, p:25, sigma:0.064, time:6.22s
+Iter 18, obj:-179.77138757, gap:4.1e-05, pinf:1.5e-01, dinf:7.6e-04, gradnorm:5.1e-01, r:17, p:21, sigma:0.128, time:6.74s
+Iter 19, obj:-179.76435506, gap:5.4e-06, pinf:2.5e-01, dinf:6.9e-07, gradnorm:4.8e-02, r:13, p:19, sigma:0.064, time:7.28s
+Iter 20, obj:-179.76706198, gap:1.5e-06, pinf:2.8e-02, dinf:2.6e-07, gradnorm:1.6e-02, r:11, p:14, sigma:0.128, time:7.74s
+Iter 21, obj:-179.76815978, gap:3.3e-07, pinf:1.0e-02, dinf:4.7e-07, gradnorm:2.8e-02, r:9, p:12, sigma:0.256, time:8.29s
+Iter 22, obj:-179.76847427, gap:2.4e-07, pinf:5.6e-03, dinf:9.7e-08, gradnorm:1.3e-02, r:7, p:10, sigma:0.128, time:8.88s
+Iter 23, obj:-179.76866321, gap:6.5e-08, pinf:6.0e-03, dinf:2.8e-09, gradnorm:1.6e-03, r:4, p:8, sigma:0.064, time:9.45s
+Iter 24, obj:-179.76869142, gap:1.5e-08, pinf:7.0e-04, dinf:1.1e-09, gradnorm:1.4e-03, r:1, p:5, sigma:0.128, time:9.94s
+Iter 25, obj:-179.76869870, gap:3.8e-12, pinf:6.5e-04, dinf:6.7e-15, gradnorm:2.9e-06, r:1, p:2, sigma:0.064, time:10.40s
+Iter 26, obj:-179.76869870, gap:6.5e-15, pinf:2.2e-05, dinf:2.6e-17, gradnorm:1.6e-07, r:1, p:2, sigma:0.128, time:10.82s
+Iter 27, obj:-179.76869870, gap:7.9e-17, pinf:7.5e-07, dinf:0.0e+00, gradnorm:8.5e-09, r:1, p:2, sigma:0.256, time:11.18s
+Iter 28, obj:-179.76869870, gap:7.9e-17, pinf:1.8e-08, dinf:0.0e+00, gradnorm:7.5e-09, r:1, p:2, sigma:0.512, time:11.32s
+Iter 29, obj:-179.76869870, gap:0.0e+00, pinf:4.6e-10, dinf:0.0e+00, gradnorm:1.9e-09, r:1, p:2, sigma:1.024, time:11.47s
+Optimality is reached!
+ManiCSDP: optimum = -179.76869870, time = 11.47s
+ManiCSDP_unitdiag: f = -179.76869870, eta = 4.6e-10, t = 11.47s
+
+正在执行 CSDP → RSDP 转换...
+
+=== 情形 3: MOSEK (实 RSDP) ===
+MOSEK 求解失败（响应码 1051）
+   MOSEK 消息: 
+
+=== 情形 4: ManiSDP_complexunitdiag (实 RSDP) ===
+ManiSDP_complexunitdiag is starting...
+Real SDP: n2 = 992 (complex n = 496), m = 27900
+Iter 1, obj:-156.67314402, gap:4.9e-02, pinf:1.2e+02, dinf:1.3e-01, gradnorm:1.3e+01, r:2, p:2, sigma:0.001, time:0.21s
+Iter 2, obj:-179.13558364, gap:1.0e-01, pinf:1.1e+02, dinf:1.8e-02, gradnorm:3.8e+00, r:10, p:10, sigma:0.002, time:0.47s
+Iter 3, obj:-177.81043013, gap:2.5e-01, pinf:1.0e+02, dinf:1.3e-02, gradnorm:1.8e+00, r:14, p:18, sigma:0.004, time:0.73s
+Iter 4, obj:-165.44824867, gap:5.3e-01, pinf:9.1e+01, dinf:7.2e-02, gradnorm:7.2e+00, r:22, p:22, sigma:0.008, time:0.98s
+Iter 5, obj:-158.15590820, gap:3.7e-01, pinf:5.8e+01, dinf:1.9e-01, gradnorm:1.4e+01, r:30, p:30, sigma:0.016, time:1.23s
+Iter 6, obj:-170.84964000, gap:2.5e-01, pinf:3.2e+01, dinf:1.0e-01, gradnorm:1.3e+01, r:38, p:38, sigma:0.032, time:1.43s
+Iter 7, obj:-173.54491976, gap:1.5e-02, pinf:2.0e+01, dinf:8.4e-02, gradnorm:1.2e+01, r:46, p:46, sigma:0.064, time:1.78s
+Iter 8, obj:-179.11219325, gap:8.9e-03, pinf:8.3e+00, dinf:1.5e-02, gradnorm:3.7e+00, r:46, p:54, sigma:0.128, time:2.24s
+Iter 9, obj:-179.80127099, gap:1.1e-02, pinf:3.6e+00, dinf:5.7e-02, gradnorm:4.2e+00, r:54, p:54, sigma:0.256, time:2.91s
+Iter 10, obj:-179.14579421, gap:2.4e-03, pinf:4.8e+00, dinf:1.7e-02, gradnorm:2.8e+00, r:54, p:62, sigma:0.128, time:3.48s
+Iter 11, obj:-179.86645780, gap:4.6e-03, pinf:2.6e+00, dinf:3.8e-02, gradnorm:6.5e+00, r:49, p:62, sigma:0.256, time:4.51s
+Iter 12, obj:-179.77052274, gap:5.9e-04, pinf:2.8e+00, dinf:1.1e-02, gradnorm:2.5e+00, r:44, p:57, sigma:0.128, time:5.52s
+Iter 13, obj:-179.98686154, gap:2.0e-03, pinf:1.1e+00, dinf:2.4e-03, gradnorm:6.5e-01, r:42, p:52, sigma:0.256, time:6.18s
+Iter 14, obj:-179.83578905, gap:2.2e-03, pinf:7.0e-01, dinf:2.9e-03, gradnorm:8.1e-01, r:42, p:50, sigma:0.512, time:7.02s
+Iter 15, obj:-179.78074315, gap:1.2e-03, pinf:8.0e-01, dinf:1.6e-02, gradnorm:2.3e+00, r:40, p:50, sigma:0.256, time:8.11s
+Iter 16, obj:-179.66600837, gap:1.1e-05, pinf:7.7e-01, dinf:9.1e-03, gradnorm:1.5e+00, r:38, p:48, sigma:0.128, time:9.12s
+Iter 17, obj:-179.74632075, gap:4.5e-05, pinf:8.4e-01, dinf:1.3e-03, gradnorm:4.7e-01, r:32, p:46, sigma:0.064, time:10.04s
+Iter 18, obj:-179.76119961, gap:6.1e-06, pinf:1.8e-01, dinf:1.2e-06, gradnorm:2.4e-02, r:28, p:36, sigma:0.128, time:10.88s
+Iter 19, obj:-179.76693887, gap:6.2e-07, pinf:2.7e-02, dinf:9.0e-06, gradnorm:6.5e-02, r:23, p:30, sigma:0.256, time:11.68s
+Iter 20, obj:-179.76729527, gap:2.6e-06, pinf:2.3e-02, dinf:6.8e-07, gradnorm:2.4e-02, r:18, p:25, sigma:0.128, time:12.63s
+Iter 21, obj:-179.76827457, gap:8.6e-07, pinf:1.4e-02, dinf:4.7e-08, gradnorm:6.8e-03, r:14, p:20, sigma:0.064, time:13.59s
+Iter 22, obj:-179.76856038, gap:2.9e-07, pinf:4.7e-03, dinf:1.4e-07, gradnorm:1.1e-02, r:9, p:16, sigma:0.128, time:14.50s
+Iter 23, obj:-179.76866299, gap:7.6e-08, pinf:6.9e-03, dinf:1.9e-09, gradnorm:1.8e-03, r:5, p:11, sigma:0.064, time:15.38s
+Iter 24, obj:-179.76869342, gap:9.8e-09, pinf:1.6e-03, dinf:1.0e-08, gradnorm:2.9e-03, r:2, p:7, sigma:0.128, time:16.24s
+Iter 25, obj:-179.76869868, gap:6.4e-11, pinf:2.2e-03, dinf:9.0e-13, gradnorm:3.6e-05, r:2, p:4, sigma:0.064, time:17.04s
+Iter 26, obj:-179.76869870, gap:1.2e-11, pinf:5.7e-05, dinf:3.8e-13, gradnorm:1.7e-05, r:2, p:4, sigma:0.128, time:17.76s
+Iter 27, obj:-179.76869870, gap:3.7e-12, pinf:5.8e-06, dinf:1.7e-13, gradnorm:1.5e-05, r:2, p:4, sigma:0.256, time:18.56s
+Iter 28, obj:-179.76869870, gap:1.3e-12, pinf:3.8e-06, dinf:6.3e-14, gradnorm:1.1e-05, r:2, p:4, sigma:0.128, time:19.38s
+Iter 29, obj:-179.76869870, gap:3.7e-13, pinf:6.5e-06, dinf:4.6e-15, gradnorm:2.0e-06, r:2, p:4, sigma:0.064, time:20.17s
+Iter 30, obj:-179.76869870, gap:1.3e-13, pinf:1.8e-06, dinf:6.8e-15, gradnorm:3.6e-06, r:2, p:4, sigma:0.128, time:20.98s
+Iter 31, obj:-179.76869870, gap:3.9e-14, pinf:1.5e-06, dinf:1.0e-15, gradnorm:1.5e-06, r:2, p:4, sigma:0.064, time:21.77s
+Iter 32, obj:-179.76869870, gap:1.4e-14, pinf:9.3e-07, dinf:1.5e-15, gradnorm:1.3e-06, r:2, p:4, sigma:0.128, time:22.58s
+Iter 33, obj:-179.76869870, gap:4.0e-15, pinf:7.5e-07, dinf:1.3e-16, gradnorm:4.4e-07, r:2, p:4, sigma:0.064, time:23.38s
+Iter 34, obj:-179.76869870, gap:1.5e-15, pinf:2.7e-07, dinf:2.1e-16, gradnorm:3.8e-07, r:2, p:4, sigma:0.128, time:24.19s
+Iter 35, obj:-179.76869870, gap:2.4e-16, pinf:1.9e-07, dinf:3.7e-17, gradnorm:1.9e-07, r:2, p:4, sigma:0.064, time:24.98s
+Iter 36, obj:-179.76869870, gap:0.0e+00, pinf:8.3e-08, dinf:9.0e-18, gradnorm:1.1e-07, r:2, p:4, sigma:0.128, time:25.80s
+Iter 37, obj:-179.76869870, gap:7.9e-17, pinf:7.2e-08, dinf:6.8e-17, gradnorm:2.3e-08, r:2, p:3, sigma:0.064, time:26.61s
+Iter 38, obj:-179.76869870, gap:7.9e-17, pinf:2.0e-08, dinf:0.0e+00, gradnorm:4.0e-08, r:2, p:3, sigma:0.128, time:27.41s
+Iter 39, obj:-179.76869870, gap:7.9e-17, pinf:2.8e-08, dinf:3.1e-18, gradnorm:8.4e-09, r:2, p:3, sigma:0.064, time:28.05s
+Iter 40, obj:-179.76869870, gap:0.0e+00, pinf:5.2e-09, dinf:0.0e+00, gradnorm:7.0e-09, r:2, p:3, sigma:0.128, time:28.32s
+Optimality is reached!
+ManiSDP_complexunitdiag: optimum = -179.76869870, time = 28.32s
+ManiSDP_complexunitdiag: f = -179.76869870, eta = 5.2e-09, t = 28.32s
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+d=35 rng(2)
+Log: D:\Mine\Mani\ManiCSDP\Numerical Experiment\results_bqp_overnight\bqp_mani_d35_rng2.txt
+Started: 2026-05-07 01:14:01
+========== BQP Mani  d=35  rng(2) ==========
+
+--- ManiCSDP_unitdiag ---
+ManiCSDP is starting...
+CSDP size: n = 666, m = 44100
+Iter 1, obj:-238.48229501, gap:5.0e-02, pinf:1.5e+02, dinf:9.3e-02, gradnorm:1.5e+01, r:2, p:2, sigma:0.001, time:0.20s
+Iter 2, obj:-250.82185255, gap:1.4e-01, pinf:1.5e+02, dinf:9.2e-02, gradnorm:5.7e+00, r:10, p:10, sigma:0.002, time:0.43s
+Iter 3, obj:-249.26779419, gap:3.1e-01, pinf:1.3e+02, dinf:5.9e-02, gradnorm:9.2e+00, r:16, p:18, sigma:0.004, time:0.66s
+Iter 4, obj:-233.46217328, gap:7.5e-01, pinf:1.2e+02, dinf:4.5e-02, gradnorm:7.5e+00, r:22, p:24, sigma:0.008, time:0.90s
+Iter 5, obj:-206.88028576, gap:7.8e-01, pinf:8.5e+01, dinf:2.6e-01, gradnorm:2.8e+01, r:30, p:30, sigma:0.016, time:1.13s
+Iter 6, obj:-237.16869978, gap:1.8e-01, pinf:3.5e+01, dinf:8.1e-02, gradnorm:1.8e+01, r:38, p:38, sigma:0.032, time:1.35s
+Iter 7, obj:-244.35191777, gap:2.2e-02, pinf:2.2e+01, dinf:9.6e-02, gradnorm:2.0e+01, r:45, p:46, sigma:0.064, time:1.70s
+Iter 8, obj:-246.64966199, gap:1.8e-02, pinf:1.1e+01, dinf:1.2e-01, gradnorm:2.1e+01, r:50, p:53, sigma:0.128, time:2.26s
+Iter 9, obj:-249.89370217, gap:1.2e-02, pinf:1.6e+01, dinf:6.5e-02, gradnorm:8.8e+00, r:52, p:58, sigma:0.064, time:2.84s
+Iter 10, obj:-249.53181022, gap:9.5e-03, pinf:6.0e+00, dinf:1.2e-02, gradnorm:5.7e+00, r:57, p:60, sigma:0.128, time:3.36s
+Iter 11, obj:-249.40224139, gap:7.4e-03, pinf:3.0e+00, dinf:5.3e-03, gradnorm:3.3e+00, r:51, p:65, sigma:0.256, time:4.13s
+Iter 12, obj:-249.46224276, gap:6.5e-03, pinf:3.5e+00, dinf:5.0e-03, gradnorm:1.6e+00, r:43, p:59, sigma:0.128, time:5.06s
+Iter 13, obj:-249.32741590, gap:7.5e-03, pinf:2.0e+00, dinf:8.2e-03, gradnorm:3.3e+00, r:39, p:51, sigma:0.256, time:5.99s
+Iter 14, obj:-248.31474773, gap:5.0e-03, pinf:2.6e+00, dinf:2.4e-03, gradnorm:1.3e+00, r:35, p:47, sigma:0.128, time:6.88s
+Iter 15, obj:-248.23563022, gap:5.5e-03, pinf:1.6e+00, dinf:1.1e-02, gradnorm:3.0e+00, r:33, p:43, sigma:0.256, time:7.86s
+Iter 16, obj:-247.99790950, gap:4.7e-03, pinf:2.0e+00, dinf:1.6e-03, gradnorm:9.3e-01, r:31, p:41, sigma:0.128, time:8.82s
+Iter 17, obj:-247.94644833, gap:4.9e-03, pinf:1.3e+00, dinf:7.2e-03, gradnorm:2.0e+00, r:29, p:39, sigma:0.256, time:9.85s
+Iter 18, obj:-247.42605567, gap:2.9e-03, pinf:1.3e+00, dinf:6.0e-04, gradnorm:6.9e-01, r:27, p:37, sigma:0.128, time:11.00s
+Iter 19, obj:-247.31287153, gap:2.7e-03, pinf:8.6e-01, dinf:4.6e-04, gradnorm:6.4e-01, r:25, p:35, sigma:0.256, time:12.14s
+Iter 20, obj:-247.16207283, gap:2.6e-03, pinf:6.0e-01, dinf:1.0e-03, gradnorm:6.2e-01, r:25, p:33, sigma:0.512, time:13.28s
+Iter 21, obj:-246.97788917, gap:2.0e-03, pinf:4.8e-01, dinf:1.0e-03, gradnorm:4.9e-01, r:25, p:33, sigma:0.256, time:14.40s
+Iter 22, obj:-246.77295545, gap:1.3e-03, pinf:4.3e-01, dinf:6.7e-04, gradnorm:3.9e-01, r:25, p:32, sigma:0.128, time:15.52s
+Iter 23, obj:-246.63962286, gap:8.7e-04, pinf:3.0e-01, dinf:1.7e-03, gradnorm:4.0e-01, r:24, p:31, sigma:0.256, time:16.63s
+Iter 24, obj:-246.53206381, gap:4.9e-04, pinf:2.6e-01, dinf:1.4e-04, gradnorm:3.6e-01, r:24, p:29, sigma:0.128, time:17.76s
+Iter 25, obj:-246.44488888, gap:2.2e-04, pinf:2.3e-01, dinf:3.3e-05, gradnorm:2.5e-01, r:24, p:26, sigma:0.064, time:18.87s
+Iter 26, obj:-246.39833639, gap:8.6e-05, pinf:2.1e-01, dinf:5.9e-06, gradnorm:7.2e-02, r:23, p:25, sigma:0.032, time:19.95s
+Iter 27, obj:-246.38499122, gap:4.6e-05, pinf:7.9e-02, dinf:1.3e-06, gradnorm:4.6e-02, r:22, p:24, sigma:0.064, time:20.87s
+Iter 28, obj:-246.37733316, gap:2.3e-05, pinf:3.5e-02, dinf:6.0e-07, gradnorm:2.9e-02, r:22, p:23, sigma:0.128, time:21.93s
+Iter 29, obj:-246.37364768, gap:1.3e-05, pinf:1.8e-02, dinf:5.4e-07, gradnorm:3.1e-02, r:20, p:23, sigma:0.256, time:23.00s
+Iter 30, obj:-246.37147817, gap:6.5e-06, pinf:1.1e-02, dinf:2.7e-07, gradnorm:2.1e-02, r:17, p:21, sigma:0.128, time:24.04s
+Iter 31, obj:-246.37045339, gap:3.5e-06, pinf:8.8e-03, dinf:6.7e-08, gradnorm:9.5e-03, r:15, p:18, sigma:0.064, time:25.05s
+Iter 32, obj:-246.36953174, gap:8.7e-07, pinf:4.8e-03, dinf:1.5e-08, gradnorm:2.4e-03, r:9, p:16, sigma:0.032, time:26.03s
+Iter 33, obj:-246.36933673, gap:3.4e-07, pinf:1.8e-03, dinf:5.9e-09, gradnorm:2.3e-03, r:6, p:10, sigma:0.064, time:26.92s
+Iter 34, obj:-246.36924672, gap:1.1e-07, pinf:1.7e-03, dinf:1.7e-09, gradnorm:8.6e-04, r:3, p:7, sigma:0.032, time:27.79s
+Iter 35, obj:-246.36922815, gap:5.7e-08, pinf:8.0e-04, dinf:8.9e-10, gradnorm:1.1e-03, r:3, p:4, sigma:0.064, time:28.63s
+Iter 36, obj:-246.36921123, gap:1.8e-08, pinf:8.6e-04, dinf:1.9e-10, gradnorm:3.2e-04, r:1, p:4, sigma:0.032, time:29.45s
+Iter 37, obj:-246.36920326, gap:5.5e-13, pinf:2.5e-04, dinf:2.1e-16, gradnorm:4.4e-07, r:1, p:2, sigma:0.064, time:30.25s
+Iter 38, obj:-246.36920326, gap:1.2e-15, pinf:1.3e-05, dinf:8.1e-20, gradnorm:1.3e-08, r:1, p:2, sigma:0.128, time:31.05s
+Iter 39, obj:-246.36920326, gap:0.0e+00, pinf:3.7e-07, dinf:0.0e+00, gradnorm:5.5e-09, r:1, p:2, sigma:0.256, time:31.50s
+Iter 40, obj:-246.36920326, gap:0.0e+00, pinf:6.1e-09, dinf:3.6e-18, gradnorm:3.1e-09, r:1, p:2, sigma:0.512, time:31.76s
+Optimality is reached!
+ManiCSDP: optimum = -246.36920326, time = 31.76s
+ManiCSDP_unitdiag: f = -246.36920326, eta = 6.1e-09, t = 31.76s
+
+--- ManiSDP_complexunitdiag ---
+ManiSDP_complexunitdiag is starting...
+Real SDP: n2 = 1332 (complex n = 666), m = 44100
+Iter 1, obj:-226.05023629, gap:5.2e-02, pinf:1.5e+02, dinf:9.9e-02, gradnorm:1.9e+01, r:2, p:2, sigma:0.001, time:0.36s
+Iter 2, obj:-247.81588784, gap:1.1e-01, pinf:1.3e+02, dinf:2.2e-02, gradnorm:4.7e+00, r:10, p:10, sigma:0.002, time:0.86s
+Iter 3, obj:-249.52706679, gap:2.5e-01, pinf:1.2e+02, dinf:2.0e-02, gradnorm:3.8e+00, r:16, p:18, sigma:0.004, time:1.40s
+Iter 4, obj:-241.87940886, gap:2.4e-01, pinf:8.2e+01, dinf:1.0e-01, gradnorm:1.2e+01, r:24, p:24, sigma:0.008, time:1.93s
+Iter 5, obj:-241.90372258, gap:1.3e-01, pinf:4.9e+01, dinf:2.1e-01, gradnorm:1.8e+01, r:30, p:32, sigma:0.016, time:2.44s
+Iter 6, obj:-245.37703309, gap:3.8e-02, pinf:3.5e+01, dinf:3.3e-02, gradnorm:7.4e+00, r:34, p:38, sigma:0.032, time:2.91s
+Iter 7, obj:-249.01124027, gap:1.6e-02, pinf:1.6e+01, dinf:5.6e-02, gradnorm:6.4e+00, r:40, p:42, sigma:0.064, time:3.64s
+Iter 8, obj:-250.79720469, gap:1.2e-02, pinf:6.5e+00, dinf:3.2e-02, gradnorm:3.3e+00, r:44, p:48, sigma:0.128, time:4.44s
+Iter 9, obj:-251.49880703, gap:1.6e-02, pinf:5.2e+00, dinf:6.8e-02, gradnorm:1.4e+01, r:44, p:52, sigma:0.256, time:5.94s
+Iter 10, obj:-250.93075980, gap:7.5e-03, pinf:6.7e+00, dinf:4.5e-03, gradnorm:1.7e+00, r:49, p:52, sigma:0.128, time:7.13s
+Iter 11, obj:-250.51585528, gap:1.1e-02, pinf:2.7e+00, dinf:6.1e-03, gradnorm:1.7e+00, r:51, p:57, sigma:0.256, time:8.04s
+Iter 12, obj:-249.51901027, gap:1.4e-02, pinf:2.3e+00, dinf:1.2e-02, gradnorm:3.4e+00, r:54, p:59, sigma:0.512, time:9.53s
+Iter 13, obj:-246.47301221, gap:8.2e-03, pinf:4.7e+00, dinf:6.8e-02, gradnorm:1.1e+01, r:59, p:62, sigma:0.256, time:11.27s
+Iter 14, obj:-246.25437737, gap:2.8e-03, pinf:6.2e+00, dinf:2.2e-02, gradnorm:3.2e+00, r:64, p:67, sigma:0.128, time:12.56s
+Iter 15, obj:-247.56684723, gap:5.8e-03, pinf:2.0e+00, dinf:9.2e-03, gradnorm:2.6e+00, r:65, p:72, sigma:0.256, time:13.67s
+Iter 16, obj:-247.59652223, gap:4.6e-03, pinf:2.0e+00, dinf:3.8e-03, gradnorm:9.2e-01, r:60, p:73, sigma:0.128, time:15.35s
+Iter 17, obj:-247.37247848, gap:4.6e-03, pinf:1.3e+00, dinf:5.6e-03, gradnorm:1.2e+00, r:60, p:68, sigma:0.256, time:16.96s
+Iter 18, obj:-247.01597967, gap:3.8e-03, pinf:1.0e+00, dinf:3.5e-03, gradnorm:8.2e-01, r:58, p:68, sigma:0.512, time:19.15s
+Iter 19, obj:-246.83238684, gap:4.0e-03, pinf:6.6e-01, dinf:3.1e-03, gradnorm:8.6e-01, r:58, p:66, sigma:1.024, time:21.36s
+Iter 20, obj:-246.49279496, gap:2.8e-03, pinf:5.6e-01, dinf:2.2e-03, gradnorm:8.3e-01, r:58, p:66, sigma:0.512, time:23.55s
+Iter 21, obj:-246.15250118, gap:1.2e-03, pinf:7.3e-01, dinf:2.1e-03, gradnorm:6.8e-01, r:58, p:66, sigma:0.256, time:25.76s
+Iter 22, obj:-246.22798052, gap:1.1e-03, pinf:4.6e-01, dinf:3.1e-03, gradnorm:5.5e-01, r:56, p:66, sigma:0.512, time:27.97s
+Iter 23, obj:-246.36940175, gap:8.4e-04, pinf:3.6e-01, dinf:9.5e-04, gradnorm:3.8e-01, r:56, p:64, sigma:0.256, time:30.14s
+Iter 24, obj:-246.37842519, gap:3.0e-04, pinf:3.8e-01, dinf:3.1e-04, gradnorm:2.1e-01, r:54, p:64, sigma:0.128, time:32.33s
+Iter 25, obj:-246.37450520, gap:1.2e-04, pinf:1.4e-01, dinf:5.1e-05, gradnorm:1.8e-01, r:52, p:60, sigma:0.256, time:34.45s
+Iter 26, obj:-246.36240755, gap:1.8e-05, pinf:8.5e-02, dinf:2.6e-06, gradnorm:7.2e-02, r:48, p:54, sigma:0.128, time:36.53s
+Iter 27, obj:-246.36535913, gap:2.8e-06, pinf:2.9e-02, dinf:2.1e-06, gradnorm:4.7e-02, r:44, p:50, sigma:0.256, time:38.55s
+Iter 28, obj:-246.36764584, gap:2.0e-08, pinf:2.2e-02, dinf:4.4e-07, gradnorm:2.3e-02, r:34, p:46, sigma:0.128, time:40.50s
+Iter 29, obj:-246.36849117, gap:6.3e-07, pinf:1.7e-02, dinf:6.5e-08, gradnorm:8.0e-03, r:26, p:36, sigma:0.064, time:42.30s
+Iter 30, obj:-246.36885976, gap:4.3e-07, pinf:4.5e-03, dinf:6.4e-08, gradnorm:9.2e-03, r:15, p:28, sigma:0.128, time:44.07s
+Iter 31, obj:-246.36907848, gap:1.8e-07, pinf:3.5e-03, dinf:2.2e-08, gradnorm:5.5e-03, r:8, p:17, sigma:0.064, time:45.70s
+Iter 32, obj:-246.36917822, gap:4.2e-08, pinf:6.2e-03, dinf:6.9e-10, gradnorm:7.2e-04, r:2, p:10, sigma:0.032, time:47.24s
+Iter 33, obj:-246.36920317, gap:1.4e-10, pinf:7.8e-04, dinf:4.9e-11, gradnorm:2.1e-04, r:2, p:4, sigma:0.064, time:48.52s
+Iter 34, obj:-246.36920323, gap:4.8e-11, pinf:9.7e-05, dinf:5.2e-12, gradnorm:1.1e-04, r:2, p:4, sigma:0.128, time:49.92s
+Iter 35, obj:-246.36920325, gap:1.4e-11, pinf:6.4e-05, dinf:4.4e-13, gradnorm:2.8e-05, r:2, p:4, sigma:0.064, time:51.34s
+Iter 36, obj:-246.36920326, gap:3.6e-12, pinf:1.8e-05, dinf:5.0e-13, gradnorm:2.7e-05, r:2, p:4, sigma:0.128, time:52.75s
+Iter 37, obj:-246.36920326, gap:7.1e-13, pinf:1.3e-05, dinf:7.5e-14, gradnorm:1.0e-05, r:2, p:4, sigma:0.064, time:54.15s
+Iter 38, obj:-246.36920326, gap:1.4e-13, pinf:4.8e-06, dinf:2.5e-14, gradnorm:5.3e-06, r:2, p:4, sigma:0.128, time:55.55s
+Iter 39, obj:-246.36920326, gap:2.5e-14, pinf:2.5e-06, dinf:1.8e-15, gradnorm:1.4e-06, r:2, p:4, sigma:0.064, time:56.94s
+Iter 40, obj:-246.36920326, gap:4.9e-15, pinf:7.3e-07, dinf:3.8e-16, gradnorm:7.3e-07, r:2, p:4, sigma:0.128, time:58.34s
+Iter 41, obj:-246.36920326, gap:1.5e-15, pinf:9.7e-08, dinf:1.0e-16, gradnorm:3.4e-07, r:2, p:4, sigma:0.256, time:59.75s
+Iter 42, obj:-246.36920326, gap:6.3e-16, pinf:8.4e-08, dinf:8.8e-18, gradnorm:1.2e-07, r:2, p:4, sigma:0.128, time:61.16s
+Iter 43, obj:-246.36920326, gap:1.2e-16, pinf:7.3e-08, dinf:0.0e+00, gradnorm:6.0e-08, r:2, p:4, sigma:0.064, time:62.57s
+Iter 44, obj:-246.36920326, gap:0.0e+00, pinf:1.7e-08, dinf:5.5e-17, gradnorm:9.5e-09, r:2, p:3, sigma:0.128, time:63.66s
+Iter 45, obj:-246.36920326, gap:1.2e-16, pinf:4.7e-09, dinf:4.4e-17, gradnorm:2.9e-08, r:2, p:4, sigma:0.256, time:65.06s
+Optimality is reached!
+ManiSDP_complexunitdiag: optimum = -246.36920326, time = 65.06s
+ManiSDP_complexunitdiag: f = -246.36920326, eta = 4.7e-09, t = 65.06s
+
+--- Summary  d=35 rng(2) ---
+ManiCSDP_unitdiag:       f = -246.36920326, t = 31.7643s
+ManiSDP_complexunitdiag: f = -246.36920326, t = 65.0607s
+Status: SUCCESS
+Finished: 2026-05-07 01:33:03
+========== CASE END ==========
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+d=35 rng(4)
+Log: D:\Mine\Mani\ManiCSDP\Numerical Experiment\results_bqp_overnight\bqp_mani_d35_rng4.txt
+Started: 2026-05-07 01:51:59
+========== BQP Mani  d=35  rng(4) ==========
+
+--- ManiCSDP_unitdiag ---
+ManiCSDP is starting...
+CSDP size: n = 666, m = 44100
+Iter 1, obj:-206.61944707, gap:5.7e-02, pinf:1.5e+02, dinf:1.6e-01, gradnorm:2.0e+01, r:2, p:2, sigma:0.001, time:0.18s
+Iter 2, obj:-220.59035769, gap:1.3e-01, pinf:1.4e+02, dinf:5.9e-02, gradnorm:1.3e+01, r:10, p:10, sigma:0.002, time:0.42s
+Iter 3, obj:-227.89591274, gap:3.2e-01, pinf:1.3e+02, dinf:3.9e-02, gradnorm:3.8e+00, r:16, p:18, sigma:0.004, time:0.69s
+Iter 4, obj:-216.83985187, gap:8.4e-01, pinf:1.2e+02, dinf:5.8e-02, gradnorm:7.5e+00, r:23, p:24, sigma:0.008, time:0.94s
+Iter 5, obj:-193.18880451, gap:3.6e-01, pinf:6.3e+01, dinf:2.6e-01, gradnorm:3.0e+01, r:31, p:31, sigma:0.016, time:1.20s
+Iter 6, obj:-221.32965182, gap:1.6e-02, pinf:3.2e+01, dinf:6.2e-02, gradnorm:9.9e+00, r:39, p:39, sigma:0.032, time:1.45s
+Iter 7, obj:-226.16940062, gap:1.6e-02, pinf:1.4e+01, dinf:7.4e-02, gradnorm:1.4e+01, r:44, p:47, sigma:0.064, time:1.94s
+Iter 8, obj:-228.76388882, gap:7.4e-03, pinf:5.5e+00, dinf:3.1e-02, gradnorm:6.4e+00, r:45, p:52, sigma:0.128, time:2.44s
+Iter 9, obj:-228.69833664, gap:6.4e-03, pinf:5.5e+00, dinf:1.3e-02, gradnorm:2.8e+00, r:40, p:53, sigma:0.064, time:3.23s
+Iter 10, obj:-228.61285386, gap:8.5e-03, pinf:3.3e+00, dinf:1.3e-02, gradnorm:2.2e+00, r:38, p:48, sigma:0.128, time:3.87s
+Iter 11, obj:-227.43357603, gap:8.8e-03, pinf:2.4e+00, dinf:7.7e-03, gradnorm:2.6e+00, r:37, p:46, sigma:0.256, time:4.73s
+Iter 12, obj:-227.25292936, gap:8.9e-03, pinf:2.5e+00, dinf:5.1e-03, gradnorm:1.7e+00, r:36, p:45, sigma:0.128, time:5.60s
+Iter 13, obj:-226.22810788, gap:7.9e-03, pinf:1.9e+00, dinf:7.3e-03, gradnorm:2.0e+00, r:35, p:44, sigma:0.256, time:6.58s
+Iter 14, obj:-225.20288662, gap:5.6e-03, pinf:2.3e+00, dinf:4.0e-03, gradnorm:9.8e-01, r:34, p:43, sigma:0.128, time:7.48s
+Iter 15, obj:-225.29801719, gap:6.7e-03, pinf:1.5e+00, dinf:4.8e-03, gradnorm:1.3e+00, r:33, p:42, sigma:0.256, time:8.57s
+Iter 16, obj:-224.63740179, gap:6.5e-03, pinf:1.1e+00, dinf:2.5e-03, gradnorm:8.4e-01, r:33, p:41, sigma:0.512, time:9.77s
+Iter 17, obj:-223.92962630, gap:6.7e-03, pinf:9.1e-01, dinf:3.3e-03, gradnorm:8.5e-01, r:34, p:41, sigma:1.024, time:11.02s
+Iter 18, obj:-223.09179971, gap:7.2e-03, pinf:7.1e-01, dinf:6.8e-03, gradnorm:1.2e+00, r:38, p:42, sigma:2.048, time:12.33s
+Iter 19, obj:-222.01270568, gap:4.7e-03, pinf:5.9e-01, dinf:7.8e-03, gradnorm:1.2e+00, r:43, p:46, sigma:1.024, time:13.65s
+Iter 20, obj:-220.87967262, gap:1.6e-03, pinf:8.6e-01, dinf:6.3e-03, gradnorm:1.0e+00, r:45, p:51, sigma:0.512, time:15.06s
+Iter 21, obj:-220.06401156, gap:5.3e-04, pinf:1.3e+00, dinf:1.9e-03, gradnorm:7.8e-01, r:45, p:53, sigma:0.256, time:16.48s
+Iter 22, obj:-220.87051329, gap:1.7e-03, pinf:6.3e-01, dinf:1.5e-03, gradnorm:4.6e-01, r:45, p:53, sigma:0.512, time:17.89s
+Iter 23, obj:-221.07971631, gap:2.5e-03, pinf:4.1e-01, dinf:2.1e-03, gradnorm:5.2e-01, r:45, p:53, sigma:1.024, time:19.28s
+Iter 24, obj:-221.17716106, gap:2.7e-03, pinf:3.4e-01, dinf:1.1e-03, gradnorm:3.9e-01, r:45, p:53, sigma:0.512, time:20.69s
+Iter 25, obj:-221.17057610, gap:2.5e-03, pinf:3.7e-01, dinf:9.1e-04, gradnorm:2.8e-01, r:43, p:53, sigma:0.256, time:22.09s
+Iter 26, obj:-221.10114069, gap:2.4e-03, pinf:3.2e-01, dinf:8.7e-04, gradnorm:3.8e-01, r:41, p:51, sigma:0.512, time:23.49s
+Iter 27, obj:-220.98836254, gap:2.0e-03, pinf:2.9e-01, dinf:8.6e-04, gradnorm:3.5e-01, r:41, p:49, sigma:0.256, time:24.86s
+Iter 28, obj:-220.84687207, gap:1.5e-03, pinf:3.3e-01, dinf:6.4e-04, gradnorm:2.3e-01, r:41, p:49, sigma:0.128, time:26.23s
+Iter 29, obj:-220.82105418, gap:1.4e-03, pinf:2.8e-01, dinf:1.0e-03, gradnorm:3.4e-01, r:40, p:49, sigma:0.256, time:27.57s
+Iter 30, obj:-220.78954419, gap:1.2e-03, pinf:2.7e-01, dinf:5.2e-04, gradnorm:2.5e-01, r:40, p:48, sigma:0.128, time:28.92s
+Iter 31, obj:-220.75310666, gap:1.0e-03, pinf:2.0e-01, dinf:1.4e-03, gradnorm:3.0e-01, r:40, p:48, sigma:0.256, time:30.29s
+Iter 32, obj:-220.71924455, gap:8.1e-04, pinf:2.2e-01, dinf:4.7e-04, gradnorm:3.3e-01, r:40, p:48, sigma:0.128, time:31.62s
+Iter 33, obj:-220.65486787, gap:5.4e-04, pinf:2.5e-01, dinf:6.8e-04, gradnorm:1.4e-01, r:39, p:46, sigma:0.064, time:32.95s
+Iter 34, obj:-220.61349954, gap:3.9e-04, pinf:1.5e-01, dinf:3.1e-04, gradnorm:1.4e-01, r:38, p:42, sigma:0.128, time:34.22s
+Iter 35, obj:-220.57263468, gap:2.6e-04, pinf:9.6e-02, dinf:1.3e-03, gradnorm:1.1e-01, r:38, p:42, sigma:0.256, time:35.48s
+Iter 36, obj:-220.53351223, gap:1.3e-04, pinf:1.0e-01, dinf:1.3e-04, gradnorm:1.1e-01, r:38, p:44, sigma:0.128, time:36.77s
+Iter 37, obj:-220.52011366, gap:8.2e-05, pinf:7.7e-02, dinf:7.8e-06, gradnorm:6.9e-02, r:38, p:41, sigma:0.064, time:38.03s
+Iter 38, obj:-220.51071864, gap:5.0e-05, pinf:3.5e-02, dinf:2.1e-05, gradnorm:6.0e-02, r:37, p:39, sigma:0.128, time:39.28s
+Iter 39, obj:-220.50406091, gap:2.8e-05, pinf:2.8e-02, dinf:5.4e-06, gradnorm:4.4e-02, r:35, p:38, sigma:0.064, time:40.52s
+Iter 40, obj:-220.49949851, gap:1.4e-05, pinf:3.1e-02, dinf:1.3e-06, gradnorm:2.7e-02, r:33, p:36, sigma:0.032, time:41.76s
+Iter 41, obj:-220.49791988, gap:8.6e-06, pinf:2.0e-02, dinf:3.0e-07, gradnorm:1.1e-02, r:31, p:34, sigma:0.064, time:42.95s
+Iter 42, obj:-220.49698425, gap:5.6e-06, pinf:7.7e-03, dinf:1.2e-07, gradnorm:5.9e-03, r:29, p:32, sigma:0.128, time:44.13s
+Iter 43, obj:-220.49643274, gap:3.9e-06, pinf:5.4e-03, dinf:8.0e-07, gradnorm:1.2e-02, r:27, p:30, sigma:0.256, time:45.29s
+Iter 44, obj:-220.49611474, gap:2.8e-06, pinf:5.4e-03, dinf:5.5e-08, gradnorm:3.7e-03, r:25, p:28, sigma:0.128, time:46.42s
+Iter 45, obj:-220.49581936, gap:1.9e-06, pinf:3.0e-03, dinf:8.0e-07, gradnorm:1.4e-02, r:22, p:26, sigma:0.256, time:47.53s
+Iter 46, obj:-220.49552961, gap:1.1e-06, pinf:3.5e-03, dinf:1.9e-08, gradnorm:2.2e-03, r:18, p:23, sigma:0.128, time:48.60s
+Iter 47, obj:-220.49546080, gap:8.7e-07, pinf:1.6e-03, dinf:2.5e-07, gradnorm:1.0e-02, r:16, p:19, sigma:0.256, time:49.62s
+Iter 48, obj:-220.49530877, gap:4.4e-07, pinf:2.3e-03, dinf:7.3e-09, gradnorm:1.3e-03, r:10, p:17, sigma:0.128, time:50.62s
+Iter 49, obj:-220.49529110, gap:3.7e-07, pinf:5.5e-04, dinf:1.2e-08, gradnorm:1.8e-03, r:8, p:11, sigma:0.256, time:51.54s
+Iter 50, obj:-220.49519736, gap:1.3e-07, pinf:4.5e-04, dinf:1.5e-09, gradnorm:6.2e-04, r:4, p:9, sigma:0.128, time:52.44s
+Iter 51, obj:-220.49515992, gap:3.1e-08, pinf:2.7e-04, dinf:2.2e-10, gradnorm:2.1e-04, r:1, p:5, sigma:0.064, time:53.30s
+Iter 52, obj:-220.49514721, gap:1.2e-15, pinf:6.8e-05, dinf:1.5e-15, gradnorm:6.9e-07, r:1, p:2, sigma:0.128, time:54.09s
+Iter 53, obj:-220.49514720, gap:5.8e-16, pinf:4.2e-06, dinf:0.0e+00, gradnorm:2.3e-08, r:1, p:2, sigma:0.256, time:54.90s
+Iter 54, obj:-220.49514720, gap:2.6e-16, pinf:2.0e-07, dinf:0.0e+00, gradnorm:1.6e-08, r:1, p:2, sigma:0.512, time:55.70s
+Iter 55, obj:-220.49514720, gap:1.9e-16, pinf:5.0e-09, dinf:0.0e+00, gradnorm:2.2e-09, r:1, p:2, sigma:1.024, time:56.14s
+Optimality is reached!
+ManiCSDP: optimum = -220.49514720, time = 56.14s
+ManiCSDP_unitdiag: f = -220.49514720, eta = 5.0e-09, t = 56.14s
+
+--- ManiSDP_complexunitdiag ---
+ManiSDP_complexunitdiag is starting...
+Real SDP: n2 = 1332 (complex n = 666), m = 44100
+Iter 1, obj:-213.11994965, gap:5.6e-02, pinf:1.5e+02, dinf:1.2e-01, gradnorm:3.7e+00, r:2, p:2, sigma:0.001, time:0.35s
+Iter 2, obj:-225.08839526, gap:1.2e-01, pinf:1.3e+02, dinf:3.8e-02, gradnorm:8.3e+00, r:10, p:10, sigma:0.002, time:0.76s
+Iter 3, obj:-227.36171059, gap:3.1e-01, pinf:1.2e+02, dinf:1.4e-02, gradnorm:1.9e+00, r:16, p:18, sigma:0.004, time:1.21s
+Iter 4, obj:-216.02589058, gap:7.9e-01, pinf:1.1e+02, dinf:4.2e-02, gradnorm:6.6e+00, r:24, p:24, sigma:0.008, time:1.66s
+Iter 5, obj:-194.10520566, gap:4.6e-01, pinf:7.6e+01, dinf:3.6e-01, gradnorm:2.2e+01, r:32, p:32, sigma:0.016, time:2.10s
+Iter 6, obj:-214.36246414, gap:2.3e-01, pinf:5.3e+01, dinf:3.2e-01, gradnorm:3.0e+01, r:40, p:40, sigma:0.032, time:2.57s
+Iter 7, obj:-220.98871121, gap:6.1e-02, pinf:2.6e+01, dinf:1.1e-01, gradnorm:9.3e+00, r:46, p:48, sigma:0.064, time:3.01s
+Iter 8, obj:-222.51735225, gap:4.7e-02, pinf:1.2e+01, dinf:8.8e-02, gradnorm:1.4e+01, r:52, p:54, sigma:0.128, time:3.58s
+Iter 9, obj:-224.30287440, gap:1.8e-03, pinf:1.9e+01, dinf:2.2e-02, gradnorm:6.0e+00, r:58, p:60, sigma:0.064, time:4.41s
+Iter 10, obj:-225.44465173, gap:9.7e-03, pinf:7.8e+00, dinf:4.2e-02, gradnorm:4.0e+00, r:64, p:66, sigma:0.128, time:5.42s
+Iter 11, obj:-225.91338018, gap:1.1e-02, pinf:4.0e+00, dinf:7.2e-02, gradnorm:6.4e+00, r:67, p:72, sigma:0.256, time:6.83s
+Iter 12, obj:-225.29272918, gap:5.9e-03, pinf:6.5e+00, dinf:4.0e-02, gradnorm:5.9e+00, r:65, p:75, sigma:0.128, time:8.23s
+Iter 13, obj:-225.62923781, gap:6.9e-03, pinf:3.1e+00, dinf:1.7e-02, gradnorm:2.7e+00, r:68, p:73, sigma:0.256, time:9.64s
+Iter 14, obj:-225.61045901, gap:9.2e-03, pinf:1.7e+00, dinf:8.9e-03, gradnorm:1.6e+00, r:70, p:76, sigma:0.512, time:11.15s
+Iter 15, obj:-224.52953859, gap:1.1e-02, pinf:1.4e+00, dinf:2.5e-02, gradnorm:3.9e+00, r:72, p:78, sigma:1.024, time:13.10s
+Iter 16, obj:-223.13107653, gap:6.7e-03, pinf:1.7e+00, dinf:8.8e-03, gradnorm:1.7e+00, r:78, p:80, sigma:0.512, time:15.04s
+Iter 17, obj:-220.91168310, gap:2.5e-03, pinf:3.2e+00, dinf:4.3e-02, gradnorm:3.5e+00, r:82, p:86, sigma:0.256, time:17.19s
+Iter 18, obj:-221.36195777, gap:2.8e-03, pinf:5.3e+00, dinf:5.8e-02, gradnorm:3.7e+00, r:85, p:90, sigma:0.128, time:18.87s
+Iter 19, obj:-220.74722383, gap:2.6e-03, pinf:2.7e+00, dinf:1.1e-01, gradnorm:7.4e+00, r:88, p:93, sigma:0.256, time:20.38s
+Iter 20, obj:-221.54861024, gap:2.0e-03, pinf:4.6e+00, dinf:4.8e-03, gradnorm:9.9e-01, r:86, p:96, sigma:0.128, time:21.63s
+Iter 21, obj:-221.83959290, gap:3.3e-03, pinf:1.4e+00, dinf:3.9e-02, gradnorm:3.3e+00, r:86, p:94, sigma:0.256, time:22.73s
+Iter 22, obj:-222.06278351, gap:3.2e-03, pinf:1.9e+00, dinf:2.8e-03, gradnorm:6.8e-01, r:87, p:94, sigma:0.128, time:24.13s
+Iter 23, obj:-222.39930534, gap:4.0e-03, pinf:8.5e-01, dinf:3.7e-03, gradnorm:7.9e-01, r:84, p:95, sigma:0.256, time:25.83s
+Iter 24, obj:-222.27936912, gap:3.9e-03, pinf:6.6e-01, dinf:1.9e-03, gradnorm:4.5e-01, r:79, p:92, sigma:0.512, time:28.29s
+Iter 25, obj:-222.01013194, gap:3.8e-03, pinf:5.1e-01, dinf:1.9e-03, gradnorm:3.4e-01, r:79, p:87, sigma:1.024, time:30.80s
+Iter 26, obj:-221.73431113, gap:4.0e-03, pinf:4.2e-01, dinf:3.1e-03, gradnorm:4.6e-01, r:79, p:87, sigma:2.048, time:33.35s
+Iter 27, obj:-221.36529484, gap:3.4e-03, pinf:3.6e-01, dinf:3.2e-03, gradnorm:4.8e-01, r:83, p:87, sigma:1.024, time:35.86s
+Iter 28, obj:-220.92283876, gap:2.2e-03, pinf:4.0e-01, dinf:2.7e-03, gradnorm:3.5e-01, r:84, p:91, sigma:0.512, time:38.43s
+Iter 29, obj:-220.86132693, gap:2.2e-03, pinf:3.3e-01, dinf:4.2e-03, gradnorm:7.6e-01, r:84, p:92, sigma:1.024, time:40.98s
+Iter 30, obj:-220.79456500, gap:2.0e-03, pinf:3.3e-01, dinf:4.0e-03, gradnorm:4.2e-01, r:86, p:92, sigma:0.512, time:43.52s
+Iter 31, obj:-220.60038107, gap:1.4e-03, pinf:4.1e-01, dinf:1.5e-03, gradnorm:3.1e-01, r:85, p:94, sigma:0.256, time:46.08s
+Iter 32, obj:-220.62898290, gap:1.4e-03, pinf:3.1e-01, dinf:2.0e-03, gradnorm:3.2e-01, r:85, p:93, sigma:0.512, time:48.61s
+Iter 33, obj:-220.65643275, gap:1.4e-03, pinf:2.8e-01, dinf:8.9e-04, gradnorm:2.4e-01, r:84, p:93, sigma:0.256, time:51.21s
+Iter 34, obj:-220.65462298, gap:1.3e-03, pinf:2.3e-01, dinf:1.5e-03, gradnorm:3.2e-01, r:84, p:92, sigma:0.512, time:53.90s
+Iter 35, obj:-220.65857824, gap:1.2e-03, pinf:2.0e-01, dinf:9.9e-04, gradnorm:2.5e-01, r:83, p:92, sigma:0.256, time:56.55s
+Iter 36, obj:-220.65204941, gap:9.9e-04, pinf:2.6e-01, dinf:7.2e-04, gradnorm:1.6e-01, r:82, p:91, sigma:0.128, time:59.23s
+Iter 37, obj:-220.63024282, gap:8.5e-04, pinf:1.9e-01, dinf:1.6e-03, gradnorm:2.2e-01, r:82, p:90, sigma:0.256, time:61.82s
+Iter 38, obj:-220.56739670, gap:5.4e-04, pinf:2.1e-01, dinf:8.7e-04, gradnorm:1.7e-01, r:82, p:90, sigma:0.128, time:64.34s
+Iter 39, obj:-220.57010307, gap:4.5e-04, pinf:1.4e-01, dinf:1.5e-03, gradnorm:2.1e-01, r:82, p:90, sigma:0.256, time:66.87s
+Iter 40, obj:-220.53443328, gap:2.5e-04, pinf:1.6e-01, dinf:8.6e-04, gradnorm:1.3e-01, r:82, p:90, sigma:0.128, time:69.62s
+Iter 41, obj:-220.52482881, gap:1.7e-04, pinf:9.2e-02, dinf:1.1e-03, gradnorm:1.2e-01, r:82, p:90, sigma:0.256, time:72.14s
+Iter 42, obj:-220.50945462, gap:8.2e-05, pinf:1.1e-01, dinf:2.6e-04, gradnorm:1.5e-01, r:79, p:90, sigma:0.128, time:74.69s
+Iter 43, obj:-220.50092782, gap:3.5e-05, pinf:9.8e-02, dinf:2.2e-05, gradnorm:6.3e-02, r:78, p:83, sigma:0.064, time:77.16s
+Iter 44, obj:-220.49184938, gap:3.5e-06, pinf:4.6e-02, dinf:9.4e-06, gradnorm:3.7e-02, r:72, p:80, sigma:0.128, time:79.24s
+Iter 45, obj:-220.49792186, gap:1.3e-05, pinf:2.0e-02, dinf:1.3e-05, gradnorm:6.5e-02, r:70, p:74, sigma:0.256, time:81.40s
+Iter 46, obj:-220.49418880, gap:5.6e-07, pinf:2.1e-02, dinf:3.6e-07, gradnorm:1.6e-02, r:54, p:72, sigma:0.128, time:83.52s
+Iter 47, obj:-220.49511034, gap:6.4e-07, pinf:5.0e-03, dinf:1.1e-07, gradnorm:6.9e-03, r:48, p:56, sigma:0.256, time:85.26s
+Iter 48, obj:-220.49501771, gap:1.8e-07, pinf:2.4e-03, dinf:1.1e-08, gradnorm:1.9e-03, r:23, p:50, sigma:0.128, time:87.32s
+Iter 49, obj:-220.49518982, gap:1.6e-07, pinf:1.2e-03, dinf:7.1e-08, gradnorm:6.1e-03, r:16, p:25, sigma:0.256, time:89.08s
+Iter 50, obj:-220.49516347, gap:4.7e-08, pinf:1.8e-03, dinf:9.4e-10, gradnorm:3.3e-04, r:5, p:18, sigma:0.128, time:90.73s
+Iter 51, obj:-220.49515986, gap:3.1e-08, pinf:2.0e-04, dinf:4.5e-10, gradnorm:2.9e-04, r:3, p:7, sigma:0.256, time:92.20s
+Iter 52, obj:-220.49514874, gap:3.8e-09, pinf:1.8e-04, dinf:2.8e-11, gradnorm:7.3e-05, r:2, p:5, sigma:0.128, time:93.65s
+Iter 53, obj:-220.49514723, gap:5.6e-11, pinf:3.4e-05, dinf:6.5e-12, gradnorm:4.8e-05, r:2, p:4, sigma:0.256, time:95.10s
+Iter 54, obj:-220.49514721, gap:1.1e-11, pinf:1.7e-05, dinf:1.9e-13, gradnorm:4.5e-06, r:2, p:4, sigma:0.128, time:96.50s
+Iter 55, obj:-220.49514721, gap:5.9e-12, pinf:3.0e-06, dinf:6.3e-13, gradnorm:1.5e-05, r:2, p:4, sigma:0.256, time:97.91s
+Iter 56, obj:-220.49514721, gap:7.3e-13, pinf:4.3e-06, dinf:1.2e-14, gradnorm:1.0e-06, r:2, p:4, sigma:0.128, time:99.30s
+Iter 57, obj:-220.49514721, gap:3.3e-13, pinf:8.0e-07, dinf:6.5e-14, gradnorm:4.4e-06, r:2, p:4, sigma:0.256, time:100.69s
+Iter 58, obj:-220.49514720, gap:3.7e-14, pinf:1.3e-06, dinf:1.8e-15, gradnorm:3.6e-07, r:2, p:4, sigma:0.128, time:102.09s
+Iter 59, obj:-220.49514720, gap:1.1e-14, pinf:3.4e-07, dinf:1.3e-14, gradnorm:1.8e-06, r:2, p:4, sigma:0.256, time:103.50s
+Iter 60, obj:-220.49514720, gap:4.8e-15, pinf:6.3e-07, dinf:2.4e-16, gradnorm:1.8e-07, r:2, p:4, sigma:0.128, time:104.89s
+Iter 61, obj:-220.49514720, gap:4.6e-15, pinf:1.5e-07, dinf:2.1e-15, gradnorm:7.1e-07, r:2, p:4, sigma:0.256, time:106.30s
+Iter 62, obj:-220.49514720, gap:1.9e-15, pinf:2.2e-07, dinf:6.5e-17, gradnorm:6.6e-08, r:2, p:4, sigma:0.128, time:107.70s
+Iter 63, obj:-220.49514720, gap:1.1e-15, pinf:4.9e-08, dinf:2.8e-16, gradnorm:2.5e-07, r:2, p:4, sigma:0.256, time:109.09s
+Iter 64, obj:-220.49514720, gap:3.9e-16, pinf:7.2e-08, dinf:9.0e-18, gradnorm:2.2e-08, r:2, p:4, sigma:0.128, time:110.50s
+Iter 65, obj:-220.49514720, gap:3.9e-16, pinf:1.7e-08, dinf:3.7e-17, gradnorm:9.1e-08, r:2, p:4, sigma:0.256, time:111.96s
+Iter 66, obj:-220.49514720, gap:3.2e-16, pinf:2.7e-08, dinf:0.0e+00, gradnorm:8.3e-09, r:2, p:4, sigma:0.128, time:113.36s
+Iter 67, obj:-220.49514720, gap:6.4e-17, pinf:6.7e-09, dinf:1.1e-17, gradnorm:3.4e-08, r:2, p:3, sigma:0.256, time:114.76s
+Optimality is reached!
+ManiSDP_complexunitdiag: optimum = -220.49514720, time = 114.76s
+ManiSDP_complexunitdiag: f = -220.49514720, eta = 6.7e-09, t = 114.76s
+
+--- Summary  d=35 rng(4) ---
+ManiCSDP_unitdiag:       f = -220.49514720, t = 56.1397s
+ManiSDP_complexunitdiag: f = -220.49514720, t = 114.7633s
+Status: SUCCESS
+Finished: 2026-05-07 02:11:47
+========== CASE END ==========
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+d=35 rng(5)
+Log: D:\Mine\Mani\ManiCSDP\Numerical Experiment\results_bqp_overnight\bqp_mani_d35_rng5.txt
+Started: 2026-05-07 02:11:47
+========== BQP Mani  d=35  rng(5) ==========
+
+--- ManiCSDP_unitdiag ---
+ManiCSDP is starting...
+CSDP size: n = 666, m = 44100
+Iter 1, obj:-240.07784605, gap:5.7e-02, pinf:1.6e+02, dinf:9.2e-02, gradnorm:1.3e+01, r:2, p:2, sigma:0.001, time:0.19s
+Iter 2, obj:-250.14191030, gap:1.4e-01, pinf:1.4e+02, dinf:3.4e-02, gradnorm:5.1e+00, r:10, p:10, sigma:0.002, time:0.42s
+Iter 3, obj:-238.69327561, gap:2.8e-01, pinf:1.2e+02, dinf:2.0e-02, gradnorm:4.0e+00, r:16, p:18, sigma:0.004, time:0.67s
+Iter 4, obj:-221.64234832, gap:2.1e-01, pinf:7.8e+01, dinf:1.6e-01, gradnorm:2.1e+01, r:24, p:24, sigma:0.008, time:0.95s
+Iter 5, obj:-242.11671176, gap:1.1e-01, pinf:3.6e+01, dinf:1.0e-01, gradnorm:1.8e+01, r:32, p:32, sigma:0.016, time:1.18s
+Iter 6, obj:-246.92616657, gap:5.8e-03, pinf:2.5e+01, dinf:4.1e-02, gradnorm:1.0e+01, r:33, p:40, sigma:0.032, time:1.56s
+Iter 7, obj:-251.13756799, gap:6.8e-03, pinf:8.1e+00, dinf:3.8e-02, gradnorm:7.0e+00, r:35, p:41, sigma:0.064, time:2.20s
+Iter 8, obj:-250.65572778, gap:7.4e-03, pinf:5.1e+00, dinf:3.6e-03, gradnorm:2.1e+00, r:40, p:43, sigma:0.128, time:2.68s
+Iter 9, obj:-250.62698229, gap:8.2e-03, pinf:2.7e+00, dinf:3.5e-03, gradnorm:2.7e+00, r:39, p:48, sigma:0.256, time:3.76s
+Iter 10, obj:-249.53616491, gap:8.8e-03, pinf:2.0e+00, dinf:1.4e-02, gradnorm:5.9e+00, r:40, p:47, sigma:0.512, time:4.75s
+Iter 11, obj:-249.33335968, gap:4.8e-03, pinf:2.0e+00, dinf:7.1e-03, gradnorm:4.3e+00, r:41, p:48, sigma:0.256, time:5.83s
+Iter 12, obj:-248.86963741, gap:2.9e-03, pinf:4.8e+00, dinf:6.9e-02, gradnorm:1.1e+01, r:35, p:49, sigma:0.128, time:6.85s
+Iter 13, obj:-247.48532346, gap:2.8e-03, pinf:6.1e+00, dinf:1.9e-03, gradnorm:1.2e+00, r:39, p:43, sigma:0.064, time:7.35s
+Iter 14, obj:-249.63704370, gap:4.5e-04, pinf:1.8e+00, dinf:3.7e-03, gradnorm:3.1e+00, r:28, p:46, sigma:0.128, time:8.31s
+Iter 15, obj:-250.08848833, gap:2.0e-04, pinf:2.4e+00, dinf:3.5e-04, gradnorm:3.9e-01, r:20, p:36, sigma:0.064, time:9.34s
+Iter 16, obj:-250.04588100, gap:5.4e-04, pinf:1.7e+00, dinf:7.1e-02, gradnorm:1.1e+00, r:20, p:26, sigma:0.128, time:9.65s
+Iter 17, obj:-249.83195736, gap:3.9e-04, pinf:1.1e+00, dinf:1.4e-01, gradnorm:2.0e+00, r:28, p:28, sigma:0.256, time:9.96s
+Iter 18, obj:-249.65355116, gap:2.1e-04, pinf:1.1e+00, dinf:1.1e-01, gradnorm:1.5e+00, r:29, p:36, sigma:0.128, time:10.23s
+Iter 19, obj:-250.00952941, gap:5.7e-04, pinf:4.6e+00, dinf:3.5e-03, gradnorm:1.2e+00, r:28, p:37, sigma:0.064, time:10.59s
+Iter 20, obj:-250.12781328, gap:4.9e-04, pinf:1.8e+00, dinf:2.5e-02, gradnorm:1.0e+00, r:29, p:36, sigma:0.128, time:11.38s
+Iter 21, obj:-250.11408585, gap:1.2e-03, pinf:1.3e+00, dinf:5.0e-02, gradnorm:1.6e+00, r:34, p:35, sigma:0.256, time:11.74s
+Iter 22, obj:-249.88357800, gap:4.2e-04, pinf:1.3e+00, dinf:1.7e-03, gradnorm:6.1e-01, r:30, p:42, sigma:0.128, time:12.35s
+Iter 23, obj:-250.14117657, gap:1.3e-04, pinf:6.7e-01, dinf:3.0e-03, gradnorm:1.1e+00, r:25, p:38, sigma:0.256, time:13.55s
+Iter 24, obj:-250.17060064, gap:3.8e-05, pinf:8.3e-01, dinf:7.4e-05, gradnorm:8.4e-02, r:16, p:33, sigma:0.128, time:14.55s
+Iter 25, obj:-250.13631598, gap:1.2e-04, pinf:6.1e-01, dinf:2.8e-02, gradnorm:1.9e+00, r:16, p:18, sigma:0.256, time:14.92s
+Iter 26, obj:-250.08310727, gap:5.7e-05, pinf:6.9e-01, dinf:3.1e-02, gradnorm:4.7e-01, r:23, p:23, sigma:0.128, time:15.36s
+Iter 27, obj:-250.18957448, gap:3.2e-06, pinf:3.3e-01, dinf:2.1e-05, gradnorm:2.6e-01, r:15, p:28, sigma:0.256, time:16.19s
+Iter 28, obj:-250.19659835, gap:1.2e-06, pinf:3.9e-02, dinf:5.0e-07, gradnorm:4.0e-02, r:11, p:16, sigma:0.512, time:17.00s
+Iter 29, obj:-250.19839832, gap:5.1e-07, pinf:1.0e-02, dinf:6.3e-08, gradnorm:2.2e-02, r:7, p:12, sigma:0.256, time:17.89s
+Iter 30, obj:-250.19884842, gap:8.8e-08, pinf:3.6e-03, dinf:8.7e-09, gradnorm:7.6e-03, r:3, p:8, sigma:0.128, time:18.76s
+Iter 31, obj:-250.19891552, gap:4.5e-09, pinf:3.3e-03, dinf:1.3e-10, gradnorm:7.8e-04, r:1, p:4, sigma:0.064, time:19.60s
+Iter 32, obj:-250.19891859, gap:2.8e-13, pinf:2.0e-04, dinf:2.3e-16, gradnorm:1.1e-06, r:1, p:2, sigma:0.128, time:20.25s
+Iter 33, obj:-250.19891859, gap:4.0e-16, pinf:5.3e-06, dinf:0.0e+00, gradnorm:9.1e-08, r:1, p:2, sigma:0.256, time:20.96s
+Iter 34, obj:-250.19891859, gap:2.3e-16, pinf:1.0e-07, dinf:0.0e+00, gradnorm:5.2e-09, r:1, p:2, sigma:0.512, time:21.40s
+Iter 35, obj:-250.19891859, gap:0.0e+00, pinf:1.2e-09, dinf:0.0e+00, gradnorm:1.8e-09, r:1, p:2, sigma:1.024, time:21.66s
+Optimality is reached!
+ManiCSDP: optimum = -250.19891859, time = 21.66s
+ManiCSDP_unitdiag: f = -250.19891859, eta = 1.2e-09, t = 21.66s
+
+--- ManiSDP_complexunitdiag ---
+ManiSDP_complexunitdiag is starting...
+Real SDP: n2 = 1332 (complex n = 666), m = 44100
+Iter 1, obj:-226.12202287, gap:5.4e-02, pinf:1.5e+02, dinf:8.5e-02, gradnorm:1.8e+01, r:2, p:2, sigma:0.001, time:0.41s
+Iter 2, obj:-251.66785213, gap:1.4e-01, pinf:1.5e+02, dinf:3.7e-02, gradnorm:2.1e+00, r:10, p:10, sigma:0.002, time:0.89s
+Iter 3, obj:-234.01877173, gap:2.9e-01, pinf:1.3e+02, dinf:3.6e-02, gradnorm:5.4e+00, r:16, p:18, sigma:0.004, time:1.37s
+Iter 4, obj:-233.05214940, gap:5.9e-01, pinf:1.1e+02, dinf:4.3e-02, gradnorm:5.7e+00, r:22, p:24, sigma:0.008, time:1.86s
+Iter 5, obj:-220.50991517, gap:4.0e-01, pinf:6.7e+01, dinf:2.9e-01, gradnorm:2.1e+01, r:28, p:30, sigma:0.016, time:2.32s
+Iter 6, obj:-238.23074136, gap:2.1e-01, pinf:3.5e+01, dinf:1.6e-01, gradnorm:2.0e+01, r:36, p:36, sigma:0.032, time:2.74s
+Iter 7, obj:-236.15858111, gap:1.4e-01, pinf:3.9e+01, dinf:2.2e-01, gradnorm:3.3e+01, r:38, p:44, sigma:0.064, time:3.37s
+Iter 8, obj:-247.26743997, gap:1.6e-02, pinf:1.4e+01, dinf:5.5e-02, gradnorm:8.0e+00, r:43, p:46, sigma:0.128, time:4.12s
+Iter 9, obj:-246.32481552, gap:3.7e-02, pinf:7.4e+00, dinf:6.7e-02, gradnorm:1.8e+01, r:50, p:51, sigma:0.256, time:4.69s
+Iter 10, obj:-246.05994607, gap:3.8e-03, pinf:1.1e+01, dinf:1.2e-02, gradnorm:4.2e+00, r:56, p:58, sigma:0.128, time:5.60s
+Iter 11, obj:-246.42598032, gap:1.5e-02, pinf:5.7e+00, dinf:2.1e-02, gradnorm:5.7e+00, r:60, p:64, sigma:0.256, time:6.30s
+Iter 12, obj:-247.49332890, gap:1.0e-02, pinf:3.4e+00, dinf:1.1e-01, gradnorm:1.1e+01, r:64, p:68, sigma:0.512, time:8.05s
+Iter 13, obj:-247.31618578, gap:3.9e-03, pinf:4.7e+00, dinf:8.6e-02, gradnorm:5.9e+00, r:67, p:72, sigma:0.256, time:9.59s
+Iter 14, obj:-246.51837279, gap:2.9e-03, pinf:5.8e+00, dinf:9.2e-03, gradnorm:3.6e+00, r:65, p:75, sigma:0.128, time:10.84s
+Iter 15, obj:-248.76402019, gap:4.7e-05, pinf:1.9e+00, dinf:2.9e-03, gradnorm:9.8e-01, r:59, p:73, sigma:0.256, time:12.53s
+Iter 16, obj:-249.11904250, gap:1.0e-03, pinf:9.4e-01, dinf:3.0e-03, gradnorm:1.6e+00, r:58, p:67, sigma:0.512, time:14.06s
+Iter 17, obj:-249.53920964, gap:4.0e-04, pinf:9.3e-01, dinf:1.8e-03, gradnorm:6.5e-01, r:52, p:66, sigma:0.256, time:15.91s
+Iter 18, obj:-249.71897581, gap:5.0e-04, pinf:4.8e-01, dinf:5.0e-03, gradnorm:9.9e-01, r:52, p:60, sigma:0.512, time:17.67s
+Iter 19, obj:-250.02457738, gap:1.7e-04, pinf:4.1e-01, dinf:9.9e-05, gradnorm:1.5e-01, r:43, p:60, sigma:0.256, time:19.56s
+Iter 20, obj:-250.17108172, gap:2.8e-05, pinf:7.9e-02, dinf:4.5e-05, gradnorm:2.4e-01, r:36, p:47, sigma:0.512, time:21.04s
+Iter 21, obj:-250.19567593, gap:5.2e-06, pinf:6.4e-02, dinf:4.0e-07, gradnorm:3.6e-02, r:20, p:38, sigma:0.256, time:22.82s
+Iter 22, obj:-250.19761825, gap:2.2e-06, pinf:5.0e-03, dinf:4.4e-08, gradnorm:7.4e-03, r:13, p:22, sigma:0.512, time:24.20s
+Iter 23, obj:-250.19890479, gap:2.5e-08, pinf:2.5e-03, dinf:2.4e-10, gradnorm:5.9e-04, r:2, p:15, sigma:0.256, time:25.72s
+Iter 24, obj:-250.19891853, gap:1.1e-10, pinf:8.9e-05, dinf:1.3e-12, gradnorm:5.0e-05, r:2, p:4, sigma:0.512, time:26.89s
+Iter 25, obj:-250.19891856, gap:5.4e-11, pinf:5.6e-06, dinf:2.1e-12, gradnorm:9.8e-05, r:2, p:4, sigma:1.024, time:28.29s
+Iter 26, obj:-250.19891858, gap:1.6e-11, pinf:6.5e-06, dinf:4.7e-13, gradnorm:4.0e-05, r:2, p:4, sigma:0.512, time:29.69s
+Iter 27, obj:-250.19891859, gap:1.0e-13, pinf:8.5e-06, dinf:3.1e-15, gradnorm:2.8e-06, r:2, p:4, sigma:0.256, time:31.08s
+Iter 28, obj:-250.19891859, gap:2.1e-14, pinf:3.4e-07, dinf:3.2e-16, gradnorm:5.2e-07, r:2, p:4, sigma:0.512, time:32.47s
+Iter 29, obj:-250.19891859, gap:4.5e-16, pinf:2.6e-07, dinf:7.9e-18, gradnorm:2.5e-07, r:2, p:4, sigma:0.256, time:33.85s
+Iter 30, obj:-250.19891859, gap:1.7e-16, pinf:2.6e-08, dinf:0.0e+00, gradnorm:9.0e-08, r:2, p:3, sigma:0.512, time:35.25s
+Iter 31, obj:-250.19891859, gap:1.7e-16, pinf:3.1e-08, dinf:1.7e-18, gradnorm:3.9e-08, r:2, p:3, sigma:0.256, time:36.65s
+Iter 32, obj:-250.19891859, gap:1.1e-16, pinf:1.0e-08, dinf:0.0e+00, gradnorm:1.5e-08, r:2, p:3, sigma:0.128, time:38.10s
+Iter 33, obj:-250.19891859, gap:0.0e+00, pinf:7.8e-09, dinf:0.0e+00, gradnorm:3.4e-09, r:2, p:3, sigma:0.064, time:38.91s
+Optimality is reached!
+ManiSDP_complexunitdiag: optimum = -250.19891859, time = 38.91s
+ManiSDP_complexunitdiag: f = -250.19891859, eta = 7.8e-09, t = 38.91s
+
+--- Summary  d=35 rng(5) ---
+ManiCSDP_unitdiag:       f = -250.19891859, t = 21.6585s
+ManiSDP_complexunitdiag: f = -250.19891859, t = 38.9116s
+Status: SUCCESS
+Finished: 2026-05-07 02:29:47
+========== CASE END ==========
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
