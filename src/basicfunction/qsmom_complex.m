@@ -6,6 +6,7 @@ function [A, b, c, K] = qsmom_complex(Q_quartic)
     basis_vecs = generate_basis_vectors_qs(n); 
     N = length(basis_vecs); 
     K.s = N;
+    K.scomplex = 1;
     
     % 2. 建立全量等价类映射 (借鉴 BQP 的 Net-Label 逻辑)
     class_map = containers.Map();

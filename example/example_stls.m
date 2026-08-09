@@ -28,8 +28,8 @@ clear options;
 options.tol = 1e-8;
 options.alpha = 0.2;
 TR_maxinner = 50;
-options.tau1 = 1e-2;
-options.tau2 = 1e2;
+options.kappa1 = 1e-2;
+options.kappa2 = 1e2;
 % options.Y0 = xtld;
 tic
 [~, fval, data] = ManiSDP(At, b, c, K, options);

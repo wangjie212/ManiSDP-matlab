@@ -6,10 +6,17 @@
 
 function [X, obj, data] = ManiSDP_unittrace(At, b, c, K, options)
 
+if nargin < 5 || isempty(options)
+    options = struct();
+end
+if ~isstruct(K) || ~isfield(K, 's') || ~isscalar(K.s)
+    error('K.s must be a positive scalar integer.');
+end
+
 n = K.s;
 if ~isfield(options,'p0'); options.p0 = 1; end
 if ~isfield(options,'AL_maxiter'); options.AL_maxiter = 1000; end
-if ~isfield(options,'gama'); options.gama = 2; end
+if ~isfield(options,'gamma'); options.gamma = 2; end
 if ~isfield(options,'sigma0'); options.sigma0 = 1e1; end
 if ~isfield(options,'sigma_min'); options.sigma_min = 1e2; end
 if ~isfield(options,'sigma_max'); options.sigma_max = 1e7; end
@@ -20,8 +27,8 @@ if ~isfield(options,'alpha'); options.alpha = 0.05; end
 if ~isfield(options,'tolgradnorm'); options.tolgradnorm = 1e-8; end
 if ~isfield(options,'TR_maxinner'); options.TR_maxinner = 40; end
 if ~isfield(options,'TR_maxiter'); options.TR_maxiter = 3; end
-if ~isfield(options,'tau1'); options.tau1 = 1e-5; end
-if ~isfield(options,'tau2'); options.tau2 = 1e-4; end
+if ~isfield(options,'kappa1'); options.kappa1 = 1e-5; end
+if ~isfield(options,'kappa2'); options.kappa2 = 1e-4; end
 if ~isfield(options,'line_search'); options.line_search = 1; end
 
 fprintf('ManiSDP is starting...\n');
@@ -30,7 +37,7 @@ fprintf('SDP size: n = %i, m = %i\n', n, size(b,1));
 A = At';
 p = options.p0;
 sigma = options.sigma0;
-gama = options.gama;
+gamma = options.gamma;
 y = zeros(length(b),1);
 normb = 1 + norm(b);
 if isfield(options, 'Y0') 
@@ -69,7 +76,7 @@ for iter = 1:options.AL_maxiter
     dinf = max(0, -dS(1))/(1+dS(end));
     by = b'*y + z;
     gap = abs(obj-by)/(abs(by)+abs(obj)+1);
-    [V, D, ~] = svd(Y);
+    [V, D, ~] = svd(Y, 'econ');
     if size(D, 2) > 1
         e = diag(D);
     else
@@ -98,7 +105,7 @@ for iter = 1:options.AL_maxiter
         Y = V(:,1:r)*diag(e(1:r));
         p = r;
     end
-    nne = min(sum(dS < 0), options.delta);
+    nne = min(sum(dS < 0), options.delta);        
     if options.line_search == 1
        U = [zeros(n, p) vS(:,1:nne)];
     end
@@ -110,10 +117,10 @@ for iter = 1:options.AL_maxiter
         Y = Y/norm(Y, 'fro');
     end
     
-    if pinf < options.tau1*gradnorm
-          sigma = max(sigma/gama, options.sigma_min);
-    elseif pinf > options.tau2*gradnorm
-          sigma = min(sigma*gama, options.sigma_max);
+    if pinf < options.kappa1*gradnorm
+          sigma = max(sigma/gamma, options.sigma_min);
+    elseif pinf > options.kappa2*gradnorm
+          sigma = min(sigma*gamma, options.sigma_max);
     end
 end
 data.X = X;

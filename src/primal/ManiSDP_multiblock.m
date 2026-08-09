@@ -6,12 +6,17 @@
 
 function [X, obj, data] = ManiSDP_multiblock(At, b, c, K, options)
 
+if nargin < 5 || isempty(options)
+    options = struct();
+end
+
 n = K.s;
 nb = length(n);
 if ~isfield(options,'min_facsize'); options.min_facsize = 2; end
 if ~isfield(options,'p0'); options.p0 = ones(nb,1); end
 if ~isfield(options,'AL_maxiter'); options.AL_maxiter = 1000; end
-if ~isfield(options,'gama'); options.gama = 2; end
+if ~isfield(options,'gamma'); options.gamma = 2; end
+if ~isfield(options,'tau'); options.tau = 1e-2; end
 if ~isfield(options,'sigma0'); options.sigma0 = 1e-1; end
 if ~isfield(options,'sigma_min'); options.sigma_min = 1e-2; end
 if ~isfield(options,'sigma_max'); options.sigma_max = 1e7; end
@@ -22,13 +27,14 @@ if ~isfield(options,'alpha'); options.alpha = 0.1; end
 if ~isfield(options,'tolgradnorm'); options.tolgradnorm = 1e-8; end
 if ~isfield(options,'TR_maxinner'); options.TR_maxinner = 20; end
 if ~isfield(options,'TR_maxiter'); options.TR_maxiter = 4; end
-if ~isfield(options,'tau1'); options.tau1 = 1e1; end
-if ~isfield(options,'tau2'); options.tau2 = 1e1; end
+if ~isfield(options,'kappa1'); options.kappa1 = 1e1; end
+if ~isfield(options,'kappa2'); options.kappa2 = 1e1; end
 if ~isfield(options,'line_search'); options.line_search = 0; end
 
 fprintf('ManiSDP is starting...\n');
 fprintf('SDP size: n = %i, m = %i\n', max(n), size(b,1));
-warning('off', 'manopt:trs_tCG_cached:memory');
+warning_state = warning('off', 'manopt:trs_tCG_cached:memory');
+warning_cleanup = onCleanup(@() warning(warning_state));
 
 A = At';
 p = n;
@@ -38,7 +44,8 @@ for i = 1:nb
     end
 end
 sigma = options.sigma0;
-gama = options.gama;
+gamma = options.gamma;
+tau = options.tau;
 y = zeros(length(b), 1);
 normb = 1 + norm(b);
 x = zeros(sum(n.^2), 1);
@@ -53,7 +60,7 @@ problem.hess = @hess;
 opts.verbosity = 0;     % Set to 0 for no output, 2 for normal output
 opts.maxinner = options.TR_maxinner;     % maximum Hessian calls per iteration
 opts.maxiter = options.TR_maxiter;
-opts.tolgradnorm = options.tolgradnorm;
+% opts.tolgradnorm = options.tolgradnorm;
 
 data.status = 0;
 timespend = tic;
@@ -62,6 +69,7 @@ for iter = 1:options.AL_maxiter
     if ~isempty(U)
         Y = line_search(Y, U);
     end
+    opts.tolgradnorm = tau;
     [Y, ~, info] = trustregions(problem, Y, opts);
     gradnorm = info(end).gradnorm;
     ind = 1;
@@ -119,21 +127,16 @@ for iter = 1:options.AL_maxiter
                    e = D(1);
                 end
                 r = sum(e >= options.theta*e(1));
-                if r == 0
-                   r = 1;
-                end
                 if r < p(i)
                    Y{i} = diag(e(1:r))*V(:,1:r)';
                    p(i) = r;
                 end
             end
-            if i <= K.nob
-               nne = max(min(sum(dS{i} < 0), options.delta), 1);
+            if p(i) == 1 && i <= K.nob
+                nne = 1;
             else
-               nne = min(sum(dS{i} < 0), options.delta);
-            end
-            if p(i) + nne > n(i)
-               nne = 0;
+                tau = max(0.4*tau, 1e-8);
+                nne = min(sum(dS{i} < -tau), options.delta);
             end
             if options.line_search == 1
                U{i} = [zeros(p(i), n(i)); vS{i}(:,1:nne)'];
@@ -149,10 +152,10 @@ for iter = 1:options.AL_maxiter
             end
         end
     end
-    if pinf < options.tau1*gradnorm
-          sigma = max(sigma/gama, options.sigma_min);
-    elseif pinf > options.tau2*gradnorm
-          sigma = min(sigma*gama, options.sigma_max);
+    if pinf < options.kappa1*gradnorm
+          sigma = max(sigma/gamma, options.sigma_min);
+    elseif pinf > options.kappa2*gradnorm
+          sigma = min(sigma*gamma, options.sigma_max);
     end
 end
 data.X = X;

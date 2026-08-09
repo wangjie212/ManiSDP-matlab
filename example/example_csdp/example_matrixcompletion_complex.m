@@ -116,8 +116,8 @@ options_r.delta=10;
 options_r.alpha=0.1;
 options_r.TR_maxinner=40;
 options_r.TR_maxiter=20;
-options_r.tau1=1e-2;
-options_r.tau2=5e-1;
+options_r.kappa1=1e-2;
+options_r.kappa2=5e-1;
 options_r.line_search=0;
 
 [x_r, obj_r, data_r] = ManiSDP(At_r, b_r, c_r, K_r, options_r);

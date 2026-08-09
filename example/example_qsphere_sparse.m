@@ -25,8 +25,8 @@ rng(0);
 clear options;
 options.tol = 1e-4;
 options.theta = 1e-4;
-options.tau1 = 1e-3;
-options.tau2 = 1e-2;
+options.kappa1 = 1e-3;
+options.kappa2 = 1e-2;
 options.line_search = 0;
 options.alpha = 0.01;
 tic
@@ -62,21 +62,21 @@ At = A';
 K.nob = 0; % This parameter indicates the first K.nob PSD cones have unit diagonals.
 
 %% Solve with ManiDSDP
-% rng(0);
-% clear options;
-% options.dAAt = dAAt;
-% options.tol = 1e-4;
-% options.theta = 1e-3;
-% options.TR_maxinner = 30;
-% options.tau1 = 1e-2;
-% options.tau2 = 1e-1;
-% options.line_search = 1;
-% maxb = max(abs(b));
-% tic
-% [~, dval, data] = ManiDSDP_multiblock(A, b/maxb, c, K, options);
-% dval = dval*maxb;
-% edmani = max([data.gap, data.pinf, data.dinf]);
-% tdmani = toc;
+rng(0);
+clear options;
+options.dAAt = dAAt;
+options.tol = 1e-4;
+options.theta = 1e-3;
+options.TR_maxinner = 30;
+options.kappa1 = 1e-2;
+options.kappa2 = 1e-1;
+options.line_search = 1;
+maxb = max(abs(b));
+tic
+[~, dval, data] = ManiDSDP_multiblock(A, b/maxb, c, K, options);
+dval = dval*maxb;
+edmani = max([data.gap, data.pinf, data.dinf]);
+tdmani = toc;
 
 %% Solve with MOSEK
 % prob       = convert_sedumi2mosek(At, b, c, K);
@@ -100,29 +100,29 @@ K.nob = 0; % This parameter indicates the first K.nob PSD cones have unit diagon
 % tmosek = toc;
 
 %% Solve with SDPNAL+
-options.tol = 1e-4;
-[blk, nAt, nC, nb] = read_sedumi(A, b, -c, K);
-rng(0);
-tic
-[objnal,X,~,y,S] = sdpnalplus(blk, nAt, nC, nb, [], [], [], [], [], options);
-by = nb'*y;
-gap = abs(objnal(1)-by)/(abs(by)+abs(objnal(1))+1);
-x = zeros(sum(K.s.^2)+K.f, 1);
-x(1:K.f) = X{1};
-mS = zeros(t, 1);
-ind = K.f+1;
-for i = 1:t
-    x(ind:ind+K.s(i)^2-1) = X{i+1}(:);
-    ind = ind + K.s(i)^2;
-    [~, dS] = eig(S{i}, 'vector');
-    mS(i) = max(0, -dS(1))/(1+abs(dS(end)));
-end
-eta = norm(A*x - nb)/(1+norm(b));
-enal = max([eta, gap,  max(mS)]);
-tnal = toc;
+% options.tol = 1e-4;
+% [blk, nAt, nC, nb] = read_sedumi(A, b, -c, K);
+% rng(0);
+% tic
+% [objnal,X,~,y,S] = sdpnalplus(blk, nAt, nC, nb, [], [], [], [], [], options);
+% by = nb'*y;
+% gap = abs(objnal(1)-by)/(abs(by)+abs(objnal(1))+1);
+% x = zeros(sum(K.s.^2)+K.f, 1);
+% x(1:K.f) = X{1};
+% mS = zeros(t, 1);
+% ind = K.f+1;
+% for i = 1:t
+%     x(ind:ind+K.s(i)^2-1) = X{i+1}(:);
+%     ind = ind + K.s(i)^2;
+%     [~, dS] = eig(S{i}, 'vector');
+%     mS(i) = max(0, -dS(1))/(1+abs(dS(end)));
+% end
+% eta = norm(A*x - nb)/(1+norm(b));
+% enal = max([eta, gap,  max(mS)]);
+% tnal = toc;
 
 % fprintf('Mosek: optimum = %0.8f, eta = %0.1e, time = %0.2fs\n', mobj(1), emosek, tmosek);
 % fprintf('SDPLR: optimum = %0.8f, eta = %0.1e, time = %0.2fs\n', vlr, elr, tlr);
-fprintf('SDPNAL: optimum = %0.8f, eta = %0.1e, time = %0.2fs\n', -objnal(1), enal, tnal);
+% fprintf('SDPNAL: optimum = %0.8f, eta = %0.1e, time = %0.2fs\n', -objnal(1), enal, tnal);
 fprintf('ManiSDP: optimum = %0.8f, eta = %0.1e, time = %0.2fs\n', fval, emani, tmani);
 fprintf('ManiDSDP: optimum = %0.8f, eta = %0.1e, time = %0.2fs\n', dval, edmani, tdmani);

@@ -6,11 +6,18 @@
 
 function [X, obj, data] = ManiSDP_unitdiag(At, b, c, K, options)
 
-n = K.s;
-if ~isfield(options,'p0'); options.p0 = 2; end
-% if ~isfield(options,'p0'); options.p0 = ceil(log(length(b))); end
+if nargin < 5 || isempty(options)
+    options = struct();
+end
+if ~isstruct(K) || ~isfield(K, 's') || ~isscalar(K.s)
+    error('K.s must be a positive scalar integer.');
+end
+
+% if ~isfield(options,'p0'); options.p0 = 2; end
+if ~isfield(options,'p0'); options.p0 = ceil(log(length(b))); end
 if ~isfield(options,'AL_maxiter'); options.AL_maxiter = 300; end
-if ~isfield(options,'gama'); options.gama = 2; end
+if ~isfield(options,'gamma'); options.gamma = 2; end
+if ~isfield(options,'tau'); options.tau = 1e-2; end
 if ~isfield(options,'sigma0'); options.sigma0 = 1e-3; end
 if ~isfield(options,'sigma_min'); options.sigma_min = 1e-2; end
 if ~isfield(options,'sigma_max'); options.sigma_max = 1e7; end
@@ -21,30 +28,35 @@ if ~isfield(options,'alpha'); options.alpha = 0.1; end
 if ~isfield(options,'tolgradnorm'); options.tolgradnorm = 1e-8; end
 if ~isfield(options,'TR_maxinner'); options.TR_maxinner = 20; end
 if ~isfield(options,'TR_maxiter'); options.TR_maxiter = 4; end
-if ~isfield(options,'tau1'); options.tau1 = 1; end
-if ~isfield(options,'tau2'); options.tau2 = 1; end
+if ~isfield(options,'kappa1'); options.kappa1 = 1; end
+if ~isfield(options,'kappa2'); options.kappa2 = 1; end
 if ~isfield(options,'line_search'); options.line_search = 0; end
 
+n = K.s;
 fprintf('ManiSDP is starting...\n');
 fprintf('SDP size: n = %i, m = %i\n', n, size(b,1));
-warning('off', 'manopt:trs_tCG_cached:memory');
+warning_state = warning('off', 'manopt:trs_tCG_cached:memory');
+warning_cleanup = onCleanup(@() warning(warning_state));
 
 A = At';
 p = options.p0;
 sigma = options.sigma0;
-gama = options.gama;
+gamma = options.gamma;
+tau = options.tau;
 y = zeros(length(b), 1);
 normb = 1 + norm(b);
 Y = [];
 U = [];
 fac_size = [];
+diag_index = (1:(n+1):n^2).';
+
 problem.cost = @cost;
 problem.grad = @grad;
 problem.hess = @hess;
 opts.verbosity = 0;     % Set to 0 for no output, 2 for normal output
 opts.maxinner = options.TR_maxinner;     % maximum Hessian calls per iteration
 opts.maxiter = options.TR_maxiter;
-opts.tolgradnorm = options.tolgradnorm;
+% opts.tolgradnorm = options.tolgradnorm;
 
 data.status = 0;
 timespend = tic;
@@ -54,6 +66,7 @@ for iter = 1:options.AL_maxiter
     if ~isempty(U)
         Y = line_search(Y, U);
     end
+    opts.tolgradnorm = tau;
     [Y, ~, info] = trustregions(problem, Y, opts);
     gradnorm = info(end).gradnorm;
     X = Y'*Y;
@@ -63,13 +76,14 @@ for iter = 1:options.AL_maxiter
     pinf = norm(Axb)/normb;     
     y = y - sigma*Axb;
     eS = reshape(c - At*y, n, n);
-    z = sum(X.*eS);
-    S = eS - diag(z);
+    z = sum(X.*eS).';
+    S = eS;
+    S(diag_index) = S(diag_index) - z;
     [vS, dS] = eig(S, 'vector');
     dinf = max(0, -dS(1))/(1+dS(end));
     by = b'*y + sum(z);
     gap = abs(obj-by)/(abs(by)+abs(obj)+1);
-    [~, D, V] = svd(Y);
+    [~, D, V] = svd(Y, 'econ');
     e = diag(D);
     r = sum(e >= options.theta*e(1));
     fprintf('Iter %d, obj:%0.8f, gap:%0.1e, pinf:%0.1e, dinf:%0.1e, gradnorm:%0.1e, r:%d, p:%d, sigma:%0.3f, time:%0.2fs\n', ...
@@ -90,11 +104,16 @@ for iter = 1:options.AL_maxiter
             dinf0 = dinf;
         end
     end
-    if r <= p - 1         
+    if r <= p - 1
         Y = V(:,1:r)'.*e(1:r);
         p = r;
     end
-    nne = max(min(sum(dS < 0), options.delta), 1);
+    if p == 1
+       nne = 1;
+    else
+        tau = max(0.4*tau, 1e-8);
+        nne = min(sum(dS < -tau), options.delta);
+    end
     if options.line_search == 1
        U = [zeros(p, n); vS(:,1:nne)'];
     end
@@ -105,10 +124,10 @@ for iter = 1:options.AL_maxiter
        Y = [Y; options.alpha*vS(:,1:nne)'];
        Y = Y./sqrt(sum(Y.^2));
     end
-    if pinf < options.tau1*gradnorm
-          sigma = max(sigma/gama, options.sigma_min);
-    elseif pinf > options.tau2*gradnorm
-          sigma = min(sigma*gama, options.sigma_max);
+    if pinf < options.kappa1*gradnorm
+          sigma = max(sigma/gamma, options.sigma_min);
+    elseif pinf > options.kappa2*gradnorm
+          sigma = min(sigma*gamma, options.sigma_max);
     end
 end
 data.X = X;
@@ -172,10 +191,8 @@ fprintf('ManiSDP: optimum = %0.8f, time = %0.2fs\n', obj, toc(timespend));
 
     function M = obliquefactoryNTrans(n, m)
         M.dim = @() (n-1)*m;
-%        M.inner = @(x, d1, d2) sum(d1.*d2,'all');
         M.inner = @(x, d1, d2) d1(:)'*d2(:);
         M.norm = @(x, d) norm(d, 'fro');
-%        M.norm = @(x, d) norm(d);
         M.typicaldist = @() pi*sqrt(m);
         M.proj = @(X, U) U - X.*sum(X.*U);
         M.tangent = @(X, U) U - X.*sum(X.*U);

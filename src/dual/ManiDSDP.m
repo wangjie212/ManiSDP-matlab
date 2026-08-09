@@ -6,10 +6,21 @@
 
 function [X, obj, data] = ManiDSDP(A, b, c, K, options)
 
-% if ~isfield(options,'p0'); options.p0 = ceil(log(length(b))); end
-if ~isfield(options,'p0'); options.p0 = 1; end
+if nargin < 5 || isempty(options)
+    options = struct();
+end
+if ~isstruct(K) || ~isfield(K, 's') || ~isscalar(K.s)
+    error('K.s must be a positive scalar integer.');
+end
+if ~isfield(K, 'f') || isempty(K.f)
+    K.f = 0;
+end
+
+% if ~isfield(options,'p0'); options.p0 = 1; end
+if ~isfield(options,'p0'); options.p0 = ceil(log(length(b))); end
 if ~isfield(options,'ADMM_maxiter'); options.ADMM_maxiter = 1000; end
-if ~isfield(options,'gama'); options.gama = 2; end
+if ~isfield(options,'gamma'); options.gamma = 2; end
+if ~isfield(options,'tau'); options.tau = 1e-2; end
 if ~isfield(options,'sigma0'); options.sigma0 = 1e-1; end
 if ~isfield(options,'sigma_min'); options.sigma_min = 1e-2; end
 if ~isfield(options,'sigma_max'); options.sigma_max = 1e7; end
@@ -20,28 +31,34 @@ if ~isfield(options,'alpha'); options.alpha = 0.01; end
 if ~isfield(options,'tolgradnorm'); options.tolgradnorm = 1e-8; end
 if ~isfield(options,'TR_maxinner'); options.TR_maxinner = 20; end
 if ~isfield(options,'TR_maxiter'); options.TR_maxiter = 4; end
-if ~isfield(options,'tau1'); options.tau1 = 0.1; end
-if ~isfield(options,'tau2'); options.tau2 = 1; end
+if ~isfield(options,'kappa1'); options.kappa1 = 0.1; end
+if ~isfield(options,'kappa2'); options.kappa2 = 1; end
 if ~isfield(options,'line_search'); options.line_search = 1; end
 
 n = K.s;
 fprintf('ManiSDP is starting...\n');
 fprintf('SDP size: n = %i, m = %i\n', n, size(b,1));
-warning('off', 'manopt:trs_tCG_cached:memory');
+warning_state = warning('off', 'manopt:trs_tCG_cached:memory');
+warning_cleanup = onCleanup(@() warning(warning_state));
+
 normc = 1 + norm(c);
 B = A(:, 1:K.f);
 A = A(:, K.f+1:end);
 cf = c(1:K.f);
 c = c(K.f+1:end);
 
-if ~isfield(options,'dAAt'); options.dAAt = diag(A*A'); end
-iA = (sparse(1:size(b,1),1:size(b,1),options.dAAt)\A)'; % (inv(A*A')*A)'
+if ~isfield(options,'dAAt')
+    iA = ((A*A')\A)'; % (inv(A*A')*A)'
+else
+    iA = (sparse(1:size(b,1),1:size(b,1),options.dAAt)\A)';
+end
 bA = iA*b;
 iAB = iA*B;
 
 p = options.p0;
 sigma = options.sigma0; 
-gama = options.gama;
+gamma = options.gamma;
+tau = options.tau;
 x = zeros(n^2, 1);
 w = zeros(K.f, 1);
 Y = [];
@@ -52,7 +69,7 @@ problem.hess = @hess;
 opts.verbosity = 0;     % Set to 0 for no output, 2 for normal output
 opts.maxinner  = options.TR_maxinner;    % maximum Hessian calls per iteration
 opts.maxiter   = options.TR_maxiter;
-opts.tolgradnorm = options.tolgradnorm;
+% opts.tolgradnorm = options.tolgradnorm;
 % opts.trscache = false;
 data.status = 0;
 timespend = tic;
@@ -61,6 +78,7 @@ for iter = 1:options.ADMM_maxiter
     if ~isempty(U)
         Y = line_search(Y, U);
     end
+    % opts.tolgradnorm = tau;
     [Y, ~, info] = trustregions(problem, Y, opts);
     gradnorm = info(end).gradnorm;
     S = Y*Y';
@@ -77,7 +95,7 @@ for iter = 1:options.ADMM_maxiter
     obj = c'*(x + bA) + cf'*w;
     dinf = max(0, -dX(1))/(1+abs(dX(end)));
     gap = abs(obj-by)/(1+abs(obj)+abs(by));
-    [V, D, ~] = svd(Y);
+    [V, D, ~] = svd(Y, 'econ');
     if size(D, 2) > 1
         e = diag(D);
     else
@@ -91,8 +109,8 @@ for iter = 1:options.ADMM_maxiter
         fprintf('Optimality is reached!\n');
         break;
     end
-    if mod(iter, 20) == 0
-        if iter > 50 && gap > gap0 && pinf > pinf0 && dinf > dinf0
+    if mod(iter, 50) == 0
+        if iter > 100 && gap > gap0 && pinf > pinf0 && dinf > dinf0
             data.status = 2;
             fprintf('Slow progress!\n');
             break;
@@ -106,7 +124,8 @@ for iter = 1:options.ADMM_maxiter
         Y = V(:,1:r)*diag(e(1:r));
         p = r;
     end
-    nne = min(sum(dX < 0), options.delta);
+    tau = max(0.4*tau, 1e-8);
+    nne = min(sum(dX < -tau), options.delta);
     if options.line_search == 1
         U = [zeros(n, p) vX(:,1:nne)];
     end
@@ -116,10 +135,10 @@ for iter = 1:options.ADMM_maxiter
     else
         Y = [Y options.alpha*vX(:,1:nne)];
     end
-    if pinf < options.tau1*gradnorm
-          sigma = max(sigma/gama, options.sigma_min);
-    elseif pinf > options.tau2*gradnorm
-          sigma = min(sigma*gama, options.sigma_max);
+    if pinf < options.kappa1*gradnorm
+          sigma = max(sigma/gamma, options.sigma_min);
+    elseif pinf > options.kappa2*gradnorm
+          sigma = min(sigma*gamma, options.sigma_max);
     end
 end
 data.X = X;

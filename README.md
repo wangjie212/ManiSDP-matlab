@@ -1,5 +1,5 @@
 # ManiSDP
-ManiSDP (v0.3.0) aims to solve the following low-rank semidefinite program (SDP) via manifold optimization:
+ManiSDP (v0.3.1) aims to solve the following low-rank semidefinite program (SDP) via manifold optimization:
 
 $$\inf_{X\succeq0}\langle C, X\rangle{\ }{\ }\text{s.t.}{\ }{\ }\mathcal{A}(X)=b,{\ }\mathcal{B}(X)=d,$$
 
@@ -10,7 +10,7 @@ where the linear constraints $\mathcal{A}(X)=b$ are arbitrary while the linear c
 - [Manopt](https://github.com/NicolasBoumal/manopt)
 
 ## Usage
-**Note:** The optimal setting of parameters in ManiSDP is highly problem-dependent. We encourage the users to find the optimal parameters (defined in `options`) via preliminary experiments before running large-scale cases. In our experiences, the parameters (`sigma0`, `alpha`, `theta`, `TR_maxiter`, `TR_maxinner`, `tau1`, `tau2`) have a significant influence on the performance of ManiSDP.  
+**Note:** The optimal setting of parameters in ManiSDP is highly problem-dependent. We encourage the users to find the optimal parameters (defined in `options`) via preliminary experiments before running large-scale cases. In our experiences, the parameters (`sigma0`, `alpha`, `theta`, `TR_maxiter`, `TR_maxinner`, `kappa1`, `kappa2`) have a significant influence on the performance of ManiSDP.  
 
 ManiSDP accepts [SeDuMi](https://sedumi.ie.lehigh.edu/) format data.  
 
@@ -67,8 +67,8 @@ options.tol = 1e-8;
 \- `tolgradnorm` (=1e-8 by default): tolerance of stopping gradient norms used in the Riemannian trust-region method  
 \- `TR_maxiter` (=4 by default): maximum number of Riemannian trust-region iterations  
 \- `TR_maxinner` (=20 by default): maximum Hessian calls per trust-region iteration  
-\- `tau1` (=1 by default): left factor for self-adaptively updating the penalty parameter  
-\- `tau2` (=1 by default): right factor for self-adaptively updating the penalty parameter  
+\- `kappa1` (=1 by default): left factor for self-adaptively updating the penalty parameter  
+\- `kappa2` (=1 by default): right factor for self-adaptively updating the penalty parameter  
 \- `line_search` (=0 by default): whether (=1) or not (=0) to use line search to decide the step size for escaping from saddle points  
 
 **Output**  
@@ -101,8 +101,8 @@ options.tol = 1e-8;
 \- `tolgradnorm` (=1e-8 by default): tolerance of stopping gradient norms used in the Riemannian trust-region method  
 \- `TR_maxiter` (=3 by default): maximum number of Riemannian trust-region iterations  
 \- `TR_maxinner` (=40 by default): maximum Hessian calls per trust-region iteration  
-\- `tau1` (=1e-5 by default): left factor for self-adaptively updating the penalty parameter  
-\- `tau2` (=1e-4 by default): right factor for self-adaptively updating the penalty parameter  
+\- `kappa1` (=1e-5 by default): left factor for self-adaptively updating the penalty parameter  
+\- `kappa2` (=1e-4 by default): right factor for self-adaptively updating the penalty parameter  
 \- `line_search` (=1 by default): whether (=1) or not (=0) to use line search to decide the step size for escaping from saddle points  
 
 **Output**  
@@ -133,8 +133,8 @@ options.tol = 1e-8;
 \- `tolgradnorm` (=1e-8 by default): tolerance of stopping gradient norms used in the Riemannian trust-region method  
 \- `TR_maxiter` (=4 by default): maximum number of Riemannian trust-region iterations  
 \- `TR_maxinner` (=20 by default): maximum Hessian calls per trust-region iteration  
-\- `tau1` (=1e-2 by default): left factor for self-adaptively updating the penalty parameter  
-\- `tau2` (=1e-1 by default): right factor for self-adaptively updating the penalty parameter  
+\- `kappa1` (=1e-2 by default): left factor for self-adaptively updating the penalty parameter  
+\- `kappa2` (=1e-1 by default): right factor for self-adaptively updating the penalty parameter  
 \- `line_search` (=1 by default): whether (=1) or not (=0) to use line search to decide the step size for escaping from saddle points  
 
 **Output**  
@@ -167,8 +167,8 @@ K.nob = 10; % indicate that the first K.nob blocks are unit-diagonal
 \- `tolgradnorm` (=1e-8 by default): tolerance of stopping gradient norms used in the Riemannian trust-region method  
 \- `TR_maxiter` (=4 by default): maximum number of Riemannian trust-region iterations  
 \- `TR_maxinner` (=20 by default): maximum Hessian calls per trust-region iteration  
-\- `tau1` (=1e1 by default): left factor for self-adaptively updating the penalty parameter  
-\- `tau2` (=1e1 by default): right factor for self-adaptively updating the penalty parameter  
+\- `kappa1` (=1e1 by default): left factor for self-adaptively updating the penalty parameter  
+\- `kappa2` (=1e1 by default): right factor for self-adaptively updating the penalty parameter  
 \- `line_search` (=0 by default): whether (=1) or not (=0) to use line search to decide the step size for escaping from saddle points  
 
 **Output**  
@@ -241,8 +241,8 @@ options.tol = 1e-8;
 \- `tolgradnorm` (=1e-8 by default): tolerance of stopping gradient norms used in the Riemannian trust-region method  
 \- `TR_maxiter` (=4 by default): maximum number of Riemannian trust-region iterations  
 \- `TR_maxinner` (=20 by default): maximum Hessian calls per trust-region iteration  
-\- `tau1` (=1e1 by default): left factor for self-adaptively updating the penalty parameter  
-\- `tau2` (=1e2 by default): right factor for self-adaptively updating the penalty parameter  
+\- `kappa1` (=1e1 by default): left factor for self-adaptively updating the penalty parameter  
+\- `kappa2` (=1e2 by default): right factor for self-adaptively updating the penalty parameter  
 \- `line_search` (=0 by default): whether (=1) or not (=0) to use line search to decide the step size for escaping from saddle points  
 
 **Output**  
@@ -293,8 +293,8 @@ K.nob = 10; % indicate that the first K.nob blocks are unit-diagonal
 \- `tolgradnorm` (=1e-8 by default): tolerance of stopping gradient norms used in the Riemannian trust-region method  
 \- `TR_maxiter` (=4 by default): maximum number of Riemannian trust-region iterations  
 \- `TR_maxinner` (=20 by default): maximum Hessian calls per trust-region iteration  
-\- `tau1` (=1e1 by default): left factor for self-adaptively updating the penalty parameter  
-\- `tau2` (=1e1 by default): right factor for self-adaptively updating the penalty parameter  
+\- `kappa1` (=1e1 by default): left factor for self-adaptively updating the penalty parameter  
+\- `kappa2` (=1e1 by default): right factor for self-adaptively updating the penalty parameter  
 \- `line_search` (=1 by default): whether (=1) or not (=0) to use line search to decide the step size for escaping from saddle points  
 
 **Output**  

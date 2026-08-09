@@ -1,6 +1,6 @@
 %% Generate random binary quadratic program
 rng(1)
-d = 30; % BQP with d variables
+d = 10; % BQP with d variables
 Q = randn(d,d); Q = (Q + Q')/2; % a random symmetric matrix
 e = randn(d,1);
 
@@ -12,9 +12,10 @@ rng(0);
 clear options;
 options.tol = 1e-8;
 tic
-[~, fval, data] = ManiSDP_unitdiag(At, b, c, K, options);
-emani = max([data.gap, data.pinf, data.dinf]);
+[~, pfval, data] = ManiSDP_unitdiag(At, b, c, K, options);
 tmani = toc;
+emani = max([data.gap, data.pinf, data.dinf]);
+
 
 %% generate SOS-SDP
 [A, b, dAAt, mb] = bqpsos(Q, e, d);
@@ -23,7 +24,6 @@ tmani = toc;
 rng(0);
 clear options;
 options.dAAt = dAAt;
-options.tol = 1e-8;
 clear K;
 K.f = 1;
 K.s = mb;
@@ -33,7 +33,7 @@ v(1) = 1;
 A = [v A];
 maxb = max(abs(b));
 options.line_search = 1;
-% options.tau2 = 1e1; % q = 80, i = 3
+% options.kappa2 = 1e1; % q = 80, i = 3
 tic
 [~, dfval, data] = ManiDSDP_unitdiag(A, b/maxb, c, K, options);
 dfval = dfval*maxb;
@@ -109,5 +109,5 @@ dtmani = toc;
 % fprintf('Mosek: optimum = %0.8f, eta = %0.1e, time = %0.2fs\n', mobj(1), emosek, tmosek);
 % fprintf('CPOT: optimum = %0.8f, eta = %0.1e, time = %0.2fs\n', fcopt, ecopt, tcopt);
 % fprintf('SDPNAL: optimum = %0.8f, eta = %0.1e, time = %0.2fs\n', b(1)-objnal(1), enal, tnal);
-fprintf('ManiSDP: optimum = %0.8f, eta = %0.1e, time = %0.2fs\n', fval, emani, tmani);
+fprintf('ManiSDP: optimum = %0.8f, eta = %0.1e, time = %0.2fs\n', pfval, emani, tmani);
 fprintf('ManiDSDP: optimum = %0.8f, eta = %0.1e, time = %0.2fs\n', dfval, demani, dtmani);

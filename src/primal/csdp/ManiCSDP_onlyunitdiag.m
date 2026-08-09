@@ -72,7 +72,11 @@ for iter = 1:options.AL_maxiter
         Y = V(:,1:r)'.*e(1:r);
         p = r;
     end
-    nne = max(min(sum(dS < 0), options.delta), 1);
+    if p == 1
+       nne = 1;
+    else
+       nne = min(sum(dS < 0), options.delta);
+    end
     if options.line_search == 1
         U = [zeros(p, n); vS(:,1:nne)'];
     end

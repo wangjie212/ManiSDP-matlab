@@ -8,7 +8,7 @@
 
 %% Generate random quartic program
 rng(1);
-d = 20;
+d = 50;
 coe = randn(nchoosek(d+4, 4), 1);
 % x = msspoly('x', d);
 % mon = monomials(x, 0:4);
@@ -22,7 +22,7 @@ rng(0);
 clear options;
 options.tol = 1e-8;
 options.theta = 1e-2;
-options.tau1 = 0.02;
+options.kappa1 = 0.02;
 tic
 [~, fval, data] = ManiSDP(At, b, c, K, options);
 emani = max([data.gap, data.pinf, data.dinf]);

@@ -4,7 +4,7 @@ clc;
 
 %% 1. 随机生成 BQP 问题参数
 rng(1);
-d = 35;
+d = 20;
 Q = (randn(d) + 1i*randn(d)) / sqrt(2);
 Q = (Q + Q') / 2;
 e = (randn(d, 1) + 1i*randn(d, 1)) / sqrt(2);
@@ -18,6 +18,7 @@ fprintf('正在生成 BQP 矩量松弛数据...\n');
 N_c = K_cnd.s;
 %}
 %% 3. ManiCSDP_unitdiag (直接求解复数 SDP)
+rng(0);
 fprintf('\n=== 情形 1: ManiCSDP_unitdiag (复数 SDP) ===\n');
 options_c.tol         = 1e-8;
 options_c.AL_maxiter  = 1000;
@@ -26,8 +27,8 @@ options_c.sigma0      = 1e-3;
 options_c.sigma_min   = 1e-2;
 options_c.sigma_max   = 1e7;
 options_c.gama        = 2;
-options_c.tau1        = 1;
-options_c.tau2        = 1;
+options_c.kappa1        = 1;
+options_c.kappa2        = 1;
 options_c.theta       = 1e-3;
 options_c.delta       = 8;
 options_c.alpha       = 0.1;
@@ -123,22 +124,10 @@ end
 %}
 
 %% 7. ManiSDP_complexunitdiag (求解实 RSDP)
+rng(0);
 fprintf('\n=== 情形 4: ManiSDP_complexunitdiag (实 RSDP) ===\n');
-options_r.tol         = 1e-8;
-options_r.AL_maxiter  = 1000;
-options_r.p0          = 2;
-options_r.sigma0      = 1e-3;
-options_r.sigma_min   = 1e-2;
-options_r.sigma_max   = 1e7;
-options_r.gama        = 2;
-options_r.tau1        = 1;
-options_r.tau2        = 1;
-options_r.theta       = 1e-3;
-options_r.delta       = 8;
-options_r.alpha       = 0.1;
 options_r.TR_maxinner = 25;
-options_r.TR_maxiter  = 4;
-options_r.line_search = 0;
+options_r.line_search = 1;
 
 [X_r_mani, fval_r, data_r] = ManiSDP_complexunitdiag(At_r_nd, b_r_nd, c_r_nd, K_r_nd, options_r);
 fprintf('ManiSDP_complexunitdiag: f = %.8f, eta = %.1e, t = %.2fs\n', ...

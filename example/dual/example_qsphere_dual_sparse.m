@@ -22,7 +22,7 @@ rng(0);
 clear options;
 options.dAAt = dAAt;
 options.tol = 1e-8;
-options.gama = 2;
+options.gamma = 2;
 options.alpha = 0.01;
 options.sigma0 = 1e-2;
 options.theta = 1e-2;

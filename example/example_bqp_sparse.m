@@ -1,8 +1,8 @@
 %% Generate random sparse binary quadratic program
 rng(1);
 clear I;
-t = 20; % number of cliques
-q = 20; % size of cliques
+t = 10; % number of cliques
+q = 10; % size of cliques
 n = q + (q-2)*(t-1); % BQP with n variables
 for i = 1:t
     I{i} = (q-2)*(i-1)+1:(q-2)*i+2;
@@ -26,7 +26,7 @@ rng(0);
 clear options;
 options.tol = 1e-8;
 options.line_search = 1;
-options.tau1 = 1; % 1e1 for t = 100, q = 20
+options.kappa1 = 1; % 1e1 for t = 100, q = 20
 tic
 [~, fval, data] = ManiSDP_multiblock(At, b, c, K, options);
 emani = max([data.gap, data.pinf, data.dinf]);

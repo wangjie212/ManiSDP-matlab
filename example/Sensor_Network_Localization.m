@@ -62,7 +62,7 @@ tmani = toc;
 % options.sigma0 = 1;
 % options.theta = 1e-3;
 % options.TR_maxiter = 6;
-% options.tau1 = 1e-2;
+% options.kappa1 = 1e-2;
 % maxb = full(max(abs(b)));
 % tic
 % [~, dfval, data] = ManiDSDP(At', b/maxb, -c, K, options);

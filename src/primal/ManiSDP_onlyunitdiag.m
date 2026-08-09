@@ -5,6 +5,13 @@
 
 function [X, obj, data] = ManiSDP_onlyunitdiag(C, options)
 
+if nargin < 5 || isempty(options)
+    options = struct();
+end
+if ~isstruct(K) || ~isfield(K, 's') || ~isscalar(K.s)
+    error('K.s must be a positive scalar integer.');
+end
+
 if ~isfield(options,'p0'); options.p0 = 2; end
 if ~isfield(options,'AL_maxiter'); options.AL_maxiter = 20; end
 if ~isfield(options,'tol'); options.tol = 1e-8; end
@@ -49,7 +56,7 @@ for iter = 1:options.AL_maxiter
     S = C - diag(z);
     [vS, dS] = eig(full(S), 'vector');
     dinf = max(0, -dS(1))/(1+dS(end));
-    [~, D, V] = svd(Y);
+    [~, D, V] = svd(Y, 'econ');
     e = diag(D);
     r = sum(e >= options.theta*e(1));
     fprintf('Iter %d, obj:%0.8f, dinf:%0.1e, r:%d, p:%d, time:%0.2fs\n', ...
@@ -71,7 +78,11 @@ for iter = 1:options.AL_maxiter
         Y = V(:,1:r)'.*e(1:r);
         p = r;
     end
-    nne = max(min(sum(dS < 0), options.delta), 1);
+    if p == 1
+        nne = 1;
+    else
+        nne = min(sum(dS < 0), options.delta);
+    end
     if options.line_search == 1
         U = [zeros(p, n); vS(:,1:nne)'];
     end
@@ -131,9 +142,8 @@ fprintf('ManiSDP: optimum = %0.8f, time = %0.2fs\n', obj, toc(timespend));
 
     function M = obliquefactoryNTrans(n, m)
         M.dim = @() (n-1)*m;
-        M.inner = @(x, d1, d2) sum(d1.*d2,'all');
-%        M.inner = @(x, d1, d2) d1(:)'*d2(:);
-        M.norm = @(x, d) norm(d,'fro');
+        M.inner = @(x, d1, d2) sum(d1.*d2, 'all');
+        M.norm = @(x, d) norm(d, 'fro');
         M.typicaldist = @() pi*sqrt(m);
         M.proj = @(X, U) U - X.*sum(X.*U);
         M.tangent = @(X, U) U - X.*sum(X.*U);

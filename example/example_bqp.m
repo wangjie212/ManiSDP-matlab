@@ -7,8 +7,8 @@
 % sdpnalpath  = '../../SDPNAL+v1.0';
 
 %% Generate random binary quadratic program
-rng(2);
-d       = 30; % BQP with d variables
+rng(1);
+d       = 10; % BQP with d variables
 Q       = randn(d);
 Q = (Q + Q')/2; % a random symmetric matrix
 e       = randn(d,1);

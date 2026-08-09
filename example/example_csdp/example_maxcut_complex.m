@@ -108,8 +108,8 @@ options_r.alpha       = 0.1;
 options_r.TR_maxiter  = 6;
 options_r.TR_maxinner = 40;   % tuned: 37.5s mean (Group B winner; vs 41.8s baseline)
 options_r.line_search = 1;
-options_r.tau1        = 1e-3;
-options_r.tau2        = 1.5e-2;  % tuned: 30.1s mean, std=0.5s (fine sweep winner; Phase 4)
+options_r.kappa1        = 1e-3;
+options_r.kappa2        = 1.5e-2;  % tuned: 30.1s mean, std=0.5s (fine sweep winner; Phase 4)
 options_r.sigma0      = 2.0;     % tuned: Phase 1 winner (sigma0/sigma_min/gama sweep)
 options_r.sigma_min   = 5e-2;     % tuned: fine sweep winner (sigma_min sweep)
 options_r.gama        = 2;
@@ -135,8 +135,8 @@ options_ut.alpha       = 0.05;
 options_ut.TR_maxiter  = 6;
 options_ut.TR_maxinner = 40;
 options_ut.line_search = 1;
-options_ut.tau1        = 1e-5;
-options_ut.tau2        = 1e-4;
+options_ut.kappa1        = 1e-5;
+options_ut.kappa2        = 1e-4;
 options_ut.sigma0      = 1e1;
 options_ut.sigma_min   = 1e2;
 options_ut.gama        = 2;

@@ -9,6 +9,7 @@ function [A, b, c, K] = bqpmom_complex_nounitdiag(Q, e)
     basis_vecs = generate_basis_vectors(n);
     N = length(basis_vecs);
     K.s = N; 
+    K.scomplex = 1;
     
     % --- 第二步：从基底指标建立矩阵 X 各个位置的指标映射 ---
     % class_map: Key 是 n 维净指标向量的字符串, Value 是对应的矩阵线性索引数组
