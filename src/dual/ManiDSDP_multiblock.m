@@ -154,7 +154,7 @@ for iter = 1:options.ADMM_maxiter
     end
     for i = 1:nb
         if n(i) >= options.min_facsize
-            [~, D, V] = svd(Y{i});
+            [~, D, V] = svd(Y{i}, 'econ');
             if size(D, 1) > 1
                e = diag(D);
             else
@@ -224,26 +224,121 @@ fprintf('ManiDSDP: optimum = %0.8f, time = %0.2fs\n', obj, toc(timespend));
         end
 
     function nY = line_search(Y, U)
-         alpha = 1;
-         cost0 = co(Y);
-         nY = cell(nb, 1);
-         for i = 1:nb
-              nY{i} = [nY{i}; alpha*U{i}];
-              if i <= K.nob
-                  nY{i} = nY{i}./sqrt(sum(nY{i}.^2));
-              end
-         end
-         k = 1;
-         while k <= 15 && co(nY) - cost0 > -1e-3
-              alpha = 0.8*alpha;
-              for i = 1:nb
-                  nY{i} = [Y{i}; alpha*U{i}];
-                  if i <= K.nob
-                      nY{i} = nY{i}./sqrt(sum(nY{i}.^2));
-                  end
-              end 
-              k = k + 1;
-         end
+        % Each staircase direction satisfies Y{i}'*U{i} = 0. The
+        % pullback is even in alpha, and its derivative in theta =
+        % alpha^2 is half the Hessian curvature on the product manifold.
+        nY = Y;
+        ls_base = Y;
+        ls_U = cell(nb, 1);
+        ls_S0 = cell(nb, 1);
+        ls_UtU = cell(nb, 1);
+        ls_u2 = cell(nb, 1);
+        ls_indices = cell(nb, 1);
+        ls_diagonal = cell(nb, 1);
+        ls_s0 = zeros(sum(n.^2), 1);
+        ls_ds0 = ls_s0;
+        ls_offset = 0;
+        ls_step_scale = 0;
+        for ls_block = 1:nb
+            if any(~isfinite(ls_base{ls_block}), 'all')
+                return;
+            end
+            if ls_block <= K.nob
+                ls_norm = sqrt(sum(ls_base{ls_block}.^2, 1));
+                if any(~isfinite(ls_norm)) || any(ls_norm == 0)
+                    return;
+                end
+                ls_base{ls_block} = ls_base{ls_block}./ls_norm;
+            end
+            % Blocks below min_facsize can have empty or missing U cells.
+            if ls_block <= numel(U) && ~isempty(U{ls_block})
+                ls_U{ls_block} = U{ls_block};
+            else
+                ls_U{ls_block} = zeros(size(ls_base{ls_block}));
+            end
+            ls_u2{ls_block} = sum(ls_U{ls_block}.^2, 1);
+            if any(~isfinite(ls_u2{ls_block}))
+                return;
+            end
+            ls_S0{ls_block} = ls_base{ls_block}'*ls_base{ls_block};
+            ls_UtU{ls_block} = ls_U{ls_block}'*ls_U{ls_block};
+            ls_dS = ls_UtU{ls_block};
+            if ls_block <= K.nob
+                ls_diagonal{ls_block} = 1:(n(ls_block)+1):n(ls_block)^2;
+                ls_S0{ls_block}(ls_diagonal{ls_block}) = 1;
+                ls_dS = ls_dS - 0.5*(ls_u2{ls_block}.'.*ls_S0{ls_block} ...
+                    + ls_S0{ls_block}.*ls_u2{ls_block});
+                ls_dS(ls_diagonal{ls_block}) = 0;
+                ls_step_scale = max(ls_step_scale, max(ls_u2{ls_block}));
+            else
+                ls_step_scale = max(ls_step_scale, sum(ls_u2{ls_block}));
+            end
+            ls_indices{ls_block} = ls_offset + (1:n(ls_block)^2);
+            ls_s0(ls_indices{ls_block}) = ls_S0{ls_block}(:);
+            ls_ds0(ls_indices{ls_block}) = ls_dS(:);
+            ls_offset = ls_offset + n(ls_block)^2;
+        end
+        nY = ls_base;
+        if ~isfinite(ls_step_scale) || ls_step_scale == 0
+            return;
+        end
+        % Local residuals preserve the Manopt callbacks' shared state.
+        ls_sc0 = ls_s0 - c;
+        ls_y0 = iA'*ls_sc0;
+        ls_As0 = A'*ls_y0 - ls_sc0 - x/sigma;
+        ls_linear = iA*(b + sigma*(A*ls_As0)) - sigma*ls_As0;
+        if nf ~= 0
+            ls_Af0 = B'*ls_y0 - cf - w/sigma;
+            ls_linear = ls_linear + sigma*(iA*(B*ls_Af0));
+        end
+        ls_slope = ls_linear'*ls_ds0;
+        if ~isfinite(ls_slope) || ls_slope >= 0
+            return;
+        end
+
+        ls_alpha = min(1, 1/sqrt(ls_step_scale));
+        ls_armijo = 0.1;
+        for ls_iter = 1:50
+            ls_theta = ls_alpha^2;
+            ls_ds = zeros(size(ls_s0));
+            for ls_block = 1:nb
+                ls_dS = ls_theta*ls_UtU{ls_block};
+                if ls_block <= K.nob
+                    ls_scale = sqrt(1 + ls_theta*ls_u2{ls_block});
+                    ls_shift = (ls_theta*ls_u2{ls_block})./(1 + ls_scale);
+                    % Exact normalized Gram change, without cancellation.
+                    ls_dS = (ls_dS ...
+                        - (ls_shift.' + ls_shift + ls_shift.'*ls_shift) ...
+                          .*ls_S0{ls_block})./(ls_scale.'*ls_scale);
+                    ls_dS(ls_diagonal{ls_block}) = 0;
+                end
+                ls_ds(ls_indices{ls_block}) = ls_dS(:);
+            end
+            % Aggregate before the quadratic term to include constraints
+            % that couple different blocks.
+            ls_dy = iA'*ls_ds;
+            ls_dAs = A'*ls_dy - ls_ds;
+            ls_quadratic = ls_dAs'*ls_dAs;
+            if nf ~= 0
+                ls_dAf = B'*ls_dy;
+                ls_quadratic = ls_quadratic + ls_dAf'*ls_dAf;
+            end
+            ls_change = ls_linear'*ls_ds + 0.5*sigma*ls_quadratic;
+            if isfinite(ls_change) && ls_change < 0 ...
+                    && ls_change <= ls_armijo*ls_theta*ls_slope
+                for ls_block = 1:nb
+                    % Y is already padded to the direction's row count.
+                    nY{ls_block} = ls_base{ls_block} + ls_alpha*ls_U{ls_block};
+                    if ls_block <= K.nob
+                        nY{ls_block} = nY{ls_block} ...
+                            ./sqrt(sum(nY{ls_block}.^2, 1));
+                    end
+                end
+                return;
+            end
+            ls_alpha = 0.5*ls_alpha;
+        end
+        % Keep the feasible base point if no trial is acceptable.
     end
 
     function [f, G, store] = costgrad(Y, store)

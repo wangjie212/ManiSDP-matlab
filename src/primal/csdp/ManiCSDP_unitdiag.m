@@ -6,11 +6,19 @@
 
 function [X, obj, data] = ManiCSDP_unitdiag(At, b, c, K, options)
 
+if nargin < 5 || isempty(options)
+    options = struct();
+end
+if ~isstruct(K) || ~isfield(K, 's') || ~isscalar(K.s)
+    error('K.s must be a positive scalar integer.');
+end
+
 n = K.s;
 if ~isfield(options,'p0'); options.p0 = 2; end
 % if ~isfield(options,'p0'); options.p0 = ceil(log(length(b))); end
 if ~isfield(options,'AL_maxiter'); options.AL_maxiter = 300; end
 if ~isfield(options,'gamma'); options.gamma = 2; end
+if ~isfield(options,'tau'); options.tau = 1e-2; end
 if ~isfield(options,'sigma0'); options.sigma0 = 1e-3; end
 if ~isfield(options,'sigma_min'); options.sigma_min = 1e-2; end
 if ~isfield(options,'sigma_max'); options.sigma_max = 1e7; end
@@ -33,12 +41,14 @@ A = At';
 p = options.p0;
 sigma = options.sigma0;
 gamma = options.gamma;
+tau = options.tau;
 y = zeros(length(b), 1);
 normb = 1 + norm(b);
 Y    = [];
 U    = [];
 Axb  = [];
 fac_size = [];
+
 problem.cost = @cost;
 problem.grad = @grad;
 problem.hess = @hess;
@@ -55,6 +65,7 @@ for iter = 1:options.AL_maxiter
     if ~isempty(U)
         Y = line_search(Y, U);
     end
+    opts.tolgradnorm = tau;
     [Y, ~, info] = trustregions(problem, Y, opts);
     gradnorm = info(end).gradnorm;
     X = Y'*Y;
@@ -65,14 +76,14 @@ for iter = 1:options.AL_maxiter
     y = y - sigma*real(Axb);
     eS = reshape(c - At*y, n, n);
     eS = (eS+eS')/2;
-    z = real(sum(conj(X).*eS, 1));   % vectorized: O(n²) vs O(pn²); conj needed for complex X
+    z = real(sum(conj(X).*eS, 1));
     S = eS - diag(z);
     [vS, dS] = eig(S, 'vector');
     dS = sort(real(dS));
     dinf = max(0, -dS(1))/(1+abs(dS(end)));
     by = real(b'*y) + sum(z);
     gap = abs(obj-by)/(abs(by)+abs(obj)+1);
-    [~, D, V] = svd(Y);
+    [~, D, V] = svd(Y, 'econ');
     e = diag(D);
     r = sum(e >= options.theta*e(1));
     fprintf('Iter %d, obj:%0.8f, gap:%0.1e, pinf:%0.1e, dinf:%0.1e, gradnorm:%0.1e, r:%d, p:%d, sigma:%0.3f, time:%0.2fs\n', ...
@@ -100,7 +111,8 @@ for iter = 1:options.AL_maxiter
     if p == 1
         nne = 1;
     else
-        nne = min(sum(dS < 0), options.delta);
+        tau = max(0.4*tau, 1e-8);
+        nne = min(sum(dS < -tau), options.delta);
     end
     if options.line_search == 1
        U = [zeros(p, n); vS(:,1:nne)'];
@@ -143,17 +155,60 @@ fprintf('ManiCSDP: optimum = %0.8f, time = %0.2fs\n', obj, toc(timespend));
     end
 
     function nY = line_search(Y, U)
-         alpha = 1;
-         cost0 = co(Y);
-         i = 1;
-         nY = Y + alpha*U;
-         nY = nY./sqrt(real(sum(conj(nY).*nY,1)));
-         while i <= 15 && co(nY) - cost0 > -1e-3
-              alpha = 0.8*alpha;
-              nY = Y + alpha*U;
-              nY = nY./sqrt(real(sum(conj(nY).*nY,1)));
-              i = i + 1;
-         end
+        % The complex staircase direction satisfies Y'*U = 0. The normalized
+        % pullback is even in alpha; its derivative in theta = alpha^2
+        % is half the Riemannian Hessian curvature along U.
+        nY = Y;
+        ls_ynorm = sqrt(real(sum(conj(Y).*Y, 1)));
+        if any(~isfinite(ls_ynorm)) || any(ls_ynorm == 0)
+            return;
+        end
+        % Restore unit columns after possible rank truncation.
+        Y = Y./ls_ynorm;
+        nY = Y;
+        ls_u2 = real(sum(conj(U).*U, 1));
+        if any(~isfinite(ls_u2)) || max(ls_u2) == 0
+            return;
+        end
+
+        ls_X0 = Y'*Y;
+        ls_diag_index = 1:(size(ls_X0, 1)+1):numel(ls_X0);
+        ls_X0(ls_diag_index) = 1;
+        ls_UtU = U'*U;
+        ls_dX = ls_UtU ...
+            - 0.5*(ls_u2.'.*ls_X0 + ls_X0.*ls_u2);
+        ls_dX(ls_diag_index) = 0;
+        ls_residual = A*ls_X0(:) - b - y/sigma;
+        ls_linear = c + sigma*(A'*ls_residual);
+        ls_slope = real(ls_linear'*ls_dX(:));
+        if ~isfinite(ls_slope) || ls_slope >= 0
+            return;
+        end
+
+        ls_alpha = min(1, 1/sqrt(max(ls_u2)));
+        ls_armijo = 0.1;
+        for ls_iter = 1:50
+            ls_theta = ls_alpha^2;
+            ls_scale = sqrt(1 + ls_theta*ls_u2);
+            % Stable evaluation of sqrt(1 + theta*u2) - 1.
+            ls_shift = (ls_theta*ls_u2)./(1 + ls_scale);
+            % Exact change in the column-normalized Gram matrix.
+            ls_deltaX = (ls_theta*ls_UtU ...
+                - (ls_shift.' + ls_shift + ls_shift.'*ls_shift).*ls_X0) ...
+                ./ (ls_scale.'*ls_scale);
+            ls_deltaX(ls_diag_index) = 0;
+            ls_AdeltaX = A*ls_deltaX(:);
+            ls_change = real(ls_linear'*ls_deltaX(:)) ...
+                + 0.5*sigma*real(ls_AdeltaX'*ls_AdeltaX);
+            if isfinite(ls_change) && ls_change < 0 ...
+                    && ls_change <= ls_armijo*ls_theta*ls_slope
+                nY = Y + ls_alpha*U;
+                nY = nY./sqrt(real(sum(conj(nY).*nY, 1)));
+                return;
+            end
+            ls_alpha = 0.5*ls_alpha;
+        end
+        % Keep the normalized base point if no trial is acceptable.
     end
 
     function [f, store] = cost(Y, store)

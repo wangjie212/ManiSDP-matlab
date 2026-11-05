@@ -133,7 +133,7 @@ for iter = 1:options.ADMM_maxiter
         p = r;
     end
     if p == 1
-       nne = 1;
+        nne = 1;
     else
         tau = max(0.4*tau, 1e-8);
         nne = min(sum(dX < -tau), options.delta);

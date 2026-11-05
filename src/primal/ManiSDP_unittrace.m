@@ -17,6 +17,7 @@ n = K.s;
 if ~isfield(options,'p0'); options.p0 = 1; end
 if ~isfield(options,'AL_maxiter'); options.AL_maxiter = 1000; end
 if ~isfield(options,'gamma'); options.gamma = 2; end
+if ~isfield(options,'tau'); options.tau = 1e-2; end
 if ~isfield(options,'sigma0'); options.sigma0 = 1e1; end
 if ~isfield(options,'sigma_min'); options.sigma_min = 1e2; end
 if ~isfield(options,'sigma_max'); options.sigma_max = 1e7; end
@@ -38,6 +39,7 @@ A = At';
 p = options.p0;
 sigma = options.sigma0;
 gamma = options.gamma;
+tau = options.tau;
 y = zeros(length(b),1);
 normb = 1 + norm(b);
 if isfield(options, 'Y0') 
@@ -61,6 +63,7 @@ for iter = 1:options.AL_maxiter
     if ~isempty(U)
         Y = line_search(Y, U);
     end
+    opts.tolgradnorm = tau;
     [Y, ~, info] = trustregions(problem, Y, opts);
     gradnorm = info(end).gradnorm;
     X = Y*Y';
@@ -105,7 +108,8 @@ for iter = 1:options.AL_maxiter
         Y = V(:,1:r)*diag(e(1:r));
         p = r;
     end
-    nne = min(sum(dS < 0), options.delta);        
+    tau = max(0.4*tau, 1e-8);
+    nne = min(sum(dS < -tau), options.delta);
     if options.line_search == 1
        U = [zeros(n, p) vS(:,1:nne)];
     end
@@ -147,17 +151,50 @@ fprintf('ManiSDP: optimum = %0.8f, time = %0.2fs\n', obj, toc(timespend));
     end
 
     function nY = line_search(Y, U)
-         alpha = 1;
-         cost0 = co(Y);
-         i = 1;
-         nY = Y + alpha*U;
-         nY = nY/norm(nY, 'fro');
-         while i <= 15 && co(nY) - cost0 > -1e-3
-              alpha = 0.8*alpha;
-              nY = Y + alpha*U;
-              nY = nY/norm(nY, 'fro');
-              i = i + 1;
-         end
+        % The staircase direction satisfies Y*U' = 0, so the pullback
+        % along the sphere retraction is even in alpha. Its derivative
+        % in theta = alpha^2 is half the Riemannian Hessian curvature.
+        nY = Y;
+        ls_ynorm = norm(Y, 'fro');
+        if ~isfinite(ls_ynorm) || ls_ynorm == 0
+            return;
+        end
+        % Restore unit trace after possible rank truncation.
+        Y = Y/ls_ynorm;
+        nY = Y;
+        ls_u2 = sum(U.^2, 'all');
+        if ~isfinite(ls_u2) || ls_u2 == 0
+            return;
+        end
+
+        ls_X0 = Y*Y';
+        ls_dX = U*U' - ls_u2*ls_X0;
+        ls_residual = A*ls_X0(:) - b - y/sigma;
+        ls_AdX = A*ls_dX(:);
+        ls_slope = c'*ls_dX(:) + sigma*(ls_residual'*ls_AdX);
+        ls_quadratic = 0.5*sigma*(ls_AdX'*ls_AdX);
+        if ~isfinite(ls_slope) || ls_slope >= 0 ...
+                || ~isfinite(ls_quadratic)
+            return;
+        end
+
+        ls_alpha = min(1, 1/sqrt(ls_u2));
+        ls_armijo = 0.1;
+        for ls_iter = 1:50
+            ls_theta = ls_alpha^2;
+            ls_t = ls_theta/(1 + ls_theta*ls_u2);
+            % Retracted X = X0 + t*dX. This gives the exact change in
+            % the augmented Lagrangian without subtracting close costs.
+            ls_change = ls_t*ls_slope + ls_t^2*ls_quadratic;
+            if isfinite(ls_change) && ls_change < 0 ...
+                    && ls_change <= ls_armijo*ls_theta*ls_slope
+                nY = Y + ls_alpha*U;
+                nY = nY/norm(nY, 'fro');
+                return;
+            end
+            ls_alpha = 0.5*ls_alpha;
+        end
+        % Keep the normalized base point if no trial is acceptable.
     end
 
     function [f, store] = cost(Y, store)

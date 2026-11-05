@@ -155,17 +155,60 @@ fprintf('ManiSDP: optimum = %0.8f, time = %0.2fs\n', obj, toc(timespend));
     end
 
     function nY = line_search(Y, U)
-         alpha = 1;
-         cost0 = co(Y);
-         i = 1;
-         nY = Y + alpha*U;
-         nY = nY./sqrt(sum(nY.^2));
-         while i <= 15 && co(nY) - cost0 > -1e-3
-              alpha = 0.8*alpha;
-              nY = Y + alpha*U;
-              nY = nY./sqrt(sum(nY.^2));
-              i = i + 1;
-         end
+        % The staircase direction satisfies Y'*U = 0. The normalized
+        % pullback is even in alpha; its derivative in theta = alpha^2
+        % is half the Riemannian Hessian curvature along U.
+        nY = Y;
+        ls_ynorm = sqrt(sum(Y.^2, 1));
+        if any(~isfinite(ls_ynorm)) || any(ls_ynorm == 0)
+            return;
+        end
+        % Restore unit columns after possible rank truncation.
+        Y = Y./ls_ynorm;
+        nY = Y;
+        ls_u2 = sum(U.^2, 1);
+        if any(~isfinite(ls_u2)) || max(ls_u2) == 0
+            return;
+        end
+
+        ls_X0 = Y'*Y;
+        ls_diag_index = 1:(size(ls_X0, 1)+1):numel(ls_X0);
+        ls_X0(ls_diag_index) = 1;
+        ls_UtU = U'*U;
+        ls_dX = ls_UtU ...
+            - 0.5*(ls_u2.'.*ls_X0 + ls_X0.*ls_u2);
+        ls_dX(ls_diag_index) = 0;
+        ls_residual = A*ls_X0(:) - b - y/sigma;
+        ls_linear = c + sigma*(A'*ls_residual);
+        ls_slope = ls_linear'*ls_dX(:);
+        if ~isfinite(ls_slope) || ls_slope >= 0
+            return;
+        end
+
+        ls_alpha = min(1, 1/sqrt(max(ls_u2)));
+        ls_armijo = 0.1;
+        for ls_iter = 1:50
+            ls_theta = ls_alpha^2;
+            ls_scale = sqrt(1 + ls_theta*ls_u2);
+            % Stable evaluation of sqrt(1 + theta*u2) - 1.
+            ls_shift = (ls_theta*ls_u2)./(1 + ls_scale);
+            % Exact change in the column-normalized Gram matrix.
+            ls_deltaX = (ls_theta*ls_UtU ...
+                - (ls_shift.' + ls_shift + ls_shift.'*ls_shift).*ls_X0) ...
+                ./ (ls_scale.'*ls_scale);
+            ls_deltaX(ls_diag_index) = 0;
+            ls_AdeltaX = A*ls_deltaX(:);
+            ls_change = ls_linear'*ls_deltaX(:) ...
+                + 0.5*sigma*(ls_AdeltaX'*ls_AdeltaX);
+            if isfinite(ls_change) && ls_change < 0 ...
+                    && ls_change <= ls_armijo*ls_theta*ls_slope
+                nY = Y + ls_alpha*U;
+                nY = nY./sqrt(sum(nY.^2, 1));
+                return;
+            end
+            ls_alpha = 0.5*ls_alpha;
+        end
+        % Keep the normalized base point if no trial is acceptable.
     end
 
     function [f, store] = cost(Y, store)

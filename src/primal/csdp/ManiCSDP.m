@@ -5,10 +5,18 @@
 
 function [X, obj, data] = ManiCSDP(At, b, c, K, options)
 
+if nargin < 5 || isempty(options)
+    options = struct();
+end
+if ~isstruct(K) || ~isfield(K, 's') || ~isscalar(K.s)
+    error('K.s must be a positive scalar integer.');
+end
+
 n = K.s;
 if ~isfield(options,'p0'); options.p0 = 1; end
 if ~isfield(options,'AL_maxiter'); options.AL_maxiter = 1000; end
 if ~isfield(options,'gamma'); options.gamma = 2; end
+if ~isfield(options,'tau'); options.tau = 1e-2; end
 if ~isfield(options,'sigma0'); options.sigma0 = 1e-2; end
 if ~isfield(options,'sigma_min'); options.sigma_min = 1e-1; end
 if ~isfield(options,'sigma_max'); options.sigma_max = 1e7; end
@@ -31,6 +39,7 @@ A = At';
 p = options.p0;
 sigma = options.sigma0;
 gamma = options.gamma;
+tau = options.tau;
 y = zeros(length(b),1);
 normb = 1 + norm(b);
 if isfield(options, 'Y0') 
@@ -54,6 +63,7 @@ for iter = 1:options.AL_maxiter
     if ~isempty(U)
         Y = line_search(Y, U);
     end
+    opts.tolgradnorm = tau;
     [Y, ~, info] = trustregions(problem, Y, opts);
     gradnorm = info(end).gradnorm;
     X = Y*Y';
@@ -68,7 +78,7 @@ for iter = 1:options.AL_maxiter
     dinf = max(0, -dS(1))/(1+dS(end));
     by = b'*y;
     gap = abs(obj-by)/(abs(by)+abs(obj)+1);
-    [V, D, ~] = svd(Y);
+    [V, D, ~] = svd(Y, 'econ');
     if size(D, 2) > 1
         e = diag(D);
     else
@@ -97,7 +107,8 @@ for iter = 1:options.AL_maxiter
         Y = V(:,1:r)*diag(e(1:r));
         p = r;
     end
-    nne = min(sum(dS < 0), options.delta);
+    tau = max(0.4*tau, 1e-8);
+    nne = min(sum(dS < -tau), options.delta);
     if options.line_search == 1
         U = [zeros(n, p) vS(:,1:nne)];
     end
@@ -129,15 +140,41 @@ end
 fprintf('ManiCSDP: optimum = %0.8f, time = %0.2fs\n', obj, toc(timespend));
 
     function nY = line_search(Y, U)
-         alpha = 1;
-         cost0 = co(Y);
-         i = 1;
-         nY = Y + alpha*U;
-         while i <= 15 && co(nY) - cost0 > -1e-3
-              alpha = 0.8*alpha;
-              nY = Y + alpha*U;
-              i = i + 1;
-         end
+        % The complex staircase direction satisfies Y*U' = 0. With theta =
+        % alpha^2, X(theta) = Y*Y' + theta*U*U', so the derivative in
+        % theta is half the Hessian curvature along U.
+        nY = Y;
+        ls_u2 = real(sum(conj(U).*U, 'all'));
+        if ~isfinite(ls_u2) || ls_u2 == 0 || any(~isfinite(Y), 'all')
+            return;
+        end
+
+        ls_X0 = Y*Y';
+        ls_dX = U*U';
+        ls_residual = A*ls_X0(:) - b - y/sigma;
+        ls_AdX = A*ls_dX(:);
+        ls_slope = real(c'*ls_dX(:) + sigma*(ls_residual'*ls_AdX));
+        ls_quadratic = 0.5*sigma*real(ls_AdX'*ls_AdX);
+        if ~isfinite(ls_slope) || ls_slope >= 0 ...
+                || ~isfinite(ls_quadratic)
+            return;
+        end
+
+        ls_alpha = min(1, 1/sqrt(ls_u2));
+        ls_armijo = 0.1;
+        for ls_iter = 1:50
+            ls_theta = ls_alpha^2;
+            % Exact augmented-Lagrangian change, avoiding cancellation
+            % from subtracting nearly equal objective values.
+            ls_change = ls_theta*(ls_slope + ls_theta*ls_quadratic);
+            if isfinite(ls_change) && ls_change < 0 ...
+                    && ls_change <= ls_armijo*ls_theta*ls_slope
+                nY = Y + ls_alpha*U;
+                return;
+            end
+            ls_alpha = 0.5*ls_alpha;
+        end
+        % Keep Y if no trial satisfies second-order Armijo decrease.
     end
 
    function val = co(Y)

@@ -5,9 +5,14 @@
 
 function [X, obj, data] = ManiCSDP_onlyunitdiag(C, options)
 
+if nargin < 2 || isempty(options)
+    options = struct();
+end
+
 if ~isfield(options,'p0'); options.p0 = 2; end
 if ~isfield(options,'AL_maxiter'); options.AL_maxiter = 20; end
 if ~isfield(options,'tol'); options.tol = 1e-8; end
+if ~isfield(options,'tau'); options.tau = 1e-2; end
 if ~isfield(options,'theta'); options.theta = 1e-1; end
 if ~isfield(options,'delta'); options.delta = 8; end
 if ~isfield(options,'alpha'); options.alpha = 0.5; end
@@ -22,6 +27,7 @@ n = size(C,1);
 fprintf('CSDP size: n = %i, m = %i\n', n, n);
 
 p = options.p0;
+tau = options.tau;
 Y = [];
 U = [];
 YC = [];
@@ -41,6 +47,7 @@ for iter = 1:options.AL_maxiter
     if ~isempty(U)
         Y = line_search(Y, U);
     end
+    opts.tolgradnorm = tau;
     [Y, ~, info] = trustregions(problem, Y, opts);
     gradnorm = info(end).gradnorm;
     X = Y'*Y;
@@ -50,7 +57,7 @@ for iter = 1:options.AL_maxiter
     [vS, dS] = eig(full(S), 'vector');
     dS = sort(real(dS));
     dinf = max(0, -dS(1))/(1+abs(dS(end)));
-    [~, D, V] = svd(Y);
+    [~, D, V] = svd(Y, 'econ');
     e = diag(D);
     r = sum(e >= options.theta*e(1));
     fprintf('Iter %d, obj:%0.8f, dinf:%0.1e, r:%d, p:%d, time:%0.2fs\n', ...
@@ -75,7 +82,8 @@ for iter = 1:options.AL_maxiter
     if p == 1
        nne = 1;
     else
-       nne = min(sum(dS < 0), options.delta);
+       tau = max(0.4*tau, 1e-8);
+       nne = min(sum(dS < -tau), options.delta);
     end
     if options.line_search == 1
         U = [zeros(p, n); vS(:,1:nne)'];
@@ -106,17 +114,53 @@ fprintf('ManiCSDP: optimum = %0.8f, time = %0.2fs\n', obj, toc(timespend));
     end
 
     function nY = line_search(Y, U)
-         alpha = 1;
-         cost0 = co(Y);
-         i = 1;
-         nY = Y + alpha*U;
-         nY = nY./sqrt(real(sum(conj(nY).*nY,1)));
-         while i <= 15 && co(nY) - cost0 > -1e-3
-              alpha = 0.8*alpha;
-              nY = Y + alpha*U;
-              nY = nY./sqrt(real(sum(conj(nY).*nY,1)));
-              i = i + 1;
-         end
+        % The staircase direction satisfies Y'*U = 0. The derivative
+        % in theta = alpha^2 is half the Hessian curvature of co along U;
+        % co is twice the objective used by the Manopt callbacks.
+        nY = Y;
+        ls_ynorm = sqrt(real(sum(conj(Y).*Y, 1)));
+        if any(~isfinite(ls_ynorm)) || any(ls_ynorm == 0)
+            return;
+        end
+        % Restore unit columns after possible rank truncation.
+        Y = Y./ls_ynorm;
+        nY = Y;
+        ls_u2 = real(sum(conj(U).*U, 1));
+        if any(~isfinite(ls_u2)) || max(ls_u2) == 0
+            return;
+        end
+
+        % Diagonal costs are constant on the manifold. Removing them
+        % improves numerical accuracy and preserves sparsity of C.
+        ls_C = C - spdiags(diag(C), 0, size(C, 1), size(C, 2));
+        ls_YC = Y*ls_C;
+        ls_columncost = real(sum(conj(Y).*ls_YC, 1));
+        ls_slope = real(sum(conj(U).*(U*ls_C), 'all')) ...
+            - sum(ls_columncost.*ls_u2);
+        if ~isfinite(ls_slope) || ls_slope >= 0
+            return;
+        end
+
+        ls_alpha = min(1, 1/sqrt(max(ls_u2)));
+        ls_armijo = 0.1;
+        for ls_iter = 1:50
+            ls_theta = ls_alpha^2;
+            ls_scale = sqrt(1 + ls_theta*ls_u2);
+            % Stable evaluation of the retraction's displacement from Y.
+            ls_shift = (ls_theta*ls_u2)./(1 + ls_scale);
+            ls_delta = (ls_alpha*U - Y.*ls_shift)./ls_scale;
+            ls_deltaC = ls_delta*ls_C;
+            ls_change = real(2*sum(conj(ls_delta).*ls_YC, 'all') ...
+                + sum(conj(ls_delta).*ls_deltaC, 'all'));
+            if isfinite(ls_change) && ls_change < 0 ...
+                    && ls_change <= ls_armijo*ls_theta*ls_slope
+                nY = Y + ls_alpha*U;
+                nY = nY./sqrt(real(sum(conj(nY).*nY, 1)));
+                return;
+            end
+            ls_alpha = 0.5*ls_alpha;
+        end
+        % Keep the normalized base point if no trial is acceptable.
     end
     
     function [f, store] = cost(Y, store)

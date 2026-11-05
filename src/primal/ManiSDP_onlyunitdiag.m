@@ -5,15 +5,13 @@
 
 function [X, obj, data] = ManiSDP_onlyunitdiag(C, options)
 
-if nargin < 5 || isempty(options)
+if nargin < 2 || isempty(options)
     options = struct();
-end
-if ~isstruct(K) || ~isfield(K, 's') || ~isscalar(K.s)
-    error('K.s must be a positive scalar integer.');
 end
 
 if ~isfield(options,'p0'); options.p0 = 2; end
 if ~isfield(options,'AL_maxiter'); options.AL_maxiter = 20; end
+if ~isfield(options,'tau'); options.tau = 1e-2; end
 if ~isfield(options,'tol'); options.tol = 1e-8; end
 if ~isfield(options,'theta'); options.theta = 1e-1; end
 if ~isfield(options,'delta'); options.delta = 8; end
@@ -28,6 +26,7 @@ n = size(C,1);
 fprintf('SDP size: n = %i, m = %i\n', n, n);
 
 p = options.p0;
+tau = options.tau;
 Y = [];
 U = [];
 YC = [];
@@ -47,11 +46,11 @@ for iter = 1:options.AL_maxiter
     if ~isempty(U)
         Y = line_search(Y, U);
     end
+    opts.tolgradnorm = tau;
     [Y, ~, info] = trustregions(problem, Y, opts);
     gradnorm = info(end).gradnorm;
     X = Y'*Y;
     z = sum(C.*X);
-    % z = sum((Y*C).*Y);
     obj = full(sum(z));
     S = C - diag(z);
     [vS, dS] = eig(full(S), 'vector');
@@ -81,7 +80,8 @@ for iter = 1:options.AL_maxiter
     if p == 1
         nne = 1;
     else
-        nne = min(sum(dS < 0), options.delta);
+        tau = max(0.4*tau, 1e-8);
+        nne = min(sum(dS < -tau), options.delta);
     end
     if options.line_search == 1
         U = [zeros(p, n); vS(:,1:nne)'];
@@ -112,17 +112,42 @@ fprintf('ManiSDP: optimum = %0.8f, time = %0.2fs\n', obj, toc(timespend));
     end
 
     function nY = line_search(Y, U)
-         alpha = 1;
-         cost0 = co(Y);
-         i = 1;
-         nY = Y + alpha*U;
-         nY = nY./sqrt(sum(nY.^2));
-         while i <= 15 && co(nY) - cost0 > -1e-3
-              alpha = 0.8*alpha;
-              nY = Y + alpha*U;
-              nY = nY./sqrt(sum(nY.^2));
-              i = i + 1;
-         end
+        % The staircase direction satisfies Y'*U = 0, so the first
+        % derivative vanishes. Use a second-order Armijo condition for
+        % co(Retr_Y(alpha*U)), whose curvature is twice that of cost.
+        nY = Y;
+        % Rank truncation can perturb the unit-column constraints.
+        ls_ynorm = sqrt(sum(Y.^2, 1));
+        if any(~isfinite(ls_ynorm)) || any(ls_ynorm == 0)
+            return;
+        end
+        Y = Y./ls_ynorm;
+        nY = Y;
+        ls_cost0 = co(Y);
+        ls_u2 = sum(U.^2, 1);
+        ls_columncost = sum((Y*C).*Y, 1);
+        ls_curvature = 2*(sum((U*C).*U, 'all') ...
+                         - sum(ls_columncost.*ls_u2));
+        if ~isfinite(ls_cost0) || ~isfinite(ls_curvature) ...
+                || ls_curvature >= 0
+            return;
+        end
+
+        ls_alpha = min(1, 1/sqrt(max(ls_u2)));
+        ls_armijo = 0.1;
+        for ls_iter = 1:50
+            ls_trial = Y + ls_alpha*U;
+            ls_trial = ls_trial./sqrt(sum(ls_trial.^2, 1));
+            ls_cost = co(ls_trial);
+            if isfinite(ls_cost) && ls_cost < ls_cost0 ...
+                    && ls_cost - ls_cost0 <= ...
+                       0.5*ls_armijo*ls_alpha^2*ls_curvature
+                nY = ls_trial;
+                return;
+            end
+            ls_alpha = 0.5*ls_alpha;
+        end
+        % Keep Y if no trial satisfies sufficient decrease.
     end
     
     function [f, store] = cost(Y, store)

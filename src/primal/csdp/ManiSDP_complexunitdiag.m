@@ -1,26 +1,23 @@
 % Solves real SDP from a complex unit-diagonal SDP via convertCtoR:
-%   min  <C_r, X_r>
-%   s.t. A_r(X_r) = b_r
-%        X_r >= 0
-%        X_r(j,j) + X_r(n+j,n+j) = 1,  j = 1,...,n   (paired unit diagonal)
+%   min  <C, X>
+%   s.t. A(X) = b
+%        X >= 0
+%        X(j,j) + X(n+j,n+j) = 1,  j = 1,...,n   (paired unit diagonal)
 %
-% Prepare inputs with: [At_r, b_r, c_r, K_r] = convertCtoR(At_c, b_c, c_c, K_c)
+% Prepare inputs with: [At, b, c, K] = convertCtoR(At_c, b_c, c_c, K_c)
 % where the original complex SDP has diag(X_c) = 1.
 
-function [X, obj, data] = ManiSDP_complexunitdiag(At_r, b_r, c_r, K_r, options)
+function [X, obj, data] = ManiSDP_complexunitdiag(At, b, c, K, options)
 
 if nargin < 5 || isempty(options)
     options = struct();
 end
-if ~isstruct(K_r) || ~isfield(K_r, 's') || ~isscalar(K_r.s)
+if ~isstruct(K) || ~isfield(K, 's') || ~isscalar(K.s)
     error('K.s must be a positive scalar integer.');
-end
-if ~isfield(K_r, 'f') || isempty(K_r.f)
-    K_r.f = 0;
 end
 
 % if ~isfield(options,'p0');          options.p0          = 2;     end
-if ~isfield(options,'p0'); options.p0 = ceil(log(length(b_r))); end
+if ~isfield(options,'p0'); options.p0 = ceil(log(length(b))); end
 if ~isfield(options,'AL_maxiter');  options.AL_maxiter  = 500;   end
 if ~isfield(options,'gamma');        options.gamma        = 2;   end
 if ~isfield(options,'tau');         options.tau = 1e-2;          end
@@ -38,20 +35,20 @@ if ~isfield(options,'kappa1');        options.kappa1        = 1;     end
 if ~isfield(options,'tau2');        options.kappa2        = 1;     end
 if ~isfield(options,'line_search'); options.line_search = 0;     end
 
-n2 = K_r.s;
+n2 = K.s;
 n  = n2 / 2;
 fprintf('ManiSDP is starting...\n');
-fprintf('SDP size: n = %d, m = %d\n', n2, length(b_r));
+fprintf('SDP size: n = %d, m = %d\n', n2, length(b));
 warning_state = warning('off', 'manopt:trs_tCG_cached:memory');
 warning_cleanup = onCleanup(@() warning(warning_state));
 
-A_r    = At_r';
+A    = At';
 p      = options.p0;
 sigma  = options.sigma0;
 gamma   = options.gamma;
 tau = options.tau;
-y      = zeros(length(b_r), 1);
-normb  = 1 + norm(b_r);
+y      = zeros(length(b), 1);
+normb  = 1 + norm(b);
 Y      = [];
 U      = [];
 Axb    = [];   % shared: cost -> grad
@@ -80,21 +77,21 @@ for iter = 1:options.AL_maxiter
 
     X    = Y'*Y;
     x    = X(:);
-    obj  = c_r'*x;
-    Axb  = A_r*x - b_r;
+    obj  = c'*x;
+    Axb  = A*x - b;
     pinf = norm(Axb) / normb;
     y    = y - sigma*Axb;
 
     % Dual certificate for paired-diagonal constraint
-    eS_r = reshape(c_r - At_r*y, n2, n2);
-    eS_r = (eS_r + eS_r') / 2;
-    diag_XeS = sum(X .* eS_r, 1);
+    eS = reshape(c - At*y, n2, n2);
+    eS = (eS + eS') / 2;
+    diag_XeS = sum(X .* eS, 1);
     z_pair = diag_XeS(1:n) + diag_XeS(n+1:n2);
     z_full = [z_pair, z_pair];
-    S    = eS_r - diag(z_full(:));
+    S    = eS - diag(z_full(:));
     [vS, dS] = eig(full(S), 'vector');
     dinf = max(0, -dS(1)) / (1 + abs(dS(end)));
-    by = b_r'*y + sum(z_pair);
+    by = b'*y + sum(z_pair);
     gap = abs(obj - by) / (abs(obj) + abs(by) + 1);
     [~, D, V] = svd(Y, 'econ');
     e = diag(D);
@@ -163,13 +160,13 @@ fprintf('ManiSDP: optimum = %0.8f, time = %0.2fs\n', obj, toc(timespend));
     function [f, store] = cost(Y, store)
         X_  = Y'*Y;
         x_  = X_(:);
-        Axb = A_r*x_ - b_r - y/sigma;
-        f   = c_r'*x_ + 0.5*sigma*(Axb'*Axb);
+        Axb = A*x_ - b - y/sigma;
+        f   = c'*x_ + 0.5*sigma*(Axb'*Axb);
     end
 
     % --- Riemannian gradient on paired-oblique manifold ---
     function [G, store] = grad(Y, store)
-        eS_ = reshape(c_r + sigma*At_r*Axb, n2, n2);
+        eS_ = reshape(c + sigma*At*Axb, n2, n2);
         eS_ = (eS_ + eS_') / 2;
         Y1_ = Y(:, 1:n);
         Y2_ = Y(:, n+1:n2);
@@ -184,7 +181,7 @@ fprintf('ManiSDP: optimum = %0.8f, time = %0.2fs\n', obj, toc(timespend));
     % --- Riemannian Hessian on paired-oblique manifold ---
     function [H, store] = hess(Y, U, store)
         YU   = Y'*U;
-        AyU  = reshape(At_r*(At_r'*YU(:)), n2, n2);
+        AyU  = reshape(At*(At'*YU(:)), n2, n2);
         eH_  = 2*U*eS_ + 4*sigma*(Y*AyU);          % uses shared eS_ from grad
         Y1_  = Y(:, 1:n);   Y2_  = Y(:, n+1:n2);
         U1_  = U(:, 1:n);   U2_  = U(:, n+1:n2);
@@ -199,21 +196,76 @@ fprintf('ManiSDP: optimum = %0.8f, time = %0.2fs\n', obj, toc(timespend));
     function val = co(Y)
         X_   = Y'*Y;
         x_   = X_(:);
-        Axb_ = A_r*x_ - b_r - y/sigma;
-        val  = c_r'*x_ + sigma/2*(Axb_'*Axb_);
+        Axb_ = A*x_ - b - y/sigma;
+        val  = c'*x_ + sigma/2*(Axb_'*Axb_);
     end
 
     % --- Line search along U with paired retraction ---
     function nY = line_search(Y, U)
-        alpha = 1;
-        cost0 = co(Y);
-        i     = 1;
-        nY    = retr_paired(Y, alpha*U);
-        while i <= 15 && co(nY) - cost0 > -1e-3
-            alpha = 0.8*alpha;
-            nY    = retr_paired(Y, alpha*U);
-            i     = i + 1;
+        % The staircase direction satisfies Y'*U = 0. Along the paired
+        % retraction, the derivative in theta = alpha^2 is half the
+        % Riemannian Hessian curvature of the augmented Lagrangian.
+        nY = Y;
+        ls_pairnorm = sqrt(sum(Y(:,1:n).^2, 1) ...
+            + sum(Y(:,n+1:n2).^2, 1));
+        if any(~isfinite(ls_pairnorm)) || any(ls_pairnorm == 0)
+            return;
         end
+        % Restore the paired unit norms after possible rank truncation.
+        Y = Y./[ls_pairnorm, ls_pairnorm];
+        nY = Y;
+        ls_pair_u2 = sum(U(:,1:n).^2, 1) ...
+            + sum(U(:,n+1:n2).^2, 1);
+        if any(~isfinite(ls_pair_u2)) || max(ls_pair_u2) == 0
+            return;
+        end
+        ls_u2 = [ls_pair_u2, ls_pair_u2];
+
+        ls_X0 = Y'*Y;
+        ls_diagonal = 1:(n2+1):n2^2;
+        ls_diag1 = ls_diagonal(1:n);
+        ls_diag2 = ls_diagonal(n+1:n2);
+        ls_X0(ls_diag2) = 1 - ls_X0(ls_diag1);
+        ls_UtU = U'*U;
+        ls_dX = ls_UtU ...
+            - 0.5*(ls_u2.'.*ls_X0 + ls_X0.*ls_u2);
+        ls_dX(ls_diag2) = -ls_dX(ls_diag1);
+        ls_residual = A*ls_X0(:) - b - y/sigma;
+        ls_linear = c + sigma*(A'*ls_residual);
+        % Equal diagonal coefficients within a pair contribute a constant.
+        ls_diagdiff = 0.5*ls_linear(ls_diag1) - 0.5*ls_linear(ls_diag2);
+        ls_linear(ls_diag1) = ls_diagdiff;
+        ls_linear(ls_diag2) = -ls_diagdiff;
+        ls_slope = ls_linear'*ls_dX(:);
+        if ~isfinite(ls_slope) || ls_slope >= 0
+            return;
+        end
+
+        ls_alpha = min(1, 1/sqrt(max(ls_pair_u2)));
+        ls_armijo = 0.1;
+        for ls_iter = 1:50
+            ls_theta = ls_alpha^2;
+            ls_scale = sqrt(1 + ls_theta*ls_u2);
+            ls_shift = (ls_theta*ls_u2)./(1 + ls_scale);
+            % Exact paired-normalized Gram change, without cancellation.
+            ls_deltaX = (ls_theta*ls_UtU ...
+                - (ls_shift.' + ls_shift + ls_shift.'*ls_shift).*ls_X0) ...
+                ./ (ls_scale.'*ls_scale);
+            ls_deltaX(ls_diag2) = -ls_deltaX(ls_diag1);
+            ls_AdeltaX = A*ls_deltaX(:);
+            ls_change = ls_linear'*ls_deltaX(:) ...
+                + 0.5*sigma*(ls_AdeltaX'*ls_AdeltaX);
+            if isfinite(ls_change) && ls_change < 0 ...
+                    && ls_change <= ls_armijo*ls_theta*ls_slope
+                ls_trial = Y + ls_alpha*U;
+                ls_trialnorm = sqrt(sum(ls_trial(:,1:n).^2, 1) ...
+                    + sum(ls_trial(:,n+1:n2).^2, 1));
+                nY = ls_trial./[ls_trialnorm, ls_trialnorm];
+                return;
+            end
+            ls_alpha = 0.5*ls_alpha;
+        end
+        % Keep the normalized base point if no trial is acceptable.
     end
 
     function nY = retr_paired(Y, V)

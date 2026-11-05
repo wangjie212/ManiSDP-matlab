@@ -1,5 +1,5 @@
 # ManiSDP
-ManiSDP (v0.3.1) aims to solve the following low-rank semidefinite program (SDP) via manifold optimization:
+ManiSDP (v0.3.2) aims to solve the following low-rank semidefinite program (SDP) via manifold optimization:
 
 $$\inf_{X\succeq0}\langle C, X\rangle{\ }{\ }\text{s.t.}{\ }{\ }\mathcal{A}(X)=b,{\ }\mathcal{B}(X)=d,$$
 
@@ -314,8 +314,8 @@ Note that to run `example_stls.m`, one has to first add the folder `NearestRankD
 Coming soon.
 
 ## References
-[1] [Jie Wang and Liangbing Hu, Solving Low-Rank Semidefinite Programs via Manifold Optimization, 2025](https://link.springer.com/article/10.1007/s10915-025-02952-8)  
-[2] [Jie Wang, Liangbing Hu, and Bican Xia, A Dual Riemannian ADMM Algorithm for Low-Rank SDPs with Unit Diagonal, 2025](http://arxiv.org/abs/2512.04406)
+[1] [Jie Wang and Liangbing Hu, Solving Low-Rank Semidefinite Programs via Manifold Optimization, 2025](https://link.springer.com/article/10.1007/s10915-025-02952-8)
+[2] [Jie Wang, Liangbing Hu, and Bican Xia, A Dual Riemannian Augmented Lagrangian Method for Low-Rank SDPs with Unit Diagonal, 2026](https://link.springer.com/article/10.1007/s10915-026-03492-5)
 
 ## Contact
 [Jie Wang](https://wangjie212.github.io/jiewang/): wangjie212@amss.ac.cn  

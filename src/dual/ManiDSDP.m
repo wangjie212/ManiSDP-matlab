@@ -78,7 +78,7 @@ for iter = 1:options.ADMM_maxiter
     if ~isempty(U)
         Y = line_search(Y, U);
     end
-    % opts.tolgradnorm = tau;
+    opts.tolgradnorm = tau;
     [Y, ~, info] = trustregions(problem, Y, opts);
     gradnorm = info(end).gradnorm;
     S = Y*Y';
@@ -167,15 +167,47 @@ fprintf('ManiDSDP: optimum = %0.8f, time = %0.2fs\n', obj, toc(timespend));
     end
 
     function nY = line_search(Y, U)
-         alpha = 1;
-         cost0 = co(Y);
-         i = 1;
-         nY = Y + alpha*U;
-         while i <= 15 && co(nY) - cost0 > -1e-3
-              alpha = 0.8*alpha;
-              nY = Y + alpha*U;
-              i = i + 1;
-         end
+        % The staircase direction satisfies Y*U' = 0. With theta =
+        % alpha^2, S(theta) = Y*Y' + theta*U*U', so the derivative in
+        % theta is half the Hessian curvature along U.
+        nY = Y;
+        ls_u2 = sum(U.^2, 'all');
+        if ~isfinite(ls_u2) || ls_u2 == 0 || any(~isfinite(Y), 'all')
+            return;
+        end
+
+        % Use local names to preserve the Manopt callbacks' shared state.
+        ls_S0 = Y*Y';
+        ls_sc0 = ls_S0(:) - c;
+        ls_y0 = iA'*ls_sc0;
+        ls_As0 = A'*ls_y0 - ls_sc0 - x/sigma;
+        ls_Af0 = B'*ls_y0 - cf - w/sigma;
+        ls_dS = U*U';
+        ls_dy = iA'*ls_dS(:);
+        ls_dAs = A'*ls_dy - ls_dS(:);
+        ls_dAf = B'*ls_dy;
+        ls_slope = b'*ls_dy ...
+            + sigma*(ls_As0'*ls_dAs + ls_Af0'*ls_dAf);
+        ls_quadratic = 0.5*sigma*(ls_dAs'*ls_dAs + ls_dAf'*ls_dAf);
+        if ~isfinite(ls_slope) || ls_slope >= 0 ...
+                || ~isfinite(ls_quadratic)
+            return;
+        end
+
+        ls_alpha = min(1, 1/sqrt(ls_u2));
+        ls_armijo = 0.1;
+        for ls_iter = 1:50
+            ls_theta = ls_alpha^2;
+            % Exact dual-objective change, without subtracting close costs.
+            ls_change = ls_theta*(ls_slope + ls_theta*ls_quadratic);
+            if isfinite(ls_change) && ls_change < 0 ...
+                    && ls_change <= ls_armijo*ls_theta*ls_slope
+                nY = Y + ls_alpha*U;
+                return;
+            end
+            ls_alpha = 0.5*ls_alpha;
+        end
+        % Keep Y if no trial satisfies second-order Armijo decrease.
     end
 
     function [f, G, store] = costgrad(Y, store)
