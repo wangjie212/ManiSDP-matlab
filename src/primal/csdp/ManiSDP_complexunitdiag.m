@@ -192,14 +192,6 @@ fprintf('ManiSDP: optimum = %0.8f, time = %0.2fs\n', obj, toc(timespend));
              (eH2 - Y2_.*lamH) - U2_.*lam];
     end
 
-    % --- AL cost for line search ---
-    function val = co(Y)
-        X_   = Y'*Y;
-        x_   = X_(:);
-        Axb_ = A*x_ - b - y/sigma;
-        val  = c'*x_ + sigma/2*(Axb_'*Axb_);
-    end
-
     % --- Line search along U with paired retraction ---
     function nY = line_search(Y, U)
         % The staircase direction satisfies Y'*U = 0. Along the paired
@@ -268,12 +260,12 @@ fprintf('ManiSDP: optimum = %0.8f, time = %0.2fs\n', obj, toc(timespend));
         % Keep the normalized base point if no trial is acceptable.
     end
 
-    function nY = retr_paired(Y, V)
-        Y1_ = Y(:,1:n)    + V(:,1:n);
-        Y2_ = Y(:,n+1:n2) + V(:,n+1:n2);
-        sc  = sum(Y1_.^2) + sum(Y2_.^2);
-        nY  = [Y1_./sc, Y2_./sc];
-    end
+    % function nY = retr_paired(Y, V)
+    %     Y1_ = Y(:,1:n)    + V(:,1:n);
+    %     Y2_ = Y(:,n+1:n2) + V(:,n+1:n2);
+    %     sc  = sum(Y1_.^2) + sum(Y2_.^2);
+    %     nY  = [Y1_./sc, Y2_./sc];
+    % end
 
     % --- Paired-oblique manifold: ||col_j(Y)||^2 + ||col_{n+j}(Y)||^2 = 1 ---
     function M = pairedobliquefactory(p_, n_)

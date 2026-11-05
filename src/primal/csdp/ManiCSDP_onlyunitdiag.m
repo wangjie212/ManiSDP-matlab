@@ -109,9 +109,6 @@ end
 
 fprintf('ManiCSDP: optimum = %0.8f, time = %0.2fs\n', obj, toc(timespend));
 
-    function val = co(Y)
-        val = real(sum(conj(Y).*(Y*C),'all'));
-    end
 
     function nY = line_search(Y, U)
         % The staircase direction satisfies Y'*U = 0. The derivative

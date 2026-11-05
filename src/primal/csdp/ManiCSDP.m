@@ -177,13 +177,6 @@ fprintf('ManiCSDP: optimum = %0.8f, time = %0.2fs\n', obj, toc(timespend));
         % Keep Y if no trial satisfies second-order Armijo decrease.
     end
 
-   function val = co(Y)
-        X = Y*Y';
-        x = X(:);
-        Axb = A*x - b - y/sigma;
-        val = c'*x + sigma/2*(Axb'*Axb);
-   end
-
    function [f, store] = cost(Y, store)
         X = Y*Y';
         x = X(:);

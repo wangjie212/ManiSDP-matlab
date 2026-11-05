@@ -172,17 +172,6 @@ if data.status == 0 && eta > options.tol
 end
 
 fprintf('ManiSDP: optimum = %0.8f, time = %0.2fs\n', obj, toc(timespend));
-        
-    function val = co(Y)
-        ind = 1;
-        for i = 1:nb
-            X{i} = Y{i}'*Y{i};
-            x(ind:ind+n(i)^2-1) = X{i}(:);
-            ind = ind + n(i)^2;
-        end
-        Axb = A*x - b - y/sigma;
-        val = c'*x + 0.5*sigma*(Axb'*Axb);
-    end
 
     function nY = line_search(Y, U)
         % Each staircase direction satisfies Y{i}'*U{i} = 0. The

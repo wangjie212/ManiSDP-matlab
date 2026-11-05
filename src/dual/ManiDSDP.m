@@ -156,15 +156,6 @@ if data.status == 0 && eta > options.tol
 end
 
 fprintf('ManiDSDP: optimum = %0.8f, time = %0.2fs\n', obj, toc(timespend));
-        
-    function val = co(Y)
-        S = Y*Y';
-        sc = S(:) - c;
-        y = iA'*sc;
-        As = A'*y - sc - x/sigma;
-        Af = B'*y - cf - w/sigma;
-        val = b'*y + 0.5*sigma*(As'*As + Af'*Af);
-    end
 
     function nY = line_search(Y, U)
         % The staircase direction satisfies Y*U' = 0. With theta =

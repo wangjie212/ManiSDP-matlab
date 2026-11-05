@@ -164,11 +164,6 @@ fprintf('ManiSDP_onlycomplexunitdiag: optimum = %0.8f, time = %0.2fs\n', obj, to
              (eH2 - Y2_.*lam_H) - U(:, n+1:n2) .* eG_pair];
     end
 
-    % --- co: unnormalized cost, used only in line search ---
-    function val = co(Y)
-        val = sum((Y * C) .* Y, 'all');
-    end
-
     % --- line search along U from Y, with paired retraction ---
     function nY = line_search(Y, U)
         % The staircase direction satisfies Y'*U = 0. The derivative

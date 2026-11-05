@@ -147,13 +147,6 @@ end
 
 fprintf('ManiSDP: optimum = %0.8f, time = %0.2fs\n', obj, toc(timespend));  
 
-    function val = co(Y)
-        X = Y'*Y;
-        x = X(:);
-        Axb = A*x - b - y/sigma;
-        val = c'*x + sigma/2*(Axb'*Axb);
-    end
-
     function nY = line_search(Y, U)
         % The staircase direction satisfies Y'*U = 0. The normalized
         % pullback is even in alpha; its derivative in theta = alpha^2

@@ -144,13 +144,6 @@ end
 
 fprintf('ManiCSDP: optimum = %0.8f, time = %0.2fs\n', obj, toc(timespend));
 
-    function val = co(Y)
-        X = Y*Y';
-        x = X(:);
-        Axb = A*x - b - y/sigma;
-        val = real(c'*x + sigma/2*(Axb'*Axb));
-    end
-
     function nY = line_search(Y, U)
         % The complex staircase direction satisfies Y*U' = 0, so the pullback
         % along the sphere retraction is even in alpha. Its derivative

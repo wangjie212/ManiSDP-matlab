@@ -207,22 +207,6 @@ end
 
 fprintf('ManiDSDP: optimum = %0.8f, time = %0.2fs\n', obj, toc(timespend));
 
-        function val = co(Y)
-            ind = 1;
-            for i = 1:nb
-                S{i} = Y{i}'*Y{i};
-                s(ind:ind+n(i)^2-1) = S{i}(:);
-                ind = ind + n(i)^2;
-            end
-            sc = s - c;
-            y = iA'*sc;
-            As = A'*y - sc - x/sigma;
-            if nf ~= 0
-               Af = B'*y - cf - w/sigma;
-               val = b'*y + 0.5*sigma*(As'*As + Af'*Af);
-            end
-        end
-
     function nY = line_search(Y, U)
         % Each staircase direction satisfies Y{i}'*U{i} = 0. The
         % pullback is even in alpha, and its derivative in theta =
