@@ -1,5 +1,5 @@
 # ManiSDP
-ManiSDP (v0.3.2) aims to solve the following low-rank semidefinite program (SDP) via manifold optimization:
+ManiSDP (v0.4.0) aims to solve the following low-rank semidefinite program (SDP) via manifold optimization:
 
 $$\inf_{X\succeq0}\langle C, X\rangle{\ }{\ }\text{s.t.}{\ }{\ }\mathcal{A}(X)=b,{\ }\mathcal{B}(X)=d,$$
 
@@ -10,7 +10,7 @@ where the linear constraints $\mathcal{A}(X)=b$ are arbitrary while the linear c
 - [Manopt](https://github.com/NicolasBoumal/manopt)
 
 ## Usage
-**Note:** The optimal setting of parameters in ManiSDP is highly problem-dependent. We encourage the users to find the optimal parameters (defined in `options`) via preliminary experiments before running large-scale cases. In our experiences, the parameters (`sigma0`, `alpha`, `theta`, `TR_maxiter`, `TR_maxinner`, `kappa1`, `kappa2`) have a significant influence on the performance of ManiSDP.  
+`ManiSDP_unitdiag` equilibrates the cost and affine constraints internally, adapts its penalty and inner-solve effort to measured progress, and safeguards rank changes with a sufficient-decrease search. Its default options are intended to work across different problem scales. The other solvers retain their existing parameter updates and can still benefit from preliminary tuning of `sigma0`, `alpha`, `theta`, `TR_maxiter`, `TR_maxinner`, `kappa1`, and `kappa2`.
 
 ManiSDP accepts [SeDuMi](https://sedumi.ie.lehigh.edu/) format data.  
 
@@ -56,25 +56,51 @@ options.tol = 1e-8;
 **Input**  
 `At, b, c, K`: SeDuMi format data   
 `options`:  
-\- `tol` (=1e-8 by default): tolerance of maximal KKT residues  
-\- `p0` (=2 by default): initial value of the factorization size p  
-\- `AL_maxiter` (=300 by default): maximum number of augmented Lagrangian iterations  
-\- `sigma0` (=1e-3 by default): initial value of the penalty parameter  
-\- `sigma_min` (=1e-2 by default): minimum value of the penalty parameter  
-\- `theta` (=1e-3 by default): threshold for estimating matrix ranks  
-\- `delta` (=8 by default): number of negative eigenvalues used to construct a descent direction  
-\- `alpha` (=0.1 by default): step size for escaping from saddle points  
-\- `tolgradnorm` (=1e-8 by default): tolerance of stopping gradient norms used in the Riemannian trust-region method  
-\- `TR_maxiter` (=4 by default): maximum number of Riemannian trust-region iterations  
-\- `TR_maxinner` (=20 by default): maximum Hessian calls per trust-region iteration  
-\- `kappa1` (=1 by default): left factor for self-adaptively updating the penalty parameter  
-\- `kappa2` (=1 by default): right factor for self-adaptively updating the penalty parameter  
-\- `line_search` (=0 by default): whether (=1) or not (=0) to use line search to decide the step size for escaping from saddle points  
+
+- `tol` (=1e-8 by default): tolerance of maximal KKT residues
+- `p0` (=max(2,ceil(log(max(m,2)))) by default): initial factorization size, clipped to the matrix dimension n; m is the number of affine constraints
+- `AL_maxiter` (=300 by default): maximum number of outer passes, including inner refinements and rank changes
+- `sigma0` (=1 by default): initial penalty in equilibrated units, clipped to its bounds; an oversized initial penalty is reduced when feasibility is much better than dual optimality
+- `sigma_min` (=1e-6 by default), `sigma_max` (=1e7 by default): bounds on the penalty
+- `gamma` (=2 by default): penalty growth factor when consecutive multiplier updates fail to halve feasibility error
+- `tau` (=1e-2 by default): initial inner gradient target, tightened as optimality improves
+- `theta` (=1e-3 by default): upper bound on the relative singular-value cutoff; compression is additionally limited by the requested solution accuracy
+- `delta` (=8 by default): maximum number of negative-curvature directions added in one accepted rank step; factorization size never exceeds n
+- `alpha` (=0.1 by default): initial trial step when `line_search=0`; the trial is expanded or reduced to obtain sufficient decrease
+- `tolgradnorm` (=1e-8 by default): requested inner gradient floor in equilibrated units; the solver tightens it further when required by `tol` and the original constraint scale
+- `TR_maxiter` (=4 by default): initial trust-region iteration budget per outer pass, automatically increased up to max(100,TR_maxiter) when needed
+- `TR_maxinner` (=20 by default): initial Hessian-call budget per trust-region iteration, automatically increased up to max(100,TR_maxinner), subject to the tangent-space dimension
+- `kappa1`, `kappa2`: accepted for compatibility; penalty updates now use consecutive feasibility errors instead of a comparison with the gradient norm
+- `line_search` (=1 by default): use a normalized model-based initial staircase step (=1), or seed the search with `alpha` (=0); both modes require sufficient decrease
+- `verbosity` (=1 by default): set to 0 for silent operation
 
 **Output**  
 `sol`: optimal solution  
 `opt`: optimum  
 `data`: auxiliary data
+
+Objectives and `data.y`, `data.z`, and `data.S` are returned in the original input units. Success requires the KKT residuals to meet `tol` in both the original and equilibrated formulations. `data.status` is 0 for convergence, 1 for the iteration limit, and 2 for a nonfinite numerical result. `data.fac_size` records the factorization sizes actually solved, and `data.history` records penalties, gradient targets, residuals, inner iteration counts, and accepted rank-step decreases.
+
+Run the reproducible robustness tests from the repository root:
+
+```matlab
+addpath('test');
+results = test_ManiSDP_unitdiag();
+```
+
+The suite needs MATLAB and the bundled Manopt, and requires no reference SDP solver. It independently checks feasibility, dual slack eigenvalues, the duality gap, and positive semidefiniteness. It covers nine seeded BQP instances (8, 10, and 12 variables), 15 parameter profiles per instance, three equivalent data rescalings, nine problems with known optimal certificates, and small-input and termination cases. CSV results are written under `test/results`.
+
+On MATLAB R2024b, the 138-case sensitivity sweep gave:
+
+| Measure | Previous solver | Updated solver |
+| --- | ---: | ---: |
+| Cases converged at 1e-8 | 118/138 | 138/138 |
+| Worst independently checked KKT residual | 1.19e1 | 5.93e-9 |
+| Total solver time | 44.87 s | 30.82 s |
+| Median solver time | 0.090 s | 0.169 s |
+| Slowest case | 5.19 s | 1.85 s |
+
+The extra inner work can increase the time of an easy, well-tuned case. The sweep measures reduced sensitivity and better completion across the tested settings; it does not establish a speedup for every problem. The existing `example/example_bqp.m` also converges with the default options.
 
 ### SDPs with the unit trace constraint
 $$\inf_{X\succeq0}\langle C, X\rangle{\ }{\ }\text{s.t.}{\ }{\ }\mathcal{A}(X)=b,{\ }\sum_{i}X_{ii}=1.$$

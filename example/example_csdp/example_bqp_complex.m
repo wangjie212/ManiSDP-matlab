@@ -1,4 +1,3 @@
-
 clear; 
 clc;
 
@@ -12,33 +11,33 @@ e = (randn(d, 1) + 1i*randn(d, 1)) / sqrt(2);
 %% 2. 生成 BQP 矩量松弛数据
 fprintf('正在生成 BQP 矩量松弛数据...\n');
 % 含单位对角约束（供 SeDuMi/MOSEK，需完整约束）
-[At_c, b_c, c_c, K_c]         = bqpmom_complex(Q, e);
+% [At_c, b_c, c_c, K_c]         = bqpmom_complex(Q, e);
 % 无单位对角约束（供 ManiCSDP/ManiSDP_complexunitdiag，由流形隐式处理）
 [At_cnd, b_cnd, c_cnd, K_cnd] = bqpmom_complex_nounitdiag(Q, e);
 N_c = K_cnd.s;
 %}
 %% 3. ManiCSDP_unitdiag (直接求解复数 SDP)
-rng(0);
-fprintf('\n=== 情形 1: ManiCSDP_unitdiag (复数 SDP) ===\n');
-options_c.tol         = 1e-8;
-options_c.AL_maxiter  = 1000;
-options_c.p0          = 2;
-options_c.sigma0      = 1e-3;
-options_c.sigma_min   = 1e-2;
-options_c.sigma_max   = 1e7;
-options_c.gama        = 2;
-options_c.kappa1        = 1;
-options_c.kappa2        = 1;
-options_c.theta       = 1e-3;
-options_c.delta       = 8;
-options_c.alpha       = 0.1;
-options_c.TR_maxinner = 25; 
-options_c.TR_maxiter  = 4;
-options_c.line_search = 0;
-
-[X_c, fval_c, data_c] = ManiCSDP_unitdiag(At_cnd', b_cnd, c_cnd, K_cnd, options_c);
-fprintf('ManiCSDP_unitdiag: f = %.8f, eta = %.1e, t = %.2fs\n', ...
-        fval_c, max([data_c.gap, data_c.pinf, data_c.dinf]), data_c.time);
+% rng(0);
+% fprintf('\n=== 情形 1: ManiCSDP_unitdiag (复数 SDP) ===\n');
+% options_c.tol         = 1e-8;
+% options_c.AL_maxiter  = 1000;
+% options_c.p0          = 2;
+% options_c.sigma0      = 1e-3;
+% options_c.sigma_min   = 1e-2;
+% options_c.sigma_max   = 1e7;
+% options_c.gama        = 2;
+% options_c.kappa1        = 1;
+% options_c.kappa2        = 1;
+% options_c.theta       = 1e-3;
+% options_c.delta       = 8;
+% options_c.alpha       = 0.1;
+% options_c.TR_maxinner = 25; 
+% options_c.TR_maxiter  = 4;
+% options_c.line_search = 0;
+% 
+% [X_c, fval_c, data_c] = ManiCSDP_unitdiag(At_cnd', b_cnd, c_cnd, K_cnd, options_c);
+% fprintf('ManiCSDP_unitdiag: f = %.8f, eta = %.1e, t = %.2fs\n', ...
+%         fval_c, max([data_c.gap, data_c.pinf, data_c.dinf]), data_c.time);
 %{
 %% 4. SeDuMi (直接求解复数 SDP，含完整约束)
 % At_c 是 m×N² 行格式，SeDuMi 接受 N²×m 格式，故传入 At_c'
@@ -74,10 +73,10 @@ end
 
 %}
 %% 5. convertCtoR 转换
-fprintf('\n正在执行 CSDP → RSDP 转换...\n');
-% 含对角约束（供 MOSEK 使用）
-[At_r, b_r, c_r, K_r]             = convertCtoR(At_c,   b_c,   c_c,   K_c);
-% 无对角约束（供 ManiSDP_complexunitdiag，由流形处理）
+% fprintf('\n正在执行 CSDP → RSDP 转换...\n');
+% % 含对角约束（供 MOSEK 使用）
+% % [At_r, b_r, c_r, K_r]             = convertCtoR(At_c,   b_c,   c_c,   K_c);
+% % 无对角约束（供 ManiSDP_complexunitdiag，由流形处理）
 [At_r_nd, b_r_nd, c_r_nd, K_r_nd] = convertCtoR(At_cnd, b_cnd, c_cnd, K_cnd);
 n_r = K_r_nd.s;
 
@@ -133,13 +132,13 @@ options_r.line_search = 1;
 fprintf('ManiSDP_complexunitdiag: f = %.8f, eta = %.1e, t = %.2fs\n', ...
         fval_r, max([data_r.gap, data_r.pinf, data_r.dinf]), data_r.time);
 
- %{
+
 %% 8. 结果对比
-fprintf('\n=== 结果对比 ===\n');
-fprintf('ManiCSDP_unitdiag:        f = %.8f, t = %.4fs\n', fval_c, data_c.time);
-if ~isnan(obj_sed),  fprintf('SeDuMi (复数 SDP):        f = %.8f, t = %.4fs\n', obj_sed, t_sed); end
-if ~isnan(obj_mos),  fprintf('MOSEK  (实 RSDP):         f = %.8f, t = %.4fs\n', obj_mos, t_mosek); end
-fprintf('ManiSDP_complexunitdiag: f = %.8f, t = %.4fs\n', fval_r, data_r.time);
-fprintf('[bqp_complex] script finished.\n');
-drawnow;
-%}
+% fprintf('\n=== 结果对比 ===\n');
+% fprintf('ManiCSDP_unitdiag:        f = %.8f, t = %.4fs\n', fval_c, data_c.time);
+% if ~isnan(obj_sed),  fprintf('SeDuMi (复数 SDP):        f = %.8f, t = %.4fs\n', obj_sed, t_sed); end
+% if ~isnan(obj_mos),  fprintf('MOSEK  (实 RSDP):         f = %.8f, t = %.4fs\n', obj_mos, t_mosek); end
+% fprintf('ManiSDP_complexunitdiag: f = %.8f, t = %.4fs\n', fval_r, data_r.time);
+% fprintf('[bqp_complex] script finished.\n');
+% drawnow;
+

@@ -5,16 +5,16 @@ Q = randn(d,d); Q = (Q + Q')/2; % a random symmetric matrix
 e = randn(d,1);
 
 %% generate moment-SDP
-[At, b, c, K] = bqpmom(d, Q, e);
+% [At, b, c, K] = bqpmom(d, Q, e);
 
 %% Solve with ManiSDP
-rng(0);
-clear options;
-options.tol = 1e-8;
-tic
-[~, pfval, data] = ManiSDP_unitdiag(At, b, c, K, options);
-tmani = toc;
-emani = max([data.gap, data.pinf, data.dinf]);
+% rng(0);
+% clear options;
+% options.tol = 1e-8;
+% tic
+% [~, pfval, data] = ManiSDP_unitdiag(At, b, c, K, options);
+% tmani = toc;
+% emani = max([data.gap, data.pinf, data.dinf]);
 
 
 %% generate SOS-SDP
@@ -109,5 +109,5 @@ dtmani = toc;
 % fprintf('Mosek: optimum = %0.8f, eta = %0.1e, time = %0.2fs\n', mobj(1), emosek, tmosek);
 % fprintf('CPOT: optimum = %0.8f, eta = %0.1e, time = %0.2fs\n', fcopt, ecopt, tcopt);
 % fprintf('SDPNAL: optimum = %0.8f, eta = %0.1e, time = %0.2fs\n', b(1)-objnal(1), enal, tnal);
-fprintf('ManiSDP: optimum = %0.8f, eta = %0.1e, time = %0.2fs\n', pfval, emani, tmani);
+% fprintf('ManiSDP: optimum = %0.8f, eta = %0.1e, time = %0.2fs\n', pfval, emani, tmani);
 fprintf('ManiDSDP: optimum = %0.8f, eta = %0.1e, time = %0.2fs\n', dfval, demani, dtmani);
